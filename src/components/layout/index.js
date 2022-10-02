@@ -10,12 +10,12 @@ export default function Layout({ children, ...props }) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <div className="max-w-sm mx-auto p-8 bg-slate-800 text-white">
+            <div className="max-w-sm min-h-screen mx-auto bg-zinc-900 text-white">
                 <main>
                     {children}
                 </main>
 
-                <footer>
+                <footer className='p-8'>
                     Hi there.
                 </footer>
             </div>
