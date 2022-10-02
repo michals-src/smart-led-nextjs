@@ -1,6 +1,8 @@
 import React, { useEffect, useState, FC, ReactElement, useRef } from 'react';
 import classNames from 'classnames';
 
+import { PaintBrushIcon } from '@heroicons/react/24/solid'
+
 type IColor = {
     index: number,
     current: string,
@@ -49,10 +51,13 @@ const ColorsPalette: FC<IFCColorsPalette> = ({ onCanalShadowChange }): ReactElem
 
 
     return (
-        <div className='my-12 flex flex-row flex-wrap'>
-            {colors.map((c, i) => (
-                <Color index={i} key={i} onClick={(e: React.MouseEvent<HTMLDListElement>) => onChange(c)} current={currentColor} color={c} />
-            ))}
+        <div className='my-12 flex flex-row flex-nowrap items-center p-6 rounded-lg' style={{ background: '#00000078' }}>
+            <div className='w-2/12'><p className='text-zinc-900 font-bold text-sm'><PaintBrushIcon className="w-4 h-4 text-zinc-300" /> </p></div>
+            <div className='w-10/12 flex flex-row flex-wrap'>
+                {colors.map((c, i) => (
+                    <Color index={i} key={i} onClick={(e: React.MouseEvent<HTMLDListElement>) => onChange(c)} current={currentColor} color={c} />
+                ))}
+            </div>
         </div>
     )
 }

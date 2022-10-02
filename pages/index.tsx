@@ -1,8 +1,10 @@
 import type { NextPage } from 'next'
 import { useEffect, useRef, useState } from 'react'
-
+import Image from 'next/image'
 
 import { ColorsPalette, Intensity, Layout } from '../src/components'
+
+import LampImage from '../images/pietro-piovesan-9UR3Zafm328-unsplash.png'
 
 const Home: NextPage = () => {
 
@@ -67,6 +69,15 @@ const Home: NextPage = () => {
     <Layout>
       <div className='relative'>
         <div ref={ref} className='absolute top-0 left-0 z-10 w-full h-screen canal-shadow'></div>
+        <div className='absolute z-20 top-0 right-0 w-6/12 h-80'>
+          <Image
+            src={LampImage}
+            layout="fill"
+            sizes="(max-width: 768px) 100vw,
+              (max-width: 1200px) 50vw,
+              33vw"
+          />
+        </div>
         <div className='relative z-30 p-8'>
           <h4 className='text-3xl font-bold'>Smart led</h4>
           <h6 className='text-zinc-300'>Witaj w aplikacji</h6>

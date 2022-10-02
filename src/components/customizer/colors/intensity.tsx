@@ -5,13 +5,17 @@ export default function Intensity() {
     const [volume, setVolume] = useState<number>(0)
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setVolume(e.target.value)
+        setVolume(e.target.value);
+        const percentage = volume / 100 * 100;
+        e.target.style.background = 'linear-gradient(to right, #7a00ff ' + percentage + '%, #dee1e200 ' + percentage + '%, #fff 100%)';
     }
 
     return (
         <>
-            <div><p className='text-lg font-bold mb-8'>{volume} %</p></div>
-            <input onChange={onChange} value={volume} className='customizer-intensity_bar' type="range" min="0" max="100" />
+            <div className="w-auto h-20 flex flex-col align-middle"><p className='text-6xl font-bold mb-8'>{volume} %</p></div>
+            <div className='w-full mt-28'>
+                <input onChange={onChange} value={volume} className='w-full customizer-intensity_bar' type="range" min="0" max="100" />
+            </div>
             {/* <div className='flex flex-col items-center h-full'>
                 <div><p className='text-lg font-bold mb-8'>{volume} %</p></div>
                 <div className='relative h-80 flex flex-col flex-nowrap items-center pt-80'>
