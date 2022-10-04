@@ -29,6 +29,9 @@ font-family: 'Scada', sans-serif;
     font-weight: 500;
   }
 
+  body{
+    @apply bg-zinc-900;
+  }
 
 
   a {
@@ -95,11 +98,85 @@ font-family: 'Scada', sans-serif;
     inherits: false;
   }
 
+  @property  --app-panel-bg-color {
+    syntax: '<color>';
+    initial-value: rgb(50, 50, 50);
+    inherits: false;
+  }
+
+  @property  --app-panel-bg-dark {
+    syntax: '<color>';
+    initial-value: rgb(127, 127, 127);
+    inherits: false;
+  }
+
+
+  @property  --app-panel-bg-light {
+    syntax: '<color>';
+    initial-value: rgb(160, 160, 160);
+    inherits: false;
+  }
+
+
+  .panel{
+    --app-panel-bg-color: rgb(50, 50, 50);
+    --app-panel-bg-dark: rgb(127, 127, 127);
+    --app-panel-bg-light: rgb(160, 160, 160);
+    background: rgb(127, 127, 127);
+    background: linear-gradient(90deg, var(--app-panel-bg-dark) 0%, var(--app-panel-bg-color) 50%, var(--app-panel-bg-light) 100%);
+    transition: --app-panel-bg-color  1s ease, --app-panel-bg-dark  1s ease, --app-panel-bg-light  1s ease;
+  }
+
+  .panel--range{
+    width: 100%;
+    height: 18px;
+    position: relative;
+    background: rgba(0,0,0,.3);
+    border-radius: 25px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .panel--range-progress{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 5;
+    background: linear-gradient(to right, rgba(0,0,0,0) 0%, #fff 100%);
+    border-radius: 25px;
+    transition: width .1s ease;
+  }
+
+
+  .panel--range-input{
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    z-index: 6;
+    width: 100%;
+    height: 14px;
+    background: rgba(0255,255,255,.5);
+    -webkit-appearance: none;
+    opacity: 0;
+  }
+
+  .panel--range-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+  }
+
   .canal-shadow {
     --app-canal-shadow: rgba(2, 0, 36, 1);
-
     background: linear-gradient(180deg, var(--app-canal-shadow) 0%, rgba(0, 212, 255, 0) 100%);
     transition: --app-canal-shadow 1s ease;
+    width: 100%;
+    height: auto
   }
 
   .colorElement {
@@ -150,6 +227,40 @@ font-family: 'Scada', sans-serif;
 
   .customizer-intensity_bar::-webkit-slider-thumb:hover {
     background: #fff;
+  }
+
+  .switch{
+    position: relative;
+    width: 100%;
+    height: auto;
+    border-radius: 15px;
+    background: rgba(0,0,0,.25);
+    cursor: pointer;
+    transition: background .4s ease;
+  }
+
+  .switch-thumb{
+    width: 50%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    background: #fff;
+    transform: translateX(0px);
+    transition: transform .4s ease;
+  }
+
+  .switch[attr-checked="true"]{
+    background: rgba(255,255,255,.5);
+  }
+
+  .switch[attr-checked="true"] .switch-thumb{
+    transform: translateX(100%);
+  }
+
+  .switch-checkbox{
+    opacity: 0;
   }
 
 }
