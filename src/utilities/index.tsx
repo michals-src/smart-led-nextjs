@@ -16,3 +16,23 @@ export const rgb2hex = (rgb: number[]): string =>
       return hex.length == 1 ? "0" + hex : hex;
     })
     .join("");
+
+export const DarkenColor = (color: string) => {
+  let rgbValue = hex2rgb(color);
+  let diff = rgbValue?.map(v => {
+    const a = v - v * 0.3;
+    return a >= 0 ? a : 0;
+  });
+
+  return rgb2hex(diff);
+};
+
+export const LightenColor = (color: string) => {
+  const rgbValue = hex2rgb(color);
+  const diff = rgbValue?.map(v => {
+    const a = v + v * 0.3;
+    return a <= 255 ? a : 255;
+  });
+
+  return rgb2hex(diff);
+};

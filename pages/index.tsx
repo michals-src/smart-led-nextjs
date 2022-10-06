@@ -2,9 +2,18 @@ import type { NextPage } from "next";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-import { ColorsPalette, Intensity, Layout, Panel } from "../src/components";
+import {
+  Box,
+  ColorsPalette,
+  Intensity,
+  Layout,
+  Palette,
+  Panel,
+  Scenery,
+} from "../src/components";
 
 import LampImage from "../images/pietro-piovesan-9UR3Zafm328-unsplash.png";
+import { ClockIcon, PaintBrushIcon } from "@heroicons/react/24/solid";
 
 const Home: NextPage = () => {
   const [canalShadow, setCanalShadow] = useState<string>("#9D0208");
@@ -24,11 +33,11 @@ const Home: NextPage = () => {
 
   return (
     <Layout>
-      <div className='relative'>
+      <div className='relative min-h-screen'>
         <div
           ref={ShadowRef}
-          className='absolute top-0 left-0 z-10 w-full h-full canal-shadow'></div>
-        <div className='absolute z-20 top-0 right-0 w-6/12 h-80'>
+          className='absolute top-0 left-0 z-10 w-full h-1/2 canal-shadow'></div>
+        {/* <div className='absolute z-20 top-0 right-0 w-6/12 h-80'>
           <Image
             src={LampImage}
             layout='fill'
@@ -36,17 +45,53 @@ const Home: NextPage = () => {
               (max-width: 1200px) 50vw,
               33vw'
           />
-        </div>
-        <div className='relative z-30 p-8'>
-          <div className='mb-6'>
-            <h4 className='font-bold'>Smart led</h4>
-            <h6 className='text-sm text-zinc-300'>Witaj w aplikacji</h6>
+        </div> */}
+        <div className='relative z-30 pt-8'>
+          <div className='px-8'>
+            <div className='mb-6'>
+              <h4 className='font-bold'>Smart led</h4>
+              <h6 className='text-sm text-zinc-300'>Witaj w aplikacji</h6>
+            </div>
+            <Panel color={canalShadow} initialRange={30} />
+            <div className='mt-12 mb-6 p-4 flex flex-row nowrap space-x-12'>
+              <div className='w-2/12 items-center cursor-pointer flex flex-col nowrap'>
+                <div
+                  className='rounded-full w-12 h-12 p-3 m-0'
+                  style={{ background: "rgba(255,255,255,1)" }}>
+                  <PaintBrushIcon className='m-0 w-auto text-zinc-900' />
+                </div>
+                <div className='mt-4 text-center'>
+                  <p className='text-xs text-zinc-100 text-wrap'>
+                    Paleta kolorów
+                  </p>
+                </div>
+              </div>
+              <div className='w-2/12 items-center cursor-pointer flex flex-col nowrap'>
+                <div
+                  className='rounded-full w-12 h-12 m-0'
+                  style={{ background: "rgba(255,255,255,.1)" }}>
+                  <ClockIcon className='m-0 p-3 w-auto text-zinc-100' />
+                </div>
+                <div className='mt-4 text-center'>
+                  <p className='text-xs text-zinc-400 text-wrap'>Sceneria</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <Panel color={canalShadow} initialRange={30} />
           {/* <div className='my-12'>
             <Intensity />
           </div> */}
-          <ColorsPalette onCanalShadowChange={onCanalShadowChange} />
+
+          <div className='my-12 px-8'>
+            <div className='mb-32'>
+              <Palette state={setCanalShadow} />
+            </div>
+            <Scenery />
+          </div>
+
+          <div className='px-8'>
+            {/* <ColorsPalette onCanalShadowChange={onCanalShadowChange} /> */}
+          </div>
         </div>
       </div>
     </Layout>
