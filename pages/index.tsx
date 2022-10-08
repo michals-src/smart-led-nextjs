@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 import {
@@ -10,6 +10,7 @@ import {
   Palette,
   Panel,
   Scenery,
+  Slider,
 } from "../src/components";
 
 import LampImage from "../images/pietro-piovesan-9UR3Zafm328-unsplash.png";
@@ -18,11 +19,15 @@ import {
   PaintBrushIcon,
   XMarkIcon,
 } from "@heroicons/react/24/solid";
+import { LightenColor } from "../src/utilities";
+import { colors } from "../src/components/customizer/colors/palette";
 
 const Home: NextPage = () => {
   const [canalShadow, setCanalShadow] = useState<string>("#9D0208");
   const ShadowRef = useRef(null);
   const PanelRef = useRef(null);
+
+  const [newTime, setNewTime] = useState<object>({ hour: 0, min: 0 });
 
   useEffect(() => {
     ShadowRef.current?.style.setProperty(
@@ -31,8 +36,32 @@ const Home: NextPage = () => {
     );
   }, [canalShadow]);
 
-  const onCanalShadowChange = (hex: string) => {
-    setCanalShadow(hex);
+  const time2hhmm = (time: number) => {
+    const hour = Math.floor(time / 60);
+    const min = time % 60;
+
+    return { hour, min };
+  };
+
+  const hhmm2time = (hhmm: string) => {
+    // const num = hhmm
+    //   .split(":")
+    //   .reverse()
+    //   .map((t, i) => t * (60 * i));
+    const num2_arr = hhmm.split(":");
+    const num2 = +num2_arr[0] * 60 + +num2_arr[1];
+
+    return num2;
+  };
+
+  const startTime = hhmm2time("20:35");
+  const endTime = hhmm2time("22:55");
+  const diff = endTime - startTime;
+
+  const sliderHandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = Math.floor(startTime + diff * (e.target.value / 100));
+
+    setNewTime(time2hhmm(newTime));
   };
 
   return (
@@ -110,7 +139,51 @@ const Home: NextPage = () => {
                   </div>
                 </div>
               </div>
-              <div className='py-10'>
+              <div>
+                <div className='my-16'>
+                  <Box className='px-4 py-2 text-center mb-4'>
+                    <p className='text-zinc-100 mx-auto'>
+                      {newTime.hour} <span className='mx-3'>:</span>
+                      {`${newTime.min}`.length < 2
+                        ? "0" + newTime.min
+                        : newTime.min}
+                    </p>
+                  </Box>
+                  <div className='flex flex-row flex-nowrap w-full justify-center items-center'>
+                    <div className='w-3/12 relative z-10'>
+                      <Box bgGradient={colors[0]} className='p-4'>
+                        <p className='text-xs text-zinc-100'> 20:00</p>
+                      </Box>
+                    </div>
+                    <div className='w-8/12 relative z-[9]'>
+                      <div className='relative'>
+                        <div
+                          className='w-full h-1/2 absolute left-0'
+                          style={{
+                            background: `linear-gradient(to right, ${LightenColor(
+                              colors[0]
+                            )} 0%,${LightenColor(colors[3])}  150%)`,
+                            top: "50%",
+                            transform: "translateY(-50%)",
+                            filter: "blur(30px)",
+                          }}></div>
+                        <div className='p-4'>
+                          <Slider
+                            onChange={sliderHandleChange}
+                            initialValue={0}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className='w-3/12 relative z-10'>
+                      <Box bgGradient={colors[3]} className='p-4'>
+                        <p className='text-xs text-zinc-100'> 23:00</p>
+                      </Box>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className='by-10'>
                 <Palette state={setCanalShadow} />
               </div>
             </div>

@@ -2,12 +2,14 @@ import React, { forwardRef, useEffect, useRef, useState } from "react";
 
 type ISlider = {
   initialValue: number;
-  value?: React.Dispatch<React.SetStateAction<number>>;
+  // value?: React.Dispatch<React.SetStateAction<number>>;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  step?: number;
 };
 
-const Slider = forwardRef(({ initialValue, value }: ISlider, ref) => {
-  const progressRef = useRef(null);
-  const thumbRef = useRef(null);
+const Slider = forwardRef(({ initialValue, onChange, step }: ISlider, ref) => {
+  const progressRef = useRef<HTMLDivElement>(null);
+  const thumbRef = useRef<HTMLDivElement>(null);
   const [range, setRange] = useState<number>(initialValue ? initialValue : 0);
 
   useEffect(() => {
@@ -15,14 +17,13 @@ const Slider = forwardRef(({ initialValue, value }: ISlider, ref) => {
 
     progressRef.current.style.width = `${range}%`;
     thumbRef.current.style.width = `${range}%`;
-
-    if (value) value(range);
   }, [range]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLInputElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target) return;
+
     setRange(parseInt(e.target.value, 10));
+    if (typeof onChange !== "undefined") onChange(e);
   };
 
   return (
@@ -38,9 +39,9 @@ const Slider = forwardRef(({ initialValue, value }: ISlider, ref) => {
         type='range'
         className='slider--input w-full'
         value={range}
-        onClick={e => handleChange(e)}
-        onChange={e => handleChange(e)}
+        onChange={handleChange}
         ref={ref}
+        step={step}
       />
     </div>
   );
