@@ -35,7 +35,7 @@ const Palette = ({ initialValue, state }: TPalette) => {
 
   return (
     <>
-      <Box className='px-12 py-16'>
+      <div className='px-12 py-16'>
         <>
           <div
             className='mx-auto  w-full h-40 relative '
@@ -61,7 +61,7 @@ const Palette = ({ initialValue, state }: TPalette) => {
             <PaletteColor value={colorantValue} />
           </div>
         </>
-      </Box>
+      </div>
     </>
   );
 };

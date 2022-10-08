@@ -13,7 +13,11 @@ import {
 } from "../src/components";
 
 import LampImage from "../images/pietro-piovesan-9UR3Zafm328-unsplash.png";
-import { ClockIcon, PaintBrushIcon } from "@heroicons/react/24/solid";
+import {
+  ClockIcon,
+  PaintBrushIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/solid";
 
 const Home: NextPage = () => {
   const [canalShadow, setCanalShadow] = useState<string>("#9D0208");
@@ -92,6 +96,25 @@ const Home: NextPage = () => {
           <div className='px-8'>
             {/* <ColorsPalette onCanalShadowChange={onCanalShadowChange} /> */}
           </div>
+        </div>
+      </div>
+      <div className='fixed top-0 left-0 bottom-0 right-0 z-30 bg-[#000000AF]'>
+        <div className='p-10 w-full h-full'>
+          <Box bgSolid='#18181b' className=' w-full h-full'>
+            <div className='p-8'>
+              <div className='flex flex-row flex-nowrap'>
+                <div></div>
+                <div className='w-auto ml-auto'>
+                  <div className='table p-2 bg-[#FFFFFF30] rounded-full shadow-lg'>
+                    <XMarkIcon className='w-4 h-4 text-white' />
+                  </div>
+                </div>
+              </div>
+              <div className='py-10'>
+                <Palette state={setCanalShadow} />
+              </div>
+            </div>
+          </Box>
         </div>
       </div>
     </Layout>

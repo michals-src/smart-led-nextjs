@@ -266,5 +266,3 @@ export default function Scenery({}: IScenery) {
     </>
   );
 }
-
-Slider.displayName = "Slder";

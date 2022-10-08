@@ -9,7 +9,7 @@ import React, {
 import { DarkenColor, LightenColor } from "../../utilities";
 
 type TBox = {
-  children?: React.ReactElement;
+  children?: React.ReactElement | React.ReactFragment;
   bgSolid?: string;
   bgGradient?: string;
   className?: string;
@@ -46,7 +46,7 @@ const Box = ({
   if (bgGradient) {
     return (
       <div ref={wrapperRef} className={cn}>
-        {children}
+        <>{children}</>
       </div>
     );
   }
@@ -57,7 +57,7 @@ const Box = ({
       className={cn}
       style={{ background: `${bgSolid}` }}
       {...props}>
-      {children}
+      <>{children}</>
     </div>
   );
 };
