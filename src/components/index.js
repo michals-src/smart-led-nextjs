@@ -6,3 +6,4 @@ export { default as Scenery } from "./customizer/colors/scenery";
 export { default as Palette } from "./Palette/palette";
 export { default as Box } from "./Box/box";
 export { default as Slider } from "./Slider/slider";
+export { default as Modal } from "./Modal/modal";

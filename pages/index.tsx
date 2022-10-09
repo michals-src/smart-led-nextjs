@@ -11,6 +11,7 @@ import {
   Panel,
   Scenery,
   Slider,
+  Modal,
 } from "../src/components";
 
 import LampImage from "../images/pietro-piovesan-9UR3Zafm328-unsplash.png";
@@ -23,7 +24,6 @@ import {
 } from "@heroicons/react/24/solid";
 import { LightenColor } from "../src/utilities";
 import { colors } from "../src/components/customizer/colors/palette";
-import Modal from "../src/components/Modal/modal";
 
 const Home: NextPage = () => {
   const [canalShadow, setCanalShadow] = useState<string>("#9D0208");
@@ -33,6 +33,14 @@ const Home: NextPage = () => {
   const [brightnessValue, setBrightnessValue] = useState<number>(100);
   const [sliderValue, setSliderValue] = useState<number>(50);
   const [newTime, setNewTime] = useState<object>({ hour: 0, min: 0 });
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "scroll";
+    };
+  }, []);
 
   useEffect(() => {
     ShadowRef.current?.style.setProperty(
@@ -70,14 +78,14 @@ const Home: NextPage = () => {
     setSliderValue(e.target.value);
   };
 
-
   const brightnessHandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBrightnessValue(e.target.value);
   };
 
   return (
     <Layout>
-      <div className='relative min-h-screen'>
+      {/* <div className='relative min-h-screen h-screen overflow-hidden'> */}
+      <div className='relative h-screen overflow-hidden'>
         <div
           ref={ShadowRef}
           className='absolute top-0 left-0 z-10 w-full h-1/2 canal-shadow'></div>
@@ -138,14 +146,13 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
-      <Modal>
 
-
+      <Modal title='Kreator scenerii'>
         <Box>
           <div>
-            <div className="p-3">
+            <div className='p-3'>
               <Box className='text-center mb-4'>
-                <div className="py-2 px-4">
+                <div className='py-2 px-4'>
                   <p className='text-zinc-100 mx-auto'>
                     {newTime.hour} <span className='mx-3'>:</span>
                     {`${newTime.min}`.length < 2
@@ -157,6 +164,7 @@ const Home: NextPage = () => {
                   onChange={sliderHandleChange}
                   value={sliderValue}
                   thumb={false}
+                  size='lg'
                 />
               </Box>
             </div>
@@ -179,9 +187,7 @@ const Home: NextPage = () => {
               <div className='w-8/12 relative z-[9]'>
                 <div className='relative'>
                   <div className='p-4'>
-                    <Slider
-                      value={sliderValue}
-                    />
+                    <Slider value={sliderValue} />
                   </div>
                 </div>
               </div>
@@ -191,25 +197,23 @@ const Home: NextPage = () => {
                 </Box>
               </div>
             </div>
-
           </div>
-
         </Box>
         <div className='py-10'>
           <Palette state={setCanalShadow} />
         </div>
-        <Box className="p-4 mt-6">
-          <div className="w-full">
-            <div className="flex flex-row flex-nowrap w-full mb-1 justify-between px-3">
-              <div className="w-8/12 pr-4 flex flex-row flex-nowrap items-center">
-                <div className="table p-3">
-                  <SunIcon className="w-4 h-4 text-white " />
+        <Box className='p-4 mt-6'>
+          <div className='w-full'>
+            <div className='flex flex-row flex-nowrap w-full mb-1 justify-between px-3'>
+              <div className='w-8/12 pr-4 flex flex-row flex-nowrap items-center'>
+                <div className='table p-3'>
+                  <SunIcon className='w-4 h-4 text-white ' />
                 </div>
-                <p className="text-sm">Jasność</p>
+                <p className='text-sm'>Jasność</p>
               </div>
-              <div className="w-4/12 flex items-end self-center">
-                <div className="table ml-auto">
-                  <p className="text-lg">{brightnessValue} %</p>
+              <div className='w-4/12 flex items-end self-center'>
+                <div className='table ml-auto'>
+                  <p className='text-lg'>{brightnessValue} %</p>
                 </div>
               </div>
             </div>
@@ -220,12 +224,10 @@ const Home: NextPage = () => {
                 thumb={false}
                 size='lg'
               />
-
             </div>
           </div>
         </Box>
       </Modal>
-
     </Layout>
   );
 };
