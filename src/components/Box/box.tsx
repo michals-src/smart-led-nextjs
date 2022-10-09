@@ -13,6 +13,7 @@ type TBox = {
   bgSolid?: string;
   bgGradient?: string;
   className?: string;
+  style?: React.CSSProperties
 };
 
 const Box = ({
@@ -25,7 +26,7 @@ const Box = ({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [styles, setStyles] = useState<object>({});
 
-  const cn = classNames(`${className} rounded-lg shadow-xl`, {
+  const cn = classNames(`${className} rounded-lg shadow-xl overflow-hidden`, {
     box: bgGradient,
   });
 
@@ -55,7 +56,7 @@ const Box = ({
     <div
       ref={wrapperRef}
       className={cn}
-      style={{ background: `${bgSolid}` }}
+      style={{ backgroundColor: `${bgSolid}`, ...props.style }}
       {...props}>
       <>{children}</>
     </div>

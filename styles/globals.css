@@ -29,7 +29,7 @@ font-family: 'Scada', sans-serif;
     font-weight: 500;
   }
 
-  body{
+  body {
     @apply bg-zinc-900;
   }
 
@@ -98,83 +98,83 @@ font-family: 'Scada', sans-serif;
     inherits: false;
   }
 
-  @property  --app-panel-bg-color {
+  @property --app-panel-bg-color {
     syntax: '<color>';
     initial-value: rgb(50, 50, 50);
     inherits: false;
   }
 
-  @property  --app-panel-bg-dark {
+  @property --app-panel-bg-dark {
     syntax: '<color>';
     initial-value: rgb(127, 127, 127);
     inherits: false;
   }
 
-  @property  --app-panel-bg-light {
+  @property --app-panel-bg-light {
     syntax: '<color>';
     initial-value: rgb(160, 160, 160);
     inherits: false;
   }
 
-  @property  --app-box-bg-color {
+  @property --app-box-bg-color {
     syntax: '<color>';
     initial-value: rgb(50, 50, 50);
     inherits: false;
   }
 
-  @property  --app-box-bg-dark {
+  @property --app-box-bg-dark {
     syntax: '<color>';
     initial-value: rgb(127, 127, 127);
     inherits: false;
   }
 
-  @property  --app-box-bg-light {
+  @property --app-box-bg-light {
     syntax: '<color>';
     initial-value: rgb(160, 160, 160);
     inherits: false;
   }
 
 
-  .box{
+  .box {
     --app-box-bg-color: rgb(50, 50, 50);
     --app-box-bg-dark: rgb(127, 127, 127);
     --app-box-bg-light: rgb(160, 160, 160);
     background: var(--app-panel-bg-color);
     background: linear-gradient(90deg, var(--app-box-bg-dark) 0%, var(--app-box-bg-color) 50%, var(--app-box-bg-light) 100%);
-    transition: --app-box-bg-color  1s ease, --app-box-bg-dark  1s ease, --app-box-bg-light  1s ease;
+    transition: --app-box-bg-color 1s ease, --app-box-bg-dark 1s ease, --app-box-bg-light 1s ease;
   }
 
-  .panel{
+  .panel {
     --app-panel-bg-color: rgb(50, 50, 50);
     --app-panel-bg-dark: rgb(127, 127, 127);
     --app-panel-bg-light: rgb(160, 160, 160);
     background: rgb(127, 127, 127);
     background: linear-gradient(90deg, var(--app-panel-bg-dark) 0%, var(--app-panel-bg-color) 50%, var(--app-panel-bg-light) 100%);
-    transition: --app-panel-bg-color  1s ease, --app-panel-bg-dark  1s ease, --app-panel-bg-light  1s ease;
+    transition: --app-panel-bg-color 1s ease, --app-panel-bg-dark 1s ease, --app-panel-bg-light 1s ease;
   }
 
-  .panel--range{
+  .panel--range {
     width: 100%;
     height: 18px;
     position: relative;
-    background: rgba(0,0,0,.3);
+    background: rgba(0, 0, 0, .3);
     border-radius: 25px;
     overflow: hidden;
     cursor: pointer;
   }
 
-  .panel--range-progress{
+  .panel--range-progress {
     width: 100%;
     height: 100%;
     position: relative;
     z-index: 5;
-    background: linear-gradient(to right, rgba(0,0,0,0) 0%, #fff 100%);
+    background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, #fff 100%);
     border-radius: 25px;
     transition: width .1s ease;
   }
 
 
-  .panel--range-input{
+  .panel--range-input {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -182,7 +182,7 @@ font-family: 'Scada', sans-serif;
     z-index: 6;
     width: 100%;
     height: 14px;
-    background: rgba(0255,255,255,.5);
+    background: rgba(0255, 255, 255, .5);
     -webkit-appearance: none;
     opacity: 0;
   }
@@ -255,17 +255,17 @@ font-family: 'Scada', sans-serif;
     background: #fff;
   }
 
-  .switch{
+  .switch {
     position: relative;
     width: 100%;
     height: auto;
     border-radius: 15px;
-    background: rgba(0,0,0,.25);
+    background: rgba(0, 0, 0, .25);
     cursor: pointer;
     transition: background .4s ease;
   }
 
-  .switch-thumb{
+  .switch-thumb {
     width: 50%;
     height: 100%;
     position: absolute;
@@ -277,66 +277,69 @@ font-family: 'Scada', sans-serif;
     transition: transform .4s ease;
   }
 
-  .switch[attr-checked="true"]{
-    background: rgba(255,255,255,.5);
+  .switch[attr-checked="true"] {
+    background: rgba(255, 255, 255, .5);
   }
 
-  .switch[attr-checked="true"] .switch-thumb{
+  .switch[attr-checked="true"] .switch-thumb {
     transform: translateX(100%);
   }
 
-  .switch-checkbox{
+  .switch-checkbox {
     opacity: 0;
   }
 
-  .slider{
+  .slider {
     position: relative;
     width: 100%;
     cursor: pointer;
   }
 
-  .slider--placeholder{
+  .slider--placeholder {
     width: 100%;
     height: 6px;
     border-radius: 5px;
-    background: rgba(0,0,0,.2);
+    background: rgba(0, 0, 0, .2);
   }
 
-  .slider--progress{
+  .slider--progress {
     position: absolute;
     top: 0;
-    left:0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to right, rgba(255,255,255,.1) 0%, rgba(255,255,255,.4) 100%);
+    background: linear-gradient(to right, rgba(255, 255, 255, .1) 0%, rgba(255, 255, 255, .4) 100%);
     border-radius: 5px;
   }
 
-  .slider--thumb--wrapper{
+  .slider--thumb--wrapper {
     position: absolute;
+    top: 0;
     width: auto;
     height: 100%;
     padding-left: 12px;
   }
 
-  .slider--thumb{
+  .slider--thumb {
     width: 12px;
     height: 12px;
     background: #fff;
     border-radius: 50%;
     position: absolute;
-    top: 0;
+    top: 50%;
     right: 0;
-    transform: translateY(-75%);
-    box-shadow: 0 3px 8px rgba(0,0,0,.15);
+    transform: translateY(-50%);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, .15);
     cursor: pointer;
   }
 
-  .slider--input{
+  .slider--input {
     position: absolute;
     top: 0;
+    bottom: 0;
     left: 0;
-    transform: translateY(-50%);
+    right: 0;
+
     opacity: 0;
     height: 100%;
     cursor: pointer;

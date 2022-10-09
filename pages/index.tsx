@@ -17,16 +17,21 @@ import LampImage from "../images/pietro-piovesan-9UR3Zafm328-unsplash.png";
 import {
   ClockIcon,
   PaintBrushIcon,
+  PlusIcon,
+  SunIcon,
   XMarkIcon,
 } from "@heroicons/react/24/solid";
 import { LightenColor } from "../src/utilities";
 import { colors } from "../src/components/customizer/colors/palette";
+import Modal from "../src/components/Modal/modal";
 
 const Home: NextPage = () => {
   const [canalShadow, setCanalShadow] = useState<string>("#9D0208");
   const ShadowRef = useRef(null);
   const PanelRef = useRef(null);
 
+  const [brightnessValue, setBrightnessValue] = useState<number>(100);
+  const [sliderValue, setSliderValue] = useState<number>(50);
   const [newTime, setNewTime] = useState<object>({ hour: 0, min: 0 });
 
   useEffect(() => {
@@ -62,6 +67,12 @@ const Home: NextPage = () => {
     const newTime = Math.floor(startTime + diff * (e.target.value / 100));
 
     setNewTime(time2hhmm(newTime));
+    setSliderValue(e.target.value);
+  };
+
+
+  const brightnessHandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBrightnessValue(e.target.value);
   };
 
   return (
@@ -127,69 +138,94 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
-      <div className='fixed top-0 left-0 bottom-0 right-0 z-30 bg-[#000000AF]'>
-        <div className='p-10 w-full h-full'>
-          <Box bgSolid='#18181b' className=' w-full h-full'>
-            <div className='p-8'>
-              <div className='flex flex-row flex-nowrap'>
-                <div></div>
-                <div className='w-auto ml-auto'>
-                  <div className='table p-2 bg-[#FFFFFF30] rounded-full shadow-lg'>
-                    <XMarkIcon className='w-4 h-4 text-white' />
+      <Modal>
+
+
+        <Box>
+          <div>
+            <div className="p-3">
+              <Box className='text-center mb-4'>
+                <div className="py-2 px-4">
+                  <p className='text-zinc-100 mx-auto'>
+                    {newTime.hour} <span className='mx-3'>:</span>
+                    {`${newTime.min}`.length < 2
+                      ? "0" + newTime.min
+                      : newTime.min}
+                  </p>
+                </div>
+                <Slider
+                  onChange={sliderHandleChange}
+                  value={sliderValue}
+                  thumb={false}
+                />
+              </Box>
+            </div>
+            <div className='flex flex-row flex-nowrap w-full justify-center items-center relative py-3 px-4'>
+              <div
+                className='w-full h-1/2 absolute left-0'
+                style={{
+                  background: `linear-gradient(to right, ${LightenColor(
+                    colors[0]
+                  )} 0%,${LightenColor(colors[3])}  150%)`,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  filter: "blur(30px)",
+                }}></div>
+              <div className='w-3/12 relative z-10'>
+                <Box bgGradient={colors[0]} className='py-2 px-4'>
+                  <p className='text-xs text-zinc-100'> 20:30</p>
+                </Box>
+              </div>
+              <div className='w-8/12 relative z-[9]'>
+                <div className='relative'>
+                  <div className='p-4'>
+                    <Slider
+                      value={sliderValue}
+                    />
                   </div>
                 </div>
               </div>
-              <div>
-                <div className='my-16'>
-                  <Box className='px-4 py-2 text-center mb-4'>
-                    <p className='text-zinc-100 mx-auto'>
-                      {newTime.hour} <span className='mx-3'>:</span>
-                      {`${newTime.min}`.length < 2
-                        ? "0" + newTime.min
-                        : newTime.min}
-                    </p>
-                  </Box>
-                  <div className='flex flex-row flex-nowrap w-full justify-center items-center'>
-                    <div className='w-3/12 relative z-10'>
-                      <Box bgGradient={colors[0]} className='p-4'>
-                        <p className='text-xs text-zinc-100'> 20:00</p>
-                      </Box>
-                    </div>
-                    <div className='w-8/12 relative z-[9]'>
-                      <div className='relative'>
-                        <div
-                          className='w-full h-1/2 absolute left-0'
-                          style={{
-                            background: `linear-gradient(to right, ${LightenColor(
-                              colors[0]
-                            )} 0%,${LightenColor(colors[3])}  150%)`,
-                            top: "50%",
-                            transform: "translateY(-50%)",
-                            filter: "blur(30px)",
-                          }}></div>
-                        <div className='p-4'>
-                          <Slider
-                            onChange={sliderHandleChange}
-                            initialValue={0}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className='w-3/12 relative z-10'>
-                      <Box bgGradient={colors[3]} className='p-4'>
-                        <p className='text-xs text-zinc-100'> 23:00</p>
-                      </Box>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className='by-10'>
-                <Palette state={setCanalShadow} />
+              <div className='w-3/12 relative z-10'>
+                <Box bgGradient={colors[3]} className='py-2 px-4'>
+                  <p className='text-xs text-zinc-100'> 23:00</p>
+                </Box>
               </div>
             </div>
-          </Box>
+
+          </div>
+
+        </Box>
+        <div className='py-10'>
+          <Palette state={setCanalShadow} />
         </div>
-      </div>
+        <Box className="p-4 mt-6">
+          <div className="w-full">
+            <div className="flex flex-row flex-nowrap w-full mb-1 justify-between px-3">
+              <div className="w-8/12 pr-4 flex flex-row flex-nowrap items-center">
+                <div className="table p-3">
+                  <SunIcon className="w-4 h-4 text-white " />
+                </div>
+                <p className="text-sm">Jasność</p>
+              </div>
+              <div className="w-4/12 flex items-end self-center">
+                <div className="table ml-auto">
+                  <p className="text-lg">{brightnessValue} %</p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <Slider
+                onChange={brightnessHandleChange}
+                value={brightnessValue}
+                thumb={false}
+                size='lg'
+              />
+
+            </div>
+          </div>
+        </Box>
+      </Modal>
+
     </Layout>
   );
 };
