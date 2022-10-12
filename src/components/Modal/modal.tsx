@@ -1,6 +1,8 @@
-import { FC, ReactElement, ReactNode } from "react";
+import { FC, ReactElement, ReactNode, useContext } from "react";
 import { Box } from "../";
 import { XMarkIcon } from "@heroicons/react/24/solid";
+
+import { default as modalCtx } from "../../context/modal/modalContext";
 
 type TWrapperModal = {
   title?: string;
@@ -8,10 +10,12 @@ type TWrapperModal = {
   children?: ReactNode;
 };
 
-type TInnerModal = TWrapperModal;
+type TInnerModal = TWrapperModal & {
+  viewModal: (node?: ReactNode | undefined) => void;
+};
 
 const InnerModal = (props: TInnerModal): ReactElement => {
-  const { title, children, footer } = props;
+  const { title, children, footer, viewModal } = props;
 
   const Header: FC = (): ReactElement => {
     const style = {
@@ -26,7 +30,9 @@ const InnerModal = (props: TInnerModal): ReactElement => {
         <div className='flex flex-row flex-nowrap  items-center'>
           <div>{title}</div>
           <div className='w-auto ml-auto'>
-            <div className='table p-3 bg-[#555555] rounded-full shadow-lg cursor-pointer'>
+            <div
+              className='table p-3 bg-[#555555] rounded-full shadow-lg cursor-pointer'
+              onClick={() => viewModal()}>
               <XMarkIcon className='w-4 h-4 text-white' />
             </div>
           </div>
@@ -74,16 +80,24 @@ const wrapperModal: FC = ({
   children,
   ...rest
 }: TWrapperModal): ReactElement => {
-  return (
-    <div className='fixed bottom-0 top-0 left-0 right-0 z-40'>
-      <div className='flex justify-center w-full h-full'>
-        <div className='absolute w-full h-full top-0 left-0 bg-[#000000BF]'></div>
-        <div className='relative max-w-md w-full h-auto p-1'>
-          <InnerModal {...rest}>{children}</InnerModal>
+  const { component, viewModal, visible } = useContext(modalCtx);
+
+  if (visible) {
+    return (
+      <div className='fixed bottom-0 top-0 left-0 right-0 z-40'>
+        <div className='flex justify-center w-full h-full'>
+          <div className='absolute w-full h-full top-0 left-0 bg-[#000000BF]'></div>
+          <div className='relative max-w-md w-full h-auto p-1'>
+            <InnerModal viewModal={viewModal} {...rest}>
+              {component}
+            </InnerModal>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return <div></div>;
 };
 
 export default wrapperModal;

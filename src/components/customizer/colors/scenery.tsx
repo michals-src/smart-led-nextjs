@@ -1,19 +1,25 @@
+import React, {
+  Children,
+  forwardRef,
+  ReactElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
 import {
   ClockIcon,
   Cog6ToothIcon,
   FlagIcon,
   PaintBrushIcon,
   PlusIcon,
+  SunIcon,
 } from "@heroicons/react/24/solid";
-import React, {
-  Children,
-  forwardRef,
-  ReactElement,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { Box } from "../..";
+
+import { default as modalCtx } from "../../../context/modal/modalContext";
+import { Box, Palette, Slider } from "../..";
 import { DarkenColor, hex2rgb, LightenColor } from "../../../utilities";
 
 import { colors } from "./palette";
@@ -24,48 +30,176 @@ type ISlider = {
   value?: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const Slider = forwardRef(({ initialValue, value }: ISlider, ref) => {
-  const progressRef = useRef(null);
-  const thumbRef = useRef(null);
-  const [range, setRange] = useState<number>(initialValue ? initialValue : 0);
+// const Slider = forwardRef(({ initialValue, value }: ISlider, ref) => {
+//   const progressRef = useRef(null);
+//   const thumbRef = useRef(null);
+//   const [range, setRange] = useState<number>(initialValue ? initialValue : 0);
 
-  useEffect(() => {
-    if (progressRef.current == null || thumbRef.current == null) return;
+//   useEffect(() => {
+//     if (progressRef.current == null || thumbRef.current == null) return;
 
-    progressRef.current.style.width = `${range}%`;
-    thumbRef.current.style.width = `${range}%`;
+//     progressRef.current.style.width = `${range}%`;
+//     thumbRef.current.style.width = `${range}%`;
 
-    if (value) value(range);
-  }, [range]);
+//     if (value) value(range);
+//   }, [range]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLInputElement>
-  ) => {
-    setRange(parseInt(e.target.value, 10));
+//   const handleChange = (
+//     e: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLInputElement>
+//   ) => {
+//     setRange(parseInt(e.target.value, 10));
+//   };
+
+//   return (
+//     <div className='slider w-full'>
+//       <div className='slider--placeholder'>
+//         <div ref={progressRef} className='slider--progress'></div>
+//       </div>
+//       <div ref={thumbRef} className='slider--thumb--wrapper'>
+//         <div ref={thumbRef} className='slider--thumb'></div>
+//       </div>
+
+//       <input
+//         type='range'
+//         className='slider--input w-full'
+//         value={range}
+//         onClick={e => handleChange(e)}
+//         onChange={e => handleChange(e)}
+//         ref={ref}
+//       />
+//     </div>
+//   );
+// });
+
+const SceneryCreate = () => {
+  const [paletteValue, setPaletteValue] = useState<string>(colors[0]);
+  const [brightnessValue, setBrightnessValue] = useState<number>(100);
+  const [sliderValue, setSliderValue] = useState<number>(50);
+  const [newTime, setNewTime] = useState<object>({ hour: 0, min: 0 });
+
+  const time2hhmm = (time: number) => {
+    const hour = Math.floor(time / 60);
+    const min = time % 60;
+
+    return { hour, min };
+  };
+
+  const hhmm2time = (hhmm: string) => {
+    // const num = hhmm
+    //   .split(":")
+    //   .reverse()
+    //   .map((t, i) => t * (60 * i));
+    const num2_arr = hhmm.split(":");
+    const num2 = +num2_arr[0] * 60 + +num2_arr[1];
+
+    return num2;
+  };
+
+  const startTime = hhmm2time("20:35");
+  const endTime = hhmm2time("22:55");
+  const diff = endTime - startTime;
+
+  const sliderHandleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newTime = Math.floor(startTime + diff * (e.target.value / 100));
+
+      setNewTime(time2hhmm(newTime));
+      setSliderValue(e.target.value);
+    },
+    []
+  );
+
+  const brightnessHandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBrightnessValue(e.target.value);
   };
 
   return (
-    <div className='slider w-full'>
-      <div className='slider--placeholder'>
-        <div ref={progressRef} className='slider--progress'></div>
+    <>
+      <Box>
+        <div>
+          <div className='p-3'>
+            <Box className='text-center mb-4'>
+              <div className='py-2 px-4'>
+                <p className='text-zinc-100 mx-auto'>
+                  {newTime.hour} <span className='mx-3'>:</span>
+                  {`${newTime.min}`.length < 2
+                    ? "0" + newTime.min
+                    : newTime.min}
+                </p>
+              </div>
+              <Slider
+                onChange={sliderHandleChange}
+                value={sliderValue}
+                thumb={false}
+                size='lg'
+              />
+            </Box>
+          </div>
+          <div className='flex flex-row flex-nowrap w-full justify-center items-center relative py-3 px-4'>
+            <div
+              className='w-full h-1/2 absolute left-0'
+              style={{
+                background: `linear-gradient(to right, ${LightenColor(
+                  colors[0]
+                )} 0%,${LightenColor(colors[3])}  150%)`,
+                top: "50%",
+                transform: "translateY(-50%)",
+                filter: "blur(30px)",
+              }}></div>
+            <div className='w-3/12 relative z-10'>
+              <Box bgGradient={colors[0]} className='py-2 px-4'>
+                <p className='text-xs text-zinc-100'> 20:30</p>
+              </Box>
+            </div>
+            <div className='w-8/12 relative z-[9]'>
+              <div className='relative'>
+                <div className='p-4'>
+                  <Slider value={sliderValue} />
+                </div>
+              </div>
+            </div>
+            <div className='w-3/12 relative z-10'>
+              <Box bgGradient={colors[3]} className='py-2 px-4'>
+                <p className='text-xs text-zinc-100'> 23:00</p>
+              </Box>
+            </div>
+          </div>
+        </div>
+      </Box>
+      <div className='py-10'>
+        <Palette state={setPaletteValue} />
       </div>
-      <div ref={thumbRef} className='slider--thumb--wrapper'>
-        <div ref={thumbRef} className='slider--thumb'></div>
-      </div>
-
-      <input
-        type='range'
-        className='slider--input w-full'
-        value={range}
-        onClick={e => handleChange(e)}
-        onChange={e => handleChange(e)}
-        ref={ref}
-      />
-    </div>
+      <Box className='p-4 mt-6'>
+        <div className='w-full'>
+          <div className='flex flex-row flex-nowrap w-full mb-1 justify-between px-3'>
+            <div className='w-8/12 pr-4 flex flex-row flex-nowrap items-center'>
+              <div className='table p-3'>
+                <SunIcon className='w-4 h-4 text-white ' />
+              </div>
+              <p className='text-sm'>Jasność</p>
+            </div>
+            <div className='w-4/12 flex items-end self-center'>
+              <div className='table ml-auto'>
+                <p className='text-lg'>{brightnessValue} %</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <Slider
+              onChange={brightnessHandleChange}
+              value={brightnessValue}
+              thumb={false}
+              size='lg'
+            />
+          </div>
+        </div>
+      </Box>
+    </>
   );
-});
+};
 
 export default function Scenery({}: IScenery) {
+  const { viewModal } = useContext(modalCtx);
   const sliderRef = useRef(null);
   const circleWrapperRef = useRef(null);
 
@@ -103,7 +237,11 @@ export default function Scenery({}: IScenery) {
             transform: "translate(-50%, -50%)",
             opacity: ".85",
           }}>
-          <div className='w-auto table p-1 bg-white rounded-full cursor-pointer'>
+          <div
+            className='w-auto table p-1 bg-white rounded-full cursor-pointer'
+            onClick={() => {
+              viewModal(<SceneryCreate />);
+            }}>
             <PlusIcon className='w-3 h-3 text-black shadow-xl' />
           </div>
         </div>
@@ -258,7 +396,7 @@ export default function Scenery({}: IScenery) {
               <p className='text-sm mb-4 px-1 text-zinc-100'>
                 Intensywność {sliderValue} %
               </p>
-              <Slider initialValue={0} value={setSliderValue} />
+              <Slider value={0} size='sm' />
             </div>
           </div>
         </div>

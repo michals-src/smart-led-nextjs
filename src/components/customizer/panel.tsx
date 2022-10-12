@@ -9,7 +9,7 @@ import React, {
 } from "react";
 
 import { LightBulbIcon } from "@heroicons/react/24/solid";
-import { Box } from "../";
+import { Box, Slider } from "../";
 
 type IPanel = {
   color?: string;
@@ -111,11 +111,17 @@ const Panel: FC<IPanel> = ({ color, initialRange }): ReactElement => {
           </div>
         </div>
         <div className='w-full'>
-          <PanelRange
+          <Slider
+            onChange={e => setRangeValue(e.target.value)}
+            value={rangeValue}
+            size='lg'
+            thumb={false}
+          />
+          {/* <PanelRange
             ref={progressRef}
             rangeValue={rangeValue}
             handleChange={handleRangeChange}
-          />
+          /> */}
         </div>
       </>
     </Box>

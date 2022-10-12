@@ -1,6 +1,8 @@
 import React from "react";
 import Head from "next/head";
 
+import ModalProvider from "@context/modal/modalProvider";
+
 export default function Layout({ children, ...props }) {
   return (
     <>
@@ -11,7 +13,9 @@ export default function Layout({ children, ...props }) {
       </Head>
 
       <div className='max-w-sm min-h-screen mx-auto bg-zinc-900 text-white'>
-        <main>{children}</main>
+        <ModalProvider>
+          <main>{children}</main>
+        </ModalProvider>
 
         {/* <footer className='p-8'>
                     Hi there.
