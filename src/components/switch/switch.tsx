@@ -3,6 +3,7 @@ import { forwardRef, ReactNode, Ref } from "react";
 
 type TSwitch = {
   value?: boolean;
+  onClick?: React.MouseEventHandler;
   onChange?: React.ChangeEventHandler;
   style?: React.CSSProperties;
   size?: "sm" | "md" | "lg";
@@ -13,6 +14,7 @@ const Switch = forwardRef(
   (props: TSwitch, ref: Ref<HTMLInputElement>): JSX.Element => {
     const {
       value,
+      onClick,
       onChange,
       style,
       size = "md",
@@ -23,6 +25,12 @@ const Switch = forwardRef(
       if (!e.target) return;
       e.target.focus();
       if (typeof onChange !== "undefined") onChange(e);
+    };
+
+    const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
+      if (!e.currentTarget) return;
+      e.currentTarget.focus();
+      if (typeof onClick !== "undefined") onClick(e);
     };
 
     const wrapperCn = classNames(
@@ -48,6 +56,7 @@ const Switch = forwardRef(
           type='checkbox'
           className='switch-checkbox'
           checked={value}
+          onClick={handleClick}
           onChange={handleChange}
         />
       </div>

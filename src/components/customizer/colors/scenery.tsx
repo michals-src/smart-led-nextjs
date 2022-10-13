@@ -166,10 +166,12 @@ const SceneryCreate = () => {
           </div>
         </div>
       </Box>
-      <div className='py-10'>
-        <Palette state={setPaletteValue} />
+      <div className='py-4'>
+        <Box className='p-4'>
+          <Palette state={setPaletteValue} />
+        </Box>
       </div>
-      <Box className='p-4 mt-6'>
+      <Box className='p-4'>
         <div className='w-full'>
           <div className='flex flex-row flex-nowrap w-full mb-1 justify-between px-3'>
             <div className='w-8/12 pr-4 flex flex-row flex-nowrap items-center'>
