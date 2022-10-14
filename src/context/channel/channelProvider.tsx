@@ -14,24 +14,20 @@ const ChannelProvider = (props: Props) => {
   const [providerValue, setProviderValue] = useState<object>({});
 
   const color_eventUpdate = useCallback((e: string) => {
-    setColor(color);
+    setColor(e);
   }, []);
 
-  useEffect(() => {
-    const colorEvents = {
-      color: color,
-      events: {
-        color: {
-          update: color_eventUpdate,
-        },
+  const contextProps = {
+    color: color,
+    events: {
+      color: {
+        update: color_eventUpdate,
       },
-    };
-
-    setProviderValue({ ...providerValue, ...colorEvents });
-  }, []);
+    },
+  };
 
   return (
-    <channelCtx.Provider value={providerValue}>{children}</channelCtx.Provider>
+    <channelCtx.Provider value={contextProps}>{children}</channelCtx.Provider>
   );
 };
 

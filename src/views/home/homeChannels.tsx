@@ -56,12 +56,12 @@ const Channel = (props: TChannel): ReactElement => {
               <p className='text-xs' style={{ color: "#FFFFFF80" }}>
                 {type.toUpperCase()}
               </p>
-              <p className='text-sm'>Kanał {value + 1}</p>
+              <p className='text-sm pointer-events-none'>Kanał {value + 1}</p>
             </div>
             <div className='w-4/12'>
               <div className='flex flex-row flex-nowrap items-center'>
                 <div className='w-6/12'>
-                  <Link href={`/channel/rgb/${id}`}>
+                  <Link href={`/channel/${id}`}>
                     <div className='table p-1 bg-[#FFFFFF60] rounded-full ml-auto shadow-lg cursor-pointer'>
                       <Cog6ToothIcon className='w-4 h-4 text-white' />
                     </div>

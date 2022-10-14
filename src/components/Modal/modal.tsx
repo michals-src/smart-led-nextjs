@@ -1,8 +1,16 @@
-import { FC, ReactElement, ReactNode, useContext } from "react";
-import { Box } from "../";
-import { XMarkIcon } from "@heroicons/react/24/solid";
+import {
+  FC,
+  ReactElement,
+  ReactNode,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
+import { Box, Slider, Palette } from "@components";
+import { SunIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
 import { default as modalCtx } from "../../context/modal/modalContext";
+import { colors, LightenColor } from "@utils";
 
 type TWrapperModal = {
   title?: string;
@@ -18,23 +26,15 @@ const InnerModal = (props: TInnerModal): ReactElement => {
   const { title, children, footer, viewModal } = props;
 
   const Header: FC = (): ReactElement => {
-    const style = {
-      background: "linear-gradient(to bottom, #18181b 0%, #00000000 100%)",
-    };
-
     return (
       <div
         // className='sticky top-0 left-0 p-8 z-10'
-        className='relative z-10 py-6 px-8 h-30'
-        {...style}>
-        <div className='flex flex-row flex-nowrap  items-center'>
-          <div>{title}</div>
-          <div className='w-auto ml-auto'>
-            <div
-              className='table p-3 bg-[#555555] rounded-full shadow-lg cursor-pointer'
-              onClick={() => viewModal()}>
-              <XMarkIcon className='w-4 h-4 text-white' />
-            </div>
+        className='absolute w-full h-auto z-10 py-6 px-8 h-30'>
+        <div className='w-full'>
+          <div
+            className='table p-3 bg-zinc-600 ml-auto rounded-full shadow-lg cursor-pointer'
+            onClick={() => viewModal()}>
+            <XMarkIcon className='w-4 h-4 text-white' />
           </div>
         </div>
       </div>
@@ -51,7 +51,7 @@ const InnerModal = (props: TInnerModal): ReactElement => {
         // className='sticky top-0 left-0 p-8 z-10'
         className='relative z-10 py-6 px-8 h-30'
         {...style}>
-        <div className='flex flex-row flex-nowrap  items-center'>
+        <div className='flex flex-row flex-nowrap items-center'>
           <div>{title}</div>
           <div className='w-auto ml-auto'>
             <div className='table p-3 bg-[#555555] rounded-full shadow-lg cursor-pointer'>
@@ -67,10 +67,9 @@ const InnerModal = (props: TInnerModal): ReactElement => {
     <Box bgSolid='#18181b' className='w-full h-full'>
       <div className='relative w-full h-full flex flex-col flex-nowrap'>
         <Header />
-        <div className='relative z-[9] py-6 px-3 h-full overflow-auto'>
+        <div className='relative z-[9] pt-24 px-3 h-full overflow-auto'>
           {children}
         </div>
-        <Footer />
       </div>
     </Box>
   );
@@ -84,7 +83,7 @@ const wrapperModal: FC = ({
 
   if (visible) {
     return (
-      <div className='fixed bottom-0 top-0 left-0 right-0 z-40'>
+      <div className='fixed bottom-0 top-0 left-0 right-0 z-[60]'>
         <div className='flex justify-center w-full h-full'>
           <div className='absolute w-full h-full top-0 left-0 bg-[#000000BF]'></div>
           <div className='relative max-w-md w-full h-auto p-1'>

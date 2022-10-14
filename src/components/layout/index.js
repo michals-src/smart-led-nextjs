@@ -2,6 +2,8 @@ import React from "react";
 import Head from "next/head";
 
 import ModalProvider from "@context/modal/modalProvider";
+import { HomeIcon } from "@heroicons/react/24/solid";
+import Link from "next/link";
 
 export default function Layout({ children, ...props }) {
   return (
@@ -12,9 +14,29 @@ export default function Layout({ children, ...props }) {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <div className='max-w-sm min-h-screen mx-auto bg-zinc-900 text-white'>
+      <div className='max-w-sm min-h-screen mx-auto bg-zinc-900 text-white pb-16'>
         <ModalProvider>
           <main>{children}</main>
+          <div
+            className='fixed w-full h-16 bottom-0 left-0 z-50 text-white'
+            style={{
+              background:
+                "linear-gradient(to bottom, rgb(42 42 45) 0%, rgb(39 39 42)  100%)",
+              borderRadius: "8px 8px 0 0",
+            }}>
+            <div className='flex flex-row flex-nowrap flex-auto items-center justify-between h-full'>
+              <Link href='/'>
+                <div className='mx-auto cursor-pointer'>
+                  <div className='flex flex-row flex-nowrap'>
+                    <div className='mr-6'>
+                      <HomeIcon className='w-6 h-4 text-inherit' />
+                    </div>
+                    <p className='text-sm'>Dom</p>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          </div>
         </ModalProvider>
 
         {/* <footer className='p-8'>

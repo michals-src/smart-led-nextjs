@@ -7,12 +7,20 @@ type ISlider = {
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   step?: number;
   thumb?: boolean;
+  track?: boolean;
   size?: "sm" | "md" | "lg";
 };
 
 const Slider = forwardRef(
   (
-    { value = 0, onChange, step, thumb = true, size = "md" }: ISlider,
+    {
+      value = 0,
+      onChange,
+      step,
+      thumb = true,
+      size = "md",
+      track = true,
+    }: ISlider,
     ref: Ref<HTMLInputElement>
   ) => {
     const progressRef = useRef<HTMLDivElement>(null);
@@ -55,7 +63,9 @@ const Slider = forwardRef(
     return (
       <div className='slider w-full'>
         <div className={cnPlaceholder}>
-          <div ref={progressRef} className='slider--progress'></div>
+          <div
+            ref={progressRef}
+            className={`slider--progress ${!track ? "opacity-0" : ""}`}></div>
         </div>
         <div ref={thumbRef} className='slider--thumb--wrapper'>
           {thumb && <div ref={thumbRef} className={cnThumb}></div>}

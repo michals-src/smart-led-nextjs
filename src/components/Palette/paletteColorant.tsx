@@ -5,13 +5,13 @@ type TPaletteColorant = {
   x: number;
   y: number;
   value: string;
-  state: React.Dispatch<React.SetStateAction<string>>;
+  onClick?: React.MouseEventHandler;
 };
 
-const PaletteColorant = ({ index, x, y, value, state }: TPaletteColorant) => {
-  const handleClick = (hex: string) => {
-    state(hex);
-  };
+const PaletteColorant = ({ index, x, y, value, onClick }: TPaletteColorant) => {
+  // const handleClick = (hex: string) => {
+  //   state(hex);
+  // };
 
   return (
     <>
@@ -22,9 +22,14 @@ const PaletteColorant = ({ index, x, y, value, state }: TPaletteColorant) => {
           top: `${50 + y / 2}%`,
           left: `${50 + x / 2}%`,
           transform: "translate(-50%, -50%)",
-        }}
-        onClick={() => handleClick(value)}>
-        <div
+        }}>
+        <input
+          type='radio'
+          onClick={onClick}
+          value={value}
+          className='absolute top-0 left-0 w-full h-full z-10 opacity-0 cursor-pointer'
+        />
+        {/* <div
           className=' w-12 h-12 rounded-full -z-1 absolute'
           style={{
             background: `${value}`,
@@ -32,7 +37,7 @@ const PaletteColorant = ({ index, x, y, value, state }: TPaletteColorant) => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-          }}></div>
+          }}></div> */}
         <div
           className='w-6 h-6 rounded-full cursor-pointer'
           style={{

@@ -1,4 +1,10 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  forwardRef,
+  Ref,
+} from "react";
 
 import { Box } from "../";
 import { colors } from "../customizer/colors/palette";
@@ -6,16 +12,13 @@ import PaletteColor from "./paletteColor";
 import PaletteColorant from "./paletteColorant";
 
 type TPalette = {
-  initialValue?: string;
-  state: React.Dispatch<React.SetStateAction<string>>;
+  value: string;
+  onClick?: React.MouseEventHandler;
 };
 
-const Palette = ({ initialValue, state }: TPalette) => {
-  const radius = 100;
-
-  const [colorantValue, setColorantValue] = useState<string>(
-    initialValue ? initialValue : colors[0]
-  );
+const radius = 80;
+const Palette = forwardRef((props: TPalette, ref: Ref<HTMLInputElement>) => {
+  const { value, onClick } = props;
 
   const Circle = useCallback((radius: number, radian: number) => {
     const x = radius * Math.cos(radian);
@@ -27,11 +30,6 @@ const Palette = ({ initialValue, state }: TPalette) => {
   const Radian = useCallback((index: number): number => {
     return (2 * Math.PI * index) / colors.length;
   }, []);
-
-  useEffect(() => {
-    if (state == null || typeof state == "undefined") return;
-    state(colorantValue);
-  }, [colorantValue, state]);
 
   return (
     <>
@@ -54,16 +52,18 @@ const Palette = ({ initialValue, state }: TPalette) => {
                   y={topY}
                   x={leftX}
                   value={color}
-                  state={setColorantValue}
+                  onClick={onClick}
                 />
               );
             })}
-            <PaletteColor value={colorantValue} />
+            <PaletteColor ref={ref} value={value} />
           </div>
         </>
       </div>
     </>
   );
-};
+});
+
+Palette.displayName = "Palette";
 
 export default Palette;

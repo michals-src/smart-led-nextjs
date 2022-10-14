@@ -1,5 +1,5 @@
 import { Box, Switch } from "@components";
-import { BoltIcon } from "@heroicons/react/24/solid";
+import { BoltIcon, BoltSlashIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import React, { useState } from "react";
 
@@ -25,11 +25,17 @@ const HomeGeneral = (props: Props) => {
               <div className='flex flex-col flex-nowrap h-full w-full justify-between'>
                 <div>
                   <div className='mb-3'>
-                    <BoltIcon
-                      className={`w-6 h-6 ${
-                        powerValue ? "text-yellow-100" : "text-white"
-                      }`}
-                    />
+                    {!powerValue && (
+                      <BoltSlashIcon
+                        className={`w-6 h-6 ${
+                          powerValue ? "text-yellow-100" : "text-white"
+                        }`}
+                      />
+                    )}
+
+                    {powerValue && (
+                      <BoltIcon className={`w-6 h-6 text-white`} />
+                    )}
                   </div>
                   <div className='mb-6'>
                     <p className='text-lg'>Zasilanie</p>
