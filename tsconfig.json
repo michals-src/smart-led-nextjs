@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -16,15 +20,38 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@types/*": ["src/types/*"],
-      "@context":[ "src/context"],
-      "@context/*":[ "src/context/*"],
-      "@hooks": ["src/hooks"],
-      "@utils": ["src/utilities"],
-      "@components": ["src/components"],
-      "@views/*": ["src/views/*"],
+      "@types/*": [
+        "src/types/*"
+      ],
+      "@context": [
+        "src/context"
+      ],
+      "@context/*": [
+        "src/context/*"
+      ],
+      "@hooks": [
+        "src/hooks"
+      ],
+      "@utils": [
+        "src/utilities"
+      ],
+      "@components": [
+        "src/components"
+      ],
+      "@views/*": [
+        "src/views/*"
+      ],
+      "@firebase*": [
+        "src/firebase"
+      ],
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

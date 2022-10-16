@@ -27,51 +27,7 @@ import { DarkenColor, hex2rgb, LightenColor, colors } from "@utils";
 import channelContext from "@context/channel/channelContext";
 
 type IScenery = {};
-type ISlider = {
-  initialValue: number;
-  value?: React.Dispatch<React.SetStateAction<number>>;
-};
 
-// const Slider = forwardRef(({ initialValue, value }: ISlider, ref) => {
-//   const progressRef = useRef(null);
-//   const thumbRef = useRef(null);
-//   const [range, setRange] = useState<number>(initialValue ? initialValue : 0);
-
-//   useEffect(() => {
-//     if (progressRef.current == null || thumbRef.current == null) return;
-
-//     progressRef.current.style.width = `${range}%`;
-//     thumbRef.current.style.width = `${range}%`;
-
-//     if (value) value(range);
-//   }, [range]);
-
-//   const handleChange = (
-//     e: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLInputElement>
-//   ) => {
-//     setRange(parseInt(e.target.value, 10));
-//   };
-
-//   return (
-//     <div className='slider w-full'>
-//       <div className='slider--placeholder'>
-//         <div ref={progressRef} className='slider--progress'></div>
-//       </div>
-//       <div ref={thumbRef} className='slider--thumb--wrapper'>
-//         <div ref={thumbRef} className='slider--thumb'></div>
-//       </div>
-
-//       <input
-//         type='range'
-//         className='slider--input w-full'
-//         value={range}
-//         onClick={e => handleChange(e)}
-//         onChange={e => handleChange(e)}
-//         ref={ref}
-//       />
-//     </div>
-//   );
-// });
 
 const SceneryModal = () => {
   const [paletteValue, setPaletteValue] = useState<string>(colors[0]);
@@ -229,7 +185,7 @@ const SceneryModal = () => {
   );
 };
 
-export default function ChannelTabScenery({}: IScenery) {
+export default function ChannelTabScenery({ }: IScenery) {
   const { viewModal } = useContext(modalCtx);
   const sliderRef = useRef(null);
   const circleWrapperRef = useRef(null);
@@ -361,7 +317,6 @@ export default function ChannelTabScenery({}: IScenery) {
   return (
     <>
       <div className='flex flex-col nowrap w-full h-auto'>
-        <SceneryItem label='00:30' type='start' />
         <Box className='p-4 pt-0 '>
           <SceneryItem label='20:00' color={colors[0]} />
           <SceneryItem label='21:00' color={colors[3]} />
