@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import db from '@firebase';
-import { ref, child, get, update } from 'firebase/database';
+import { ref, child, get, update, set } from 'firebase/database';
 
 import { BoltIcon, BoltSlashIcon } from "@heroicons/react/24/solid";
 import { Box, Switch } from "@components";
@@ -8,6 +8,9 @@ import { Box, Switch } from "@components";
 import Image from "next/image";
 import Lamp from "../../../images/pietro-piovesan-9UR3Zafm328-unsplash.png";
 import { useCallback } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { colors } from "@utils";
+import { resolve } from "node:path/win32";
 
 type Props = {};
 
@@ -34,13 +37,40 @@ const HomeGeneral = (props: Props) => {
 
   };
 
+  const defaultChannels = useCallback(async () => {
+    return new Promise(resolve => {
+      const channels = {};
+      for (let i = 0; i < 8; i++) {
+        channels[i] = {
+          type: i < 6 ? 'rgb' : 'mono',
+          value: i < 6 ? colors[0] : '#ffdf60A0',
+          brightness: 100,
+          power: false
+        }
+      }
+
+      if (Object.keys(channels).length === 8) resolve(channels);
+    });
+  }, [])
+
   useEffect(() => {
     get(child(ref(db), '/power')).then(snapshot => {
       if (snapshot.exists()) {
         setPowerValue(snapshot.val());
         setLoadig(false);
       } else {
-        console.log("No data available");
+        console.log("[GET] /power -> No data available");
+      }
+    }).catch(e => console.log(e));
+
+    get(child(ref(db), '/channels')).then(snapshot => {
+      if (!snapshot.exists()) {
+
+        defaultChannels().then(channels => {
+          set(ref(db, `channels`), channels);
+        })
+
+
       }
     }).catch(e => console.log(e));
   }, []);
