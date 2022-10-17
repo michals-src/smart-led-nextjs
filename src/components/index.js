@@ -8,3 +8,4 @@ export { default as Box } from "./Box/box";
 export { default as Slider } from "./Slider/slider";
 export { default as Switch } from "./switch/switch";
 export { default as Modal } from "./Modal/modal";
+export { default as LoaderCircle } from "./loader/loaderCircle";

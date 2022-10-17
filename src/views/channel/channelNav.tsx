@@ -72,11 +72,9 @@ const channelNav = (props: Props) => {
         {navigationItems.map(navigationItem => {
           return (
             <>
-              <div
-                key={navigationItem.id}
-                className='w-auto table items-center cursor-pointer flex flex-col nowrap'>
+              <div className='w-auto table items-center cursor-pointer flex flex-col nowrap'>
                 <NavItem
-                  key={navigationItem.id}
+                  key={uuidv4()}
                   Icon={navigationItem.icon}
                   label={navigationItem.label}
                   onClick={e =>

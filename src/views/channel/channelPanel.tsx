@@ -1,28 +1,56 @@
-import React, { FC, ReactElement, useState, useContext } from "react";
+import React, {
+  FC,
+  ReactElement,
+  useState,
+  useContext,
+  useEffect,
+} from "react";
+import db from "@firebase";
+import { update, ref } from "firebase/database";
 import { LightBulbIcon } from "@heroicons/react/24/solid";
-import { default as ChannelCtx } from "@context/channel/channelContext";
+
 import { Box, Slider, Switch } from "@components";
 import { colors } from "@utils";
+import channelContext from "@context/channel/channelContext";
 
 type Props = {};
 
 const channelPanel: FC = (props: Props): ReactElement => {
-  const channelCtx = useContext(ChannelCtx);
-  const { color } = channelCtx;
+  const channelCtx = useContext(channelContext);
 
   const [powerValue, setPowerValue] = useState<boolean>(false);
   const [brightnessValue, setBrightnessValue] = useState<number>(0);
 
   const power_hadnelClick = (e: React.MouseEvent<HTMLInputElement>) => {
-    setPowerValue(!powerValue);
+    setPowerValue(state => {
+      const power = !state;
+      update(ref(db), {
+        [`/channels/${channelCtx.channelID}/power`]: power,
+      });
+      channelCtx.events.power.update(power);
+
+      return power;
+    });
   };
 
   const brightness_handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBrightnessValue(e.target.value);
   };
 
+  const brightness_handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    update(ref(db), {
+      [`/channels/${channelCtx.channelID}/brightness`]: brightnessValue,
+    });
+    channelCtx.events.brightness.update(brightnessValue);
+  };
+
+  useEffect(() => {
+    setPowerValue(channelCtx.power);
+    setBrightnessValue(channelCtx.brightness);
+  }, [channelCtx]);
+
   return (
-    <Box bgGradient={color}>
+    <Box bgGradient={channelCtx.color}>
       <>
         <div className='p-4 flex flex-row nowrap items-center'>
           <div className='w-2/12'>
@@ -38,6 +66,7 @@ const channelPanel: FC = (props: Props): ReactElement => {
         </div>
         <div className='w-full'>
           <Slider
+            onClick={brightness_handleClick}
             onChange={brightness_handleChange}
             value={brightnessValue}
             size='lg'

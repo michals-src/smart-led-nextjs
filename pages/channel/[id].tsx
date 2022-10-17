@@ -1,4 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
+import db from "@firebase";
+import { get, child, ref } from "firebase/database";
+
 import Image from "next/image";
 import {
   ClockIcon,
@@ -51,16 +54,29 @@ export const getServerSideProps: GetServerSideProps = async context => {
   };
 };
 
-const ChannelShadow = () => {
+const ChannelShadow = (props: any) => {
+  const { channelID } = props;
+
   const channelCtx = useContext(channelContext);
   const ShadowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const chID = parseInt(channelID, 10);
+
+    get(child(ref(db), `/channels/${chID}`)).then(snapshot => {
+      if (snapshot.exists()) {
+        channelCtx.events.color.update(snapshot.val().value);
+        channelCtx.events.power.update(snapshot.val().power);
+        channelCtx.events.brightness.update(snapshot.val().brightness);
+      }
+    });
+    channelCtx.events.channelID.update(chID);
+
     ShadowRef.current?.style.setProperty(
       "--app-canal-shadow",
       `${channelCtx.color}60`
     );
-  }, [channelCtx.color]);
+  }, [channelCtx.color, channelID]);
 
   return (
     <div
@@ -75,7 +91,7 @@ const channelRGBPage = (props: TChannelRGBPage) => {
   return (
     <Layout>
       <ChannelLayout>
-        <ChannelShadow />
+        <ChannelShadow channelID={channelID} />
         <div className='relative h-full'>
           <div className='relative z-30 p-4'>
             <ChannelHeader />

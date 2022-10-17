@@ -1,16 +1,21 @@
 import React, { useContext, useRef, useState } from "react";
+import db from "@firebase";
+import { child, ref, update } from "firebase/database";
 import { Box, Palette } from "@components";
 import channelContext from "@context/channel/channelContext";
 
 type Props = {};
 
 const ChannelTabPalette = (props: Props) => {
-  const colorRef = useRef<HTMLInputElement>(null);
   const channelCtx = useContext(channelContext);
+  const colorRef = useRef<HTMLInputElement>(null);
   const [color, setColor] = useState<string>(channelCtx.color);
 
   const handleClick = (e: React.MouseEvent) => {
     channelCtx.events.color.update(e?.target.value);
+    update(ref(db), {
+      [`/channels/${channelCtx.channelID}/value`]: e?.target.value,
+    });
     setColor(channelCtx.color);
   };
 

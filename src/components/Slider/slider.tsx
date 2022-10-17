@@ -5,6 +5,7 @@ type ISlider = {
   value?: number;
   // value?: React.Dispatch<React.SetStateAction<number>>;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onClick?: React.MouseEventHandler<HTMLInputElement>;
   step?: number;
   thumb?: boolean;
   track?: boolean;
@@ -16,6 +17,7 @@ const Slider = forwardRef(
     {
       value = 0,
       onChange,
+      onClick,
       step,
       thumb = true,
       size = "md",
@@ -46,12 +48,10 @@ const Slider = forwardRef(
       thumbRef.current.style.width = `${value}%`;
     }, [value]);
 
-    // const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
-    //   if (!e.currentTarget) return;
-    //   e.currentTarget.focus();
-    //   setRange(parseInt(e.currentTarget.value, 10));
-    //   if (typeof onChange !== "undefined") onChange(e);
-    // };
+    const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
+      if (!e.currentTarget) return;
+      if (typeof onClick !== "undefined") onClick(e);
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (!e.target) return;
@@ -75,7 +75,7 @@ const Slider = forwardRef(
           type='range'
           className='slider--input w-full'
           value={value}
-          // onClick={handleClick}
+          onClick={handleClick}
           onChange={handleChange}
           ref={ref}
           step={step}
