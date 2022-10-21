@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { ClockIcon, PaintBrushIcon } from "@heroicons/react/24/solid";
 import classNames from "classnames";
 import ChannelTabScenery from "./channelTabs/channelTabScenery";
 import ChannelTabPalette from "./channelTabs/channelTabPalette";
+import channelContext from "@context/channel/channelContext";
 
 type Props = {};
 type TNavItem = {
@@ -11,6 +12,10 @@ type TNavItem = {
   label: string;
   onClick: React.MouseEventHandler;
   isActive: boolean;
+};
+
+const getChannelType = channelID => {
+  return [6, 7].indexOf(channelID) >= 0 ? "mono" : "rgb";
 };
 
 const NavItem = (props: TNavItem) => {
@@ -26,7 +31,7 @@ const NavItem = (props: TNavItem) => {
   });
 
   return (
-    <div onClick={onClick}>
+    <div className='mx-auto w-auto table' onClick={onClick}>
       <div className={wrapperCn}>
         <Icon className={iconCn} />
       </div>
@@ -38,54 +43,63 @@ const NavItem = (props: TNavItem) => {
 };
 
 const channelNav = (props: Props) => {
-  const navigationItems = [
+  const channelCtx = useContext(channelContext);
+  const [navigationItems, _] = useState([
     {
       id: "f7414a15-1dba-4283-8d0b-0ec27ebc9fe3",
       label: "Paleta kolorów",
       icon: PaintBrushIcon,
       link: <ChannelTabPalette />,
+      enable: ["rgb"],
     },
     {
       id: "54389173-c1d5-40bd-89f7-75face344391",
       label: "Sceneria",
       icon: ClockIcon,
       link: <ChannelTabScenery />,
+      enable: ["rgb", "mono"],
     },
-  ];
+  ]);
 
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [Component, setComponent] = useState<JSX.Element | null>(null);
-
-  useEffect(() => {
-    if (Component == null) setComponent(navigationItems[0].link);
-    if (activeTab == null) setActiveTab(navigationItems[0].id);
-  }, [navigationItems]);
 
   const handleClick = (id: string, component: JSX.Element) => {
     setActiveTab(id);
     setComponent(component);
   };
 
+  useEffect(() => {
+    if (Component == null) setComponent(navigationItems[1].link);
+    if (activeTab == null) setActiveTab(navigationItems[1].id);
+  }, [navigationItems]);
+
   return (
     <div>
-      <div className='mt-12 mb-6 p-4 flex flex-row nowrap space-x-8'>
-        {navigationItems.map(navigationItem => {
-          return (
-            <>
-              <div className='w-auto table items-center cursor-pointer flex flex-col nowrap'>
-                <NavItem
-                  key={uuidv4()}
-                  Icon={navigationItem.icon}
-                  label={navigationItem.label}
-                  onClick={e =>
-                    handleClick(navigationItem.id, navigationItem.link)
-                  }
-                  isActive={navigationItem.id == activeTab}
-                />
-              </div>
-            </>
-          );
-        })}
+      <div className='my-6 p-4 bg-[#FFFFFF15] rounded-lg shadow-xl'>
+        <div className='flex flex-row flex-nowrap justify-center space-x-8'>
+          {navigationItems.map(navigationItem => {
+            return (
+              <>
+                {navigationItem.enable.indexOf(
+                  getChannelType(channelCtx.channelID)
+                ) >= 0 && (
+                  <div className='w-6/12 items-center cursor-pointer flex flex-col nowrap'>
+                    <NavItem
+                      key={uuidv4()}
+                      Icon={navigationItem.icon}
+                      label={navigationItem.label}
+                      onClick={e =>
+                        handleClick(navigationItem.id, navigationItem.link)
+                      }
+                      isActive={navigationItem.id == activeTab}
+                    />
+                  </div>
+                )}
+              </>
+            );
+          })}
+        </div>
       </div>
       {Component}
     </div>

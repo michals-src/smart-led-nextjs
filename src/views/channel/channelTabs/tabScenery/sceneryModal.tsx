@@ -21,7 +21,9 @@ interface TSceneryModal {
 const SceneryModal: FC<TSceneryModal> = props => {
   const { index, previous, current, brightness, color, onSave } = props;
 
-  const [paletteValue, setPaletteValue] = useState<string>(color);
+  const [paletteValue, setPaletteValue] = useState<string>(
+    "" === color ? "#FFFFFF" : color
+  );
   const [brightnessValue, setBrightnessValue] = useState<number>(brightness);
   const [sliderValue, setSliderValue] = useState<number>(50);
   const [newTime, setNewTime] = useState<any>({ hour: 0, min: 0 });
@@ -104,7 +106,7 @@ const SceneryModal: FC<TSceneryModal> = props => {
             <div className='py-6 px-4'>
               <div className='flex flex-row flex-nowrap w-full justify-between items-center'>
                 <div
-                  className='p-1 rounded-lg bg-[#FFFFFF40] shadow-lg'
+                  className='p-1 rounded-lg bg-[#FFFFFF40] shadow-lg cursor-pointer'
                   onClick={e => clockHandleClick("minus")}>
                   <MinusIcon className='w-6 h-6 text-gray-900' />
                 </div>
@@ -121,7 +123,7 @@ const SceneryModal: FC<TSceneryModal> = props => {
                   </p>
                 </div>
                 <div
-                  className='p-1 rounded-lg bg-[#FFFFFF40] shadow-lg'
+                  className='p-1 rounded-lg bg-[#FFFFFF40] shadow-lg cursor-pointer'
                   onClick={e => clockHandleClick("plus")}>
                   <PlusIcon className='w-6 h-6 text-gray-900' />
                 </div>

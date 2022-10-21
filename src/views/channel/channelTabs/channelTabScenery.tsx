@@ -9,38 +9,31 @@ import React, {
   useRef,
   useState,
 } from "react";
+import db from "@firebase";
+import { update, ref } from "firebase/database";
 import { v4 as uuidv4 } from "uuid";
 
 import {
-  CheckCircleIcon,
   ClockIcon,
   Cog6ToothIcon,
   FlagIcon,
-  MinusIcon,
-  PaintBrushIcon,
   PlayIcon,
   PlusIcon,
-  SunIcon,
   TrashIcon,
   XCircleIcon,
-  XMarkIcon,
 } from "@heroicons/react/24/solid";
 
 import modalContext from "@context/modal/modalContext";
 import channelContext from "@context/channel/channelContext";
 import useGet from "src/hooks/firebase/useGet";
 
-import { DarkenColor, hex2rgb, LightenColor, colors } from "@utils";
-import { Box, LoaderCircle, Palette, Slider } from "@components";
-import SceneryModal from "./scenery/sceneryModal";
+import { colors } from "@utils";
+import { Box, LoaderCircle, Slider } from "@components";
+
+import SceneryModal from "./tabScenery/sceneryModal";
+import SceneryEditor from "./tabScenery/sceneryEditor";
 
 type IScenery = {};
-
-type TSceneryEditor = {};
-
-const SceneryEditor = () => {
-  return <div>Scenery editor</div>;
-};
 
 export default function ChannelTabScenery({}: IScenery) {
   const { viewModal } = useContext(modalContext);
@@ -50,31 +43,52 @@ export default function ChannelTabScenery({}: IScenery) {
     null === data ? [] : data
   );
 
-  const handleCreate = (index, value, time, brightness) => {
-    setScenerions(state => {
-      const start = state.slice(0, state.length - index);
-      const end = state.slice(state.length - index, state.length);
+  const handleCreate = (
+    index: number,
+    value: string,
+    time: string,
+    brightness: number
+  ): void => {
+    setScenerions((state: any) => {
+      const start = [...state].slice(0, index);
+      const end = [...state].slice(index, state.length);
+      const newState = [...start, { value, time, brightness }, ...end];
 
-      console.log(start, end);
-
-      return [...start, { value, time, brightness }, ...end];
-    });
-  };
-
-  const handleUpdate = (index, value, time, brightness) => {
-    setScenerions(state => {
-      return state.map((params, key) => {
-        if (key === index) return { value, time, brightness };
-        return params;
+      update(ref(db), {
+        [`/scenery/${channelID}`]: newState,
       });
+
+      return newState;
     });
   };
 
-  const handleRemove = index => {
-    setScenerions(state => {
-      return state.map((params, key) => {
+  const handleUpdate = (
+    index: number,
+    value: string,
+    time: string,
+    brightness: number
+  ) => {
+    setScenerions((state: any) => {
+      const newState = [...state];
+      newState[index] = { value, time, brightness };
+
+      update(ref(db), {
+        [`/scenery/${channelID}`]: newState,
+      });
+
+      return newState;
+    });
+  };
+
+  const handleRemove = (index: number) => {
+    setScenerions((state: any) => {
+      const newState = [...state].filter((params, key) => {
         if (key !== index) return params;
       });
+      update(ref(db), {
+        [`/scenery/${channelID}`]: newState,
+      });
+      return newState;
     });
   };
 
@@ -83,7 +97,7 @@ export default function ChannelTabScenery({}: IScenery) {
     previous,
     current,
     brightness,
-    color = "#FFFFFF",
+    color = "",
   }) => {
     return (
       <div className='w-1/2 mx-auto px-2 relative'>
@@ -91,12 +105,16 @@ export default function ChannelTabScenery({}: IScenery) {
           className='w-full h-12 relative'
           style={{
             filter: "blur(40px)",
-            background: `linear-gradient(to bottom, rgba(0,0,0,0) 0%, ${color} 150%)`,
+            background: `linear-gradient(to bottom, rgba(0,0,0,0) 0%, ${
+              "" === color ? "#FFFFFF40" : color
+            } 150%)`,
           }}></div>
         <div
           className='w-1 h-12 absolute top-0 bg-white opacity-[0.4] bottom-0 left-[50%]'
           style={{
-            background: `linear-gradient(to bottom, rgba(0,0,0,0) 0%, ${color} 100%)`,
+            background: `linear-gradient(to bottom, rgba(0,0,0,0) 0%, ${
+              "" === color ? "#FFFFFF40" : color
+            } 100%)`,
             transform: "translateX(-50%)",
             filter: "blur(1px)",
           }}></div>
@@ -115,7 +133,7 @@ export default function ChannelTabScenery({}: IScenery) {
                   previous={previous}
                   current={current}
                   brightness={brightness}
-                  color={color}
+                  color={"" === color ? colors[0] : color}
                 />
               );
             }}>
@@ -130,8 +148,9 @@ export default function ChannelTabScenery({}: IScenery) {
     index = 0,
     type = "normal",
     label = "",
-    color = "#FFFFFF15",
+    color = "",
     previous = null,
+    next = null,
     brightness = 100,
   }) => {
     return (
@@ -142,10 +161,14 @@ export default function ChannelTabScenery({}: IScenery) {
             previous={previous}
             current={label}
             brightness={brightness}
-            color={`${LightenColor(color)}FF`}
+            color={color}
           />
         )}
-        <Box className='px-4 py-3 relative z-10' bgGradient={color}>
+        <Box
+          className={`px-4 pt-3 ${
+            "end" === type ? "pb-3 " : "pb-1 "
+          } relative z-10`}
+          bgGradient={"" === color ? "#FFFFFF15" : color}>
           <div className='flex flex-row flex-nowrap items-center justify-center'>
             <div className='mr-1'>
               {type === "start" && <PlayIcon className='w-5 h-5 text-white' />}
@@ -162,7 +185,11 @@ export default function ChannelTabScenery({}: IScenery) {
             </p>
             {type === "normal" && (
               <div className='w-1/12 ml-auto'>
-                <div className='bg-[#00000040] p-1 rounded-full cursor-pointer table'>
+                <div
+                  className='bg-[#00000040] p-1 rounded-full cursor-pointer table'
+                  onClick={() => {
+                    handleRemove(index);
+                  }}>
                   <TrashIcon className='w-5 h-5 text-white' />
                 </div>
               </div>
@@ -171,12 +198,31 @@ export default function ChannelTabScenery({}: IScenery) {
               <div className={`w-1/12 ${"end" === type ? "" : "ml-6"}`}>
                 <div
                   className='bg-[#00000040] p-1 rounded-full cursor-pointer table'
-                  onClick={() => viewModal(<SceneryEditor />)}>
+                  onClick={() =>
+                    viewModal(
+                      <SceneryEditor
+                        index={index}
+                        onSave={handleUpdate}
+                        previous={"end" === type ? "00:00" : previous}
+                        next={"end" === type ? "24:00" : next}
+                        current={label}
+                        brightness={brightness}
+                        color={"" === color ? colors[0] : color}
+                      />
+                    )
+                  }>
                   <Cog6ToothIcon className='w-5 h-5 text-white' />
                 </div>
               </div>
             )}
           </div>
+          {"normal" === type && (
+            <>
+              <div className='pb-1 pt-3'>
+                <Slider size='sm' thumb={false} value={brightness} />
+              </div>
+            </>
+          )}
         </Box>
         {type === "start" && (
           <div className='flex flex-row flex-nowrap items-center justify-center'>
@@ -188,8 +234,8 @@ export default function ChannelTabScenery({}: IScenery) {
   };
 
   useEffect(() => {
-    if (scenerios.length === 0) {
-      setScenerions(state => {
+    if (data.length <= 0) {
+      setScenerions((state: any) => {
         return [
           {
             value: "#FFFFFF40",
@@ -198,13 +244,12 @@ export default function ChannelTabScenery({}: IScenery) {
           },
         ];
       });
-    }
-  }, []);
 
-  useEffect(() => {
-    //update(ref(), scenerios);
-    //console.log(scenerios);
-  }, [scenerios]);
+      return;
+    }
+
+    setScenerions(data);
+  }, [data]);
 
   /**
    * data.length <= 1 === ERROR
@@ -214,13 +259,11 @@ export default function ChannelTabScenery({}: IScenery) {
   return (
     <>
       <div className='flex flex-col nowrap w-full h-auto'>
-        {(!loading ||
-          null !== error ||
-          (null !== data && data.length <= 1)) && (
+        {(loading || null !== error) && (
           <Box className='p-4'>
             <div className='flex flex-row flex-wrap items-center justify-center'>
               {loading && <LoaderCircle />}
-              {(null !== error || data.length <= 1) && (
+              {null !== error && !loading && (
                 <>
                   <div className='w-full mb-4'>
                     <div className='table mx-auto'>
@@ -235,22 +278,38 @@ export default function ChannelTabScenery({}: IScenery) {
             </div>
           </Box>
         )}
-        {scenerios.slice(0, -1).length > 0 && (
+        {!loading && null === error && scenerios.length <= 1 && (
+          <Box className='p-4'>
+            <div className='flex flex-row flex-wrap items-center justify-center'>
+              <>
+                <div className='w-full mb-4'>
+                  <div className='table mx-auto'>
+                    <XCircleIcon className='w-8 h-8 text-gray-400' />
+                  </div>
+                </div>
+                <div className='w-full text-center'>
+                  <p className='text-sm'>Brak</p>
+                </div>
+              </>
+            </div>
+          </Box>
+        )}
+        {scenerios.length - 1 > 0 && (
           <>
             <Box className='p-4 pt-0 '>
               {scenerios
-                .slice(1, scenerios.length)
-                .reverse()
+                .slice(0, scenerios.length - 1)
                 .map((sceneryChild: any, idx: number) => {
                   return (
                     <>
                       <SceneryItem
                         key={uuidv4()}
                         index={idx}
-                        previous={
-                          idx === 0
-                            ? "00:00"
-                            : scenerios[scenerios.length - idx].time
+                        previous={idx === 0 ? "00:00" : scenerios[idx - 1].time}
+                        next={
+                          idx === scenerios.length - 1
+                            ? "24:00"
+                            : scenerios[idx + 1].time
                         }
                         brightness={sceneryChild.brightness}
                         label={sceneryChild.time}
@@ -264,9 +323,18 @@ export default function ChannelTabScenery({}: IScenery) {
         )}
         {!loading && (
           <SceneryItem
+            key={`9999-${uuidv4()}`}
             index={scenerios.length - 1}
-            previous={scenerios?.length >= 2 ? scenerios[1].time : "00:00"}
-            label={scenerios?.length >= 1 ? scenerios[0].time : "24:00"}
+            previous={
+              scenerios?.length >= 2
+                ? scenerios[scenerios.length - 2].time
+                : "00:00"
+            }
+            label={
+              scenerios?.length >= 1
+                ? scenerios[scenerios.length - 1].time
+                : "24:00"
+            }
             type='end'
           />
         )}

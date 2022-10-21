@@ -152,7 +152,7 @@ font-family: 'Scada', sans-serif;
     --app-box-bg-light: rgb(160, 160, 160);
     background: var(--app-panel-bg-color);
     background: linear-gradient(90deg, var(--app-box-bg-dark) 0%, var(--app-box-bg-color) 50%, var(--app-box-bg-light) 100%);
-    transition: --app-box-bg-color 1s ease, --app-box-bg-dark 1s ease, --app-box-bg-light 1s ease;
+    transition: --app-box-bg-dark 1s ease, --app-box-bg-color 1s ease, --app-box-bg-light 1s ease;
   }
 
   .panel {

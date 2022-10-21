@@ -13,7 +13,7 @@ type TBox = {
   bgSolid?: string;
   bgGradient?: string;
   className?: string;
-  style?: React.CSSProperties
+  style?: React.CSSProperties;
 };
 
 const Box = ({
@@ -33,7 +33,7 @@ const Box = ({
   useEffect(() => {
     if (wrapperRef.current == null || typeof bgGradient == "undefined") return;
 
-    wrapperRef.current.style.setProperty("--app-box-bg-color", bgGradient);
+    wrapperRef.current.style.setProperty("--app-box-bg-color", `${bgGradient}`);
     wrapperRef.current.style.setProperty(
       "--app-box-bg-dark",
       DarkenColor(bgGradient)
@@ -46,7 +46,7 @@ const Box = ({
 
   if (bgGradient) {
     return (
-      <div ref={wrapperRef} className={cn}>
+      <div ref={wrapperRef} className={cn} {...props}>
         <>{children}</>
       </div>
     );

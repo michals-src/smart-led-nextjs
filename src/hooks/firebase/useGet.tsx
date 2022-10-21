@@ -1,29 +1,42 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useReducer, useMemo } from "react";
 import db from "@firebase";
 import { get, child, ref } from "firebase/database";
 
+const initialState = {
+  data: [],
+  loading: true,
+  error: null,
+};
+
+const useGetReducer = () =>
+  useReducer((state, action) => {
+    switch (action.type) {
+      case "data":
+        return { ...state, loading: false, data: action.data };
+      case "error":
+        return { ...state, loading: false, error: action.error };
+      default:
+        return state;
+    }
+  }, initialState);
+
 const useGet = (path: string) => {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<any>(null);
+  const [state, dispatch] = useGetReducer();
 
   useEffect(() => {
     get(child(ref(db), path))
       .then(snapshot => {
-        try {
-          setLoading(false);
-          if (!snapshot.exists()) throw "Nie istnieje";
-          if (!snapshot.val()) throw "Brak";
-
-          setData(snapshot.val());
-        } catch (e) {
-          setError(e);
-        }
+        dispatch({ type: "data", data: snapshot.val() });
       })
-      .catch(err => setError(err));
-  }, [path]);
+      .catch(err => dispatch({ type: "error", error: err }));
+  }, [dispatch, path]);
 
-  return { data, loading, error };
+  const resArr = {
+    data: state.data,
+    loading: state.loading,
+    error: state.error,
+  };
+  return useMemo(() => resArr, [resArr]);
 };
 
 export default useGet;
