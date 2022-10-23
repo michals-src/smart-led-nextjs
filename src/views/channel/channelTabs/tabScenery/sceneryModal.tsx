@@ -1,29 +1,24 @@
 import { Box, Palette, Slider } from "@components";
-import {
-  CheckCircleIcon,
-  ClockIcon,
-  MinusIcon,
-  PlusIcon,
-  SunIcon,
-} from "@heroicons/react/24/solid";
+import { CheckCircleIcon, ClockIcon, MinusIcon, PlusIcon, SunIcon } from "@heroicons/react/24/solid";
 import { colors } from "@utils";
 import React, { FC, useCallback, useEffect, useState } from "react";
 
-interface TSceneryModal {
+interface ISceneryModal {
   index: number;
-  previous: null | string;
-  current: string;
+  time: {
+    previous: string;
+    current: string;
+    next: string;
+  };
   brightness: number;
-  color: string;
+  value: string;
   onSave: (value: string, time: string, brightness: number) => void;
 }
 
-const SceneryModal: FC<TSceneryModal> = props => {
-  const { index, previous, current, brightness, color, onSave } = props;
+const SceneryModal: FC<ISceneryModal> = (props) => {
+  const { index, time, brightness, value, onSave } = props;
 
-  const [paletteValue, setPaletteValue] = useState<string>(
-    "" === color ? "#FFFFFF" : color
-  );
+  const [paletteValue, setPaletteValue] = useState<string>("" === value ? "#FFFFFF" : value);
   const [brightnessValue, setBrightnessValue] = useState<number>(brightness);
   const [sliderValue, setSliderValue] = useState<number>(50);
   const [newTime, setNewTime] = useState<any>({ hour: 0, min: 0 });
@@ -46,11 +41,16 @@ const SceneryModal: FC<TSceneryModal> = props => {
     return num2;
   };
 
-  const previousTime = null === previous ? "00:00" : previous;
-  const currentTime = null === current ? "24:00" : current;
+  const previousTime = null === time.previous ? "00:00" : time.previous;
+  const currentTime = null === time.current ? "24:00" : time.current;
+  const nextTime = null === time.next ? "24:00" : time.next;
 
   const startTime = hhmm2time(previousTime);
-  const endTime = hhmm2time(currentTime);
+  let endTime = hhmm2time(currentTime);
+
+  if (null !== time.next) {
+    endTime = hhmm2time(nextTime);
+  }
   const diff = endTime - startTime;
 
   useEffect(() => {
@@ -58,15 +58,12 @@ const SceneryModal: FC<TSceneryModal> = props => {
     setNewTime(time2hhmm(newTime));
   }, []);
 
-  const sliderHandleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newTime = Math.floor(startTime + diff * (e.target.value / 100));
+  const sliderHandleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = Math.floor(startTime + diff * (e.target.value / 100));
 
-      setNewTime(time2hhmm(newTime));
-      setSliderValue(e.target.value);
-    },
-    []
-  );
+    setNewTime(time2hhmm(newTime));
+    setSliderValue(e.target.value);
+  }, []);
 
   const clockHandleClick = (action: string) => {
     let minTime = hhmm2time("00:00");
@@ -75,14 +72,10 @@ const SceneryModal: FC<TSceneryModal> = props => {
 
     setNewTime((state: typeof newTime) => {
       if ("plus" === action) {
-        return hhmm2time(`${state.hour}:${state.min}`) < maxTime
-          ? time2hhmm(currTime++)
-          : state;
+        return hhmm2time(`${state.hour}:${state.min}`) < maxTime ? time2hhmm(currTime++) : state;
       }
 
-      return hhmm2time(`${state.hour}:${state.min}`) > minTime
-        ? time2hhmm(currTime--)
-        : state;
+      return hhmm2time(`${state.hour}:${state.min}`) > minTime ? time2hhmm(currTime--) : state;
     });
   };
 
@@ -93,6 +86,15 @@ const SceneryModal: FC<TSceneryModal> = props => {
   const handlelColorClick = (e: React.MouseEvent) => {
     setPaletteValue(e.target.value);
   };
+
+  useEffect(() => {
+    const accTime = time.current.split(":");
+    setNewTime({
+      hour: accTime[0],
+      min: accTime[1],
+    });
+    setSliderValue(((hhmm2time(currentTime) - startTime) * 100) / diff);
+  }, []);
 
   return (
     <>
@@ -105,11 +107,11 @@ const SceneryModal: FC<TSceneryModal> = props => {
           <Box className='text-center mb-4'>
             <div className='py-6 px-4'>
               <div className='flex flex-row flex-nowrap w-full justify-between items-center'>
-                <div
+                <button
                   className='p-1 rounded-lg bg-[#FFFFFF40] shadow-lg cursor-pointer'
-                  onClick={e => clockHandleClick("minus")}>
+                  onClick={(e) => clockHandleClick("minus")}>
                   <MinusIcon className='w-6 h-6 text-gray-900' />
-                </div>
+                </button>
                 <div className='w-full flex flex-row flex-nowrap items-center justify-center'>
                   <div className='mr-4'>
                     <ClockIcon className='w-6 h-6' />
@@ -117,16 +119,14 @@ const SceneryModal: FC<TSceneryModal> = props => {
                   <p className='text-zinc-100'>
                     {newTime.hour}
                     <span className='mx-3'>:</span>
-                    {`${newTime.min}`.length < 2
-                      ? "0" + newTime.min
-                      : newTime.min}
+                    {`${newTime.min}`.length < 2 ? "0" + newTime.min : newTime.min}
                   </p>
                 </div>
-                <div
+                <button
                   className='p-1 rounded-lg bg-[#FFFFFF40] shadow-lg cursor-pointer'
-                  onClick={e => clockHandleClick("plus")}>
+                  onClick={(e) => clockHandleClick("plus")}>
                   <PlusIcon className='w-6 h-6 text-gray-900' />
-                </div>
+                </button>
               </div>
             </div>
             <Slider
@@ -157,7 +157,11 @@ const SceneryModal: FC<TSceneryModal> = props => {
           <div className='w-8/12 relative z-[9]'>
             <div className='relative'>
               <div className='p-4'>
-                <Slider size='sm' track={false} value={sliderValue} />
+                <Slider
+                  size='sm'
+                  track={false}
+                  value={sliderValue}
+                />
               </div>
             </div>
           </div>
@@ -173,15 +177,20 @@ const SceneryModal: FC<TSceneryModal> = props => {
                   borderBottom: `8px solid ${colors[4]}80`,
                   transform: "translate(-50%, -100%)",
                 }}></div>
-              <p className='text-xs text-zinc-100'>{currentTime}</p>
+              <p className='text-xs text-zinc-100'>{time.next === null ? currentTime : nextTime}</p>
             </Box>
           </div>
         </div>
       </div>
 
       <div className='py-4'>
-        <Box bgGradient={`${paletteValue}40`} className='p-4'>
-          <Palette value={paletteValue} onClick={handlelColorClick} />
+        <Box
+          bgGradient={`${paletteValue}40`}
+          className='p-4'>
+          <Palette
+            value={paletteValue}
+            onClick={handlelColorClick}
+          />
 
           <Box>
             <div className='w-full'>
@@ -215,14 +224,7 @@ const SceneryModal: FC<TSceneryModal> = props => {
         <button
           className='py-3 px-4 bg-zinc-400 text-black rounded-lg mx-auto table shadow-lg'
           onClick={() =>
-            onSave(
-              index,
-              paletteValue,
-              `${newTime.hour}:${
-                `${newTime.min}`.length < 2 ? "0" + newTime.min : newTime.min
-              }`,
-              brightnessValue
-            )
+            onSave(index, paletteValue, `${newTime.hour}:${`${newTime.min}`.length < 2 ? "0" + newTime.min : newTime.min}`, parseInt(brightnessValue, 10))
           }>
           <div className='flex flex-row flex-nowrap items-center'>
             <span className='mr-4'>

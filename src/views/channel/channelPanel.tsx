@@ -1,10 +1,4 @@
-import React, {
-  FC,
-  ReactElement,
-  useState,
-  useContext,
-  useEffect,
-} from "react";
+import React, { FC, ReactElement, useState, useContext, useEffect } from "react";
 import db from "@firebase";
 import { update, ref } from "firebase/database";
 import { LightBulbIcon } from "@heroicons/react/24/solid";
@@ -22,7 +16,7 @@ const channelPanel: FC = (props: Props): ReactElement => {
   const [brightnessValue, setBrightnessValue] = useState<number>(0);
 
   const power_hadnelClick = (e: React.MouseEvent<HTMLInputElement>) => {
-    setPowerValue(state => {
+    setPowerValue((state) => {
       const power = !state;
       update(ref(db), {
         [`/channels/${channelCtx.channelID}/power`]: power,
@@ -57,11 +51,15 @@ const channelPanel: FC = (props: Props): ReactElement => {
             <LightBulbIcon className='w-6 h-6 text-white mx-auto' />
           </div>
           <div className='w-8/12 pl-4 pr-8'>
-            <p className='text-sm'>Kanał 1</p>
+            <p className='text-sm'>Kanał {channelCtx.channelID + 1}</p>
             <p className='text-xs'>{brightnessValue} %</p>
           </div>
           <div className='w-2/12'>
-            <Switch value={powerValue} onClick={power_hadnelClick} size='lg' />
+            <Switch
+              value={powerValue}
+              onClick={power_hadnelClick}
+              size='lg'
+            />
           </div>
         </div>
         <div className='w-full'>

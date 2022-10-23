@@ -1,40 +1,47 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@hooks'
-import { update } from '@store/slices/scenerySlice'
-import useGet from '../firebase/useGet';
-
+import { useEffect, useMemo, useState } from "react";
+import db from "@firebase";
+import { get, child, ref } from "firebase/database";
+import { useAppDispatch, useAppSelector } from "@hooks";
+import { create } from "@store/slices/scenerySlice";
 
 const useScenery = (channelID: number) => {
-    const items = useAppSelector(state => state.items);
-    const dispatch = useAppDispatch();
-    const [loading, setloading] = useState(true);
-    const [error, setError] = useState(null);
+  const items = useAppSelector((state) => state.scenery.items);
+  const dispatch = useAppDispatch();
+  const [loading, setloading] = useState(true);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        if ("undefined" === items[channelID]) {
-            const { data, loading: loadingGet, error: errorGet } = useGet(`scenery/${channelID}`);
-            setloading(loadingGet);
-            setError((errorGet));
-            const scenery = [];
-            if (!loadingGet && null === errorGet) {
-                if (0 === data.length) {
-                    scenery.push({
-                        value: "#FFFFFF40",
-                        time: "24:00",
-                        brightness: null,
-                    });
-                }
-                scenery.push(data);
-                dispatch(update({ channelID, scenery }));
-            }
+  useEffect(() => {
+    /**
+     * Fetch data from db if there is not cached in state
+     */
+    if (Object.keys(items).indexOf(`${channelID}`) === -1) {
+      let scenery = [];
+      console.log("get");
+      get(child(ref(db), `/scenery/${channelID}`))
+        .then((snapshot) => {
+          console.log(typeof snapshot.val());
+          if (typeof snapshot.val() !== "object" || 0 === snapshot.val().length) {
+            scenery[0] = {
+              value: "#FFFFFF40",
+              time: "24:00",
+              brightness: null,
+            };
             return;
-        }
-    }, [items]);
+          }
+          scenery = snapshot.val();
+        })
+        .then(() => {
+          setloading(false);
+          dispatch(create({ channelID, scenery }));
+        })
+        .catch((err) => setError(err));
+      return;
+    }
+    setloading(false);
+  }, [channelID]);
 
+  const arr = { data: items, loading, error };
+  return useMemo(() => arr, [arr]);
+};
 
-    const arr = { data: items, loading, error }
-
-    return useMemo(() => arr, [arr]);
-}
-
-export default useScenery
+export default useScenery;

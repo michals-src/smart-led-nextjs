@@ -47,6 +47,9 @@
       "@store*": [
         "src/store"
       ],
+      "@store/*": [
+        "src/store/*"
+      ],
     }
   },
   "include": [
