@@ -32,13 +32,15 @@ import { Box, LoaderCircle, Slider } from "@components";
 
 import SceneryModal from "./tabScenery/sceneryModal";
 import SceneryEditor from "./tabScenery/sceneryEditor";
+import useScenery from "src/hooks/scenery/useScenery";
 
 type IScenery = {};
 
-export default function ChannelTabScenery({}: IScenery) {
+export default function ChannelTabScenery({ }: IScenery) {
   const { viewModal } = useContext(modalContext);
   const { channelID } = useContext(channelContext);
-  const { data, loading, error } = useGet(`scenery/${channelID}`);
+  //const { data, loading, error } = useGet(`scenery/${channelID}`);
+  const { data, loading, error } = useScenery(channelID);
   const [scenerios, setScenerions] = useState<typeof data>(
     null === data ? [] : data
   );
@@ -105,16 +107,14 @@ export default function ChannelTabScenery({}: IScenery) {
           className='w-full h-12 relative'
           style={{
             filter: "blur(40px)",
-            background: `linear-gradient(to bottom, rgba(0,0,0,0) 0%, ${
-              "" === color ? "#FFFFFF40" : color
-            } 150%)`,
+            background: `linear-gradient(to bottom, rgba(0,0,0,0) 0%, ${"" === color ? "#FFFFFF40" : color
+              } 150%)`,
           }}></div>
         <div
           className='w-1 h-12 absolute top-0 bg-white opacity-[0.4] bottom-0 left-[50%]'
           style={{
-            background: `linear-gradient(to bottom, rgba(0,0,0,0) 0%, ${
-              "" === color ? "#FFFFFF40" : color
-            } 100%)`,
+            background: `linear-gradient(to bottom, rgba(0,0,0,0) 0%, ${"" === color ? "#FFFFFF40" : color
+              } 100%)`,
             transform: "translateX(-50%)",
             filter: "blur(1px)",
           }}></div>
@@ -165,9 +165,8 @@ export default function ChannelTabScenery({}: IScenery) {
           />
         )}
         <Box
-          className={`px-4 pt-3 ${
-            "end" === type ? "pb-3 " : "pb-1 "
-          } relative z-10`}
+          className={`px-4 pt-3 ${"end" === type ? "pb-3 " : "pb-1 "
+            } relative z-10`}
           bgGradient={"" === color ? "#FFFFFF15" : color}>
           <div className='flex flex-row flex-nowrap items-center justify-center'>
             <div className='mr-1'>
@@ -178,9 +177,8 @@ export default function ChannelTabScenery({}: IScenery) {
               {type === "end" && <FlagIcon className='w-5 h-5 text-white' />}
             </div>
             <p
-              className={`text-xs text-white ${
-                "end" == type ? "w-full text-center" : "ml-4"
-              }`}>
+              className={`text-xs text-white ${"end" == type ? "w-full text-center" : "ml-4"
+                }`}>
               {label}
             </p>
             {type === "normal" && (
