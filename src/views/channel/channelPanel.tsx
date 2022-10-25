@@ -44,7 +44,7 @@ const channelPanel: FC = (props: Props): ReactElement => {
   }, [channelCtx]);
 
   return (
-    <Box bgGradient={channelCtx.color}>
+    <Box bgGradient={powerValue ? channelCtx.color : `${channelCtx.color.substring(0, 7)}60`}>
       <>
         <div className='p-4 flex flex-row nowrap items-center'>
           <div className='w-2/12'>

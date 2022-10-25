@@ -88,12 +88,14 @@ const SceneryModal: FC<ISceneryModal> = (props) => {
   };
 
   useEffect(() => {
-    const accTime = time.current.split(":");
-    setNewTime({
-      hour: accTime[0],
-      min: accTime[1],
-    });
-    setSliderValue(((hhmm2time(currentTime) - startTime) * 100) / diff);
+    if (null !== time.next) {
+      const accTime = time.current.split(":");
+      setNewTime({
+        hour: accTime[0],
+        min: accTime[1],
+      });
+      setSliderValue(((hhmm2time(currentTime) - startTime) * 100) / diff);
+    }
   }, []);
 
   return (

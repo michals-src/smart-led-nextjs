@@ -56,11 +56,11 @@ const Channel = (props: TChannel): ReactElement => {
       setBoxProps({ ...boxProps, bgGradient: `${value}` });
       return;
     }
-    setBoxProps({ ...boxProps, bgGradient: `#FFFFFF20` });
+    setBoxProps({ ...boxProps, bgGradient: `${value.substring(0, 7)}35` });
   }, [powerValue]);
 
   const power_handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPowerValue(state => {
+    setPowerValue((state) => {
       update(ref(db), {
         [`/channels/${id}/power`]: !state,
       });
@@ -70,12 +70,16 @@ const Channel = (props: TChannel): ReactElement => {
   };
 
   return (
-    <Box className='relative py-3 px-4 h-full' {...boxProps}>
+    <Box
+      className='relative py-3 px-4 h-full'
+      {...boxProps}>
       <div className='flex flex-col flex-nowrap w-full h-full relative z-20'>
         <div className='my-1'>
           <div className='flex flex-row flex-nowrap justify-between items-center'>
             <div className='w-8/12'>
-              <p className='text-xs' style={{ color: "#FFFFFF80" }}>
+              <p
+                className='text-xs'
+                style={{ color: "#FFFFFF80" }}>
                 {type.toUpperCase()}
               </p>
               <p className='text-sm pointer-events-none'>Kanał {id + 1}</p>
@@ -91,7 +95,10 @@ const Channel = (props: TChannel): ReactElement => {
                 </div>
                 <div className='w-6/12'>
                   <div className='table ml-auto'>
-                    <Switch value={powerValue} onChange={power_handleChange} />
+                    <Switch
+                      value={powerValue}
+                      onChange={power_handleChange}
+                    />
                   </div>
                 </div>
               </div>
@@ -119,7 +126,7 @@ const HomeChannels = (props: Props) => {
   const [channels, setChannels] = useState<any>([]);
 
   useEffect(() => {
-    get(child(ref(db), "channels")).then(snapshot => {
+    get(child(ref(db), "channels")).then((snapshot) => {
       if (snapshot.exists()) {
         setChannels(Object.values(snapshot.val()));
         setLoading(false);
@@ -147,8 +154,14 @@ const HomeChannels = (props: Props) => {
         <div className='flex flex-row flex-wrap -mx-1'>
           {channels.map((channel: any, idx: number) => {
             return (
-              <div key={uuidv4()} className='w-full p-1'>
-                <Channel key={uuidv4()} id={idx} {...channel} />
+              <div
+                key={uuidv4()}
+                className='w-full p-1'>
+                <Channel
+                  key={uuidv4()}
+                  id={idx}
+                  {...channel}
+                />
               </div>
             );
           })}

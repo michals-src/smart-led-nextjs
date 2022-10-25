@@ -52,7 +52,7 @@ const SceneryItem = (props: TSceneryItem) => {
           brightness={brightness}
           value={"" === value ? colors[0] : value}
           time={{
-            previous: "end" === variety ? "00:00" : time.previous,
+            previous: time.previous,
             next: null,
             current: time.current,
           }}
@@ -113,8 +113,8 @@ const SceneryItem = (props: TSceneryItem) => {
           brightness={brightness}
           value={"" === value ? colors[0] : value}
           time={{
-            previous: "end" === variety ? "00:00" : time.previous,
-            next: "end" === variety ? "24:00" : time.next,
+            previous: time.previous,
+            next: time.next,
             current: time.current,
           }}
         />

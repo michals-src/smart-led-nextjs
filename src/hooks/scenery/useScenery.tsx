@@ -19,7 +19,6 @@ const useScenery = (channelID: number) => {
       console.log("get");
       get(child(ref(db), `/scenery/${channelID}`))
         .then((snapshot) => {
-          console.log(typeof snapshot.val());
           if (typeof snapshot.val() !== "object" || 0 === snapshot.val().length) {
             scenery[0] = {
               value: "#FFFFFF40",
