@@ -5,7 +5,7 @@ type Props = {
   children?: ReactNode;
 };
 
-const channelLayout = (props: Props) => {
+const ChannelLayout = (props: Props) => {
   const { children } = props;
   return (
     <ChannelProvider>
@@ -14,4 +14,4 @@ const channelLayout = (props: Props) => {
   );
 };
 
-export default channelLayout;
+export default ChannelLayout;
