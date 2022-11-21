@@ -1,45 +1,28 @@
 import type { NextPage } from "next";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState, FC } from "react";
 import Image from "next/image";
 
-import {
-  Box,
-  ColorsPalette,
-  Intensity,
-  Layout,
-  Palette,
-  Panel,
-  Scenery,
-  Slider,
-  Modal,
-} from "../src/components";
+import { Box, ColorsPalette, Intensity, Layout, Palette, Panel, Scenery, Slider, Modal } from "../src/components";
 
 import LampImage from "../images/pietro-piovesan-9UR3Zafm328-unsplash.png";
-import {
-  ClockIcon,
-  PaintBrushIcon,
-  PlusIcon,
-  SunIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/solid";
+import { ClockIcon, PaintBrushIcon, PlusIcon, SunIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { LightenColor } from "../src/utilities";
 import { colors } from "../src/components/customizer/colors/palette";
 
-const channelPage: NextPage = () => {
+const ChannelPage: FC<NextPage> = () => {
   const [canalShadow, setCanalShadow] = useState<string>("#9D0208");
   const ShadowRef = useRef(null);
 
   useEffect(() => {
-    ShadowRef.current?.style.setProperty(
-      "--app-canal-shadow",
-      `${canalShadow}60`
-    );
+    ShadowRef.current?.style.setProperty("--app-canal-shadow", `${canalShadow}60`);
   }, [canalShadow]);
 
   return (
     <Layout>
       {/* <div className='relative min-h-screen h-screen overflow-hidden'> */}
-      <div id='screen' className='relative h-full'>
+      <div
+        id='screen'
+        className='relative h-full'>
         <div
           ref={ShadowRef}
           className='absolute top-0 left-0 z-10 w-full h-1/2 canal-shadow'></div>
@@ -58,7 +41,10 @@ const channelPage: NextPage = () => {
               <h4 className='font-bold'>Smart led</h4>
               <h6 className='text-sm text-zinc-300'>Witaj w aplikacji</h6>
             </div>
-            <Panel color={canalShadow} initialRange={30} />
+            <Panel
+              color={canalShadow}
+              initialRange={30}
+            />
             <div className='mt-12 mb-6 p-4 flex flex-row nowrap space-x-12'>
               <div className='w-2/12 items-center cursor-pointer flex flex-col nowrap'>
                 <div
@@ -67,9 +53,7 @@ const channelPage: NextPage = () => {
                   <PaintBrushIcon className='m-0 w-auto text-zinc-900' />
                 </div>
                 <div className='mt-4 text-center'>
-                  <p className='text-xs text-zinc-100 text-wrap'>
-                    Paleta kolorów
-                  </p>
+                  <p className='text-xs text-zinc-100 text-wrap'>Paleta kolorów</p>
                 </div>
               </div>
               <div className='w-2/12 items-center cursor-pointer flex flex-col nowrap'>
@@ -95,9 +79,7 @@ const channelPage: NextPage = () => {
             <Scenery />
           </div>
 
-          <div className='px-8'>
-            {/* <ColorsPalette onCanalShadowChange={onCanalShadowChange} /> */}
-          </div>
+          <div className='px-8'>{/* <ColorsPalette onCanalShadowChange={onCanalShadowChange} /> */}</div>
         </div>
       </div>
       <Modal />
@@ -105,4 +87,4 @@ const channelPage: NextPage = () => {
   );
 };
 
-export default channelPage;
+export default ChannelPage;

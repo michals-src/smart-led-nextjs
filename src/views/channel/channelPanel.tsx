@@ -9,7 +9,7 @@ import channelContext from "@context/channel/channelContext";
 
 type Props = {};
 
-const channelPanel: FC = (props: Props): ReactElement => {
+const ChannelPanel: FC = (props: Props): ReactElement => {
   const channelCtx = useContext(channelContext);
 
   const [powerValue, setPowerValue] = useState<boolean>(false);
@@ -81,4 +81,4 @@ const channelPanel: FC = (props: Props): ReactElement => {
   );
 };
 
-export default channelPanel;
+export default ChannelPanel;

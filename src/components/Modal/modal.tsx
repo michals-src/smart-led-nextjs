@@ -1,11 +1,4 @@
-import {
-  FC,
-  ReactElement,
-  ReactNode,
-  useCallback,
-  useContext,
-  useState,
-} from "react";
+import { FC, ReactElement, ReactNode, useCallback, useContext, useState } from "react";
 import { Box, Slider, Palette } from "@components";
 import { SunIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
@@ -64,21 +57,18 @@ const InnerModal = (props: TInnerModal): ReactElement => {
   };
 
   return (
-    <Box bgSolid='#18181b' className='w-full h-full'>
+    <Box
+      bgSolid='#18181b'
+      className='w-full h-full'>
       <div className='relative w-full h-full flex flex-col flex-nowrap'>
         <Header />
-        <div className='relative z-[9] pt-24 px-3 h-full overflow-auto'>
-          {children}
-        </div>
+        <div className='relative z-[9] pt-24 px-3 h-full overflow-auto'>{children}</div>
       </div>
     </Box>
   );
 };
 
-const wrapperModal: FC = ({
-  children,
-  ...rest
-}: TWrapperModal): ReactElement => {
+const WrapperModal: FC = ({ children, ...rest }: TWrapperModal): ReactElement => {
   const { component, viewModal, visible } = useContext(modalCtx);
 
   if (visible) {
@@ -87,7 +77,9 @@ const wrapperModal: FC = ({
         <div className='flex justify-center w-full h-full'>
           <div className='absolute w-full h-full top-0 left-0 bg-[#000000BF]'></div>
           <div className='relative max-w-md w-full h-auto p-1'>
-            <InnerModal viewModal={viewModal} {...rest}>
+            <InnerModal
+              viewModal={viewModal}
+              {...rest}>
               {component}
             </InnerModal>
           </div>
@@ -99,4 +91,4 @@ const wrapperModal: FC = ({
   return <div></div>;
 };
 
-export default wrapperModal;
+export default WrapperModal;

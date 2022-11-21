@@ -3,7 +3,7 @@ import channelContext from "@context/channel/channelContext";
 
 type Props = {};
 
-const channelHeader = (props: Props) => {
+const ChannelHeader = (props: Props) => {
   return (
     <div className='relative'>
       <div className='mb-6'>
@@ -14,4 +14,4 @@ const channelHeader = (props: Props) => {
   );
 };
 
-export default channelHeader;
+export default ChannelHeader;

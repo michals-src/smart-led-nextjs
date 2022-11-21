@@ -14,7 +14,7 @@ type TNavItem = {
   isActive: boolean;
 };
 
-const getChannelType = channelID => {
+const getChannelType = (channelID) => {
   return [6, 7].indexOf(channelID) >= 0 ? "mono" : "rgb";
 };
 
@@ -31,7 +31,9 @@ const NavItem = (props: TNavItem) => {
   });
 
   return (
-    <div className='mx-auto w-auto table' onClick={onClick}>
+    <div
+      className='mx-auto w-auto table'
+      onClick={onClick}>
       <div className={wrapperCn}>
         <Icon className={iconCn} />
       </div>
@@ -42,7 +44,7 @@ const NavItem = (props: TNavItem) => {
   );
 };
 
-const channelNav = (props: Props) => {
+const ChannelNav = (props: Props) => {
   const channelCtx = useContext(channelContext);
   const [navigationItems, _] = useState([
     {
@@ -78,20 +80,16 @@ const channelNav = (props: Props) => {
     <div>
       <div className='my-6 p-4 bg-[#FFFFFF15] rounded-lg shadow-xl'>
         <div className='flex flex-row flex-nowrap justify-center space-x-8'>
-          {navigationItems.map(navigationItem => {
+          {navigationItems.map((navigationItem) => {
             return (
               <>
-                {navigationItem.enable.indexOf(
-                  getChannelType(channelCtx.channelID)
-                ) >= 0 && (
+                {navigationItem.enable.indexOf(getChannelType(channelCtx.channelID)) >= 0 && (
                   <div className='w-6/12 items-center cursor-pointer flex flex-col nowrap'>
                     <NavItem
                       key={uuidv4()}
                       Icon={navigationItem.icon}
                       label={navigationItem.label}
-                      onClick={e =>
-                        handleClick(navigationItem.id, navigationItem.link)
-                      }
+                      onClick={(e) => handleClick(navigationItem.id, navigationItem.link)}
                       isActive={navigationItem.id == activeTab}
                     />
                   </div>
@@ -106,4 +104,4 @@ const channelNav = (props: Props) => {
   );
 };
 
-export default channelNav;
+export default ChannelNav;
