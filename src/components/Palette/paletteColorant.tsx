@@ -5,7 +5,7 @@ type TPaletteColorant = {
   x: number;
   y: number;
   value: string;
-  onClick?: React.MouseEventHandler;
+  onClick?: React.MouseEventHandler<HTMLInputElement>;
 };
 
 const PaletteColorant = ({ index, x, y, value, onClick }: TPaletteColorant) => {

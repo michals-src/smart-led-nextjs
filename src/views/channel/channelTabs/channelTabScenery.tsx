@@ -60,7 +60,8 @@ export default function ChannelTabScenery({}: IScenery) {
     );
   };
 
-  const Error = ({ children }) => {
+  const Error = (props: any) => {
+    const { children } = props;
     return (
       <Box className='p-4'>
         <div className='flex flex-row flex-wrap items-center justify-center'>
@@ -142,6 +143,7 @@ export default function ChannelTabScenery({}: IScenery) {
             variety='end'
             onCreate={handleCreate}
             onUpdate={handleUpdate}
+            onRemove={() => {}}
           />
         )}
       </>

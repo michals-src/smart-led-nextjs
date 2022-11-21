@@ -11,37 +11,20 @@ type IColor = {
 };
 
 type IFCColorsPalette = {
-  onCanalShadowChange?: void;
+  onCanalShadowChange: void;
 };
 
-export const colors = [
-  "#9D0208",
-  "#D00000",
-  "#E85D04",
-  "#FFBA08",
-  "#99D98C",
-  "#52B69A",
-  "#168AAD",
-  "#184E77",
-];
+export const colors = ["#9D0208", "#D00000", "#E85D04", "#FFBA08", "#99D98C", "#52B69A", "#168AAD", "#184E77"];
 
-const Color: FC<IColor> = ({
-  index,
-  onClick,
-  current,
-  color,
-}): ReactElement => {
-  const ref = useRef(null);
+const Color: FC<IColor> = ({ index, onClick, current, color }): ReactElement => {
+  const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
-  const cn = classNames(
-    "colorElement w-auto p-1 rounded-lg border cursor-pointer border-transparent",
-    {
-      // 'border-transparent': color == current ? true : false,
-      "border-transparent": color !== current ? true : false,
-      colorElement_visible: visible,
-    }
-  );
+  const cn = classNames("colorElement w-auto p-1 rounded-lg border cursor-pointer border-transparent", {
+    // 'border-transparent': color == current ? true : false,
+    "border-transparent": color !== current ? true : false,
+    colorElement_visible: visible,
+  });
 
   const abc = () => {
     setVisible(true);
@@ -62,22 +45,18 @@ const Color: FC<IColor> = ({
         <div
           className={`colorElement-inner--shadow rounded-lg absolute w-full h-full top-0 left-0`}
           style={{ boxShadow: `0 5px 5px ${color}` }}></div>
-        <span className='block absolute -z-[1] -top-[999px] -left-[999px]'>
-          {color}
-        </span>
+        <span className='block absolute -z-[1] -top-[999px] -left-[999px]'>{color}</span>
       </div>
     </div>
   );
 };
 
-const ColorsPalette: FC<IFCColorsPalette> = ({
-  onCanalShadowChange,
-}): ReactElement => {
+const ColorsPalette: FC<IFCColorsPalette> = ({ onCanalShadowChange }): ReactElement => {
   const [currentColor, setCurrentColor] = useState<string>("#9D0208");
 
   const onChange = (color: string): void => {
     setCurrentColor(color);
-    onCanalShadowChange(color);
+    //onCanalShadowChange(color);
   };
 
   return (

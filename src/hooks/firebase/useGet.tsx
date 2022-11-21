@@ -9,7 +9,7 @@ const initialState = {
 };
 
 const useGetReducer = () =>
-  useReducer((state, action) => {
+  useReducer((state: any, action: any) => {
     switch (action.type) {
       case "data":
         return { ...state, loading: false, data: action.data };
@@ -25,10 +25,10 @@ const useGet = (path: string) => {
 
   useEffect(() => {
     get(child(ref(db), path))
-      .then(snapshot => {
+      .then((snapshot) => {
         dispatch({ type: "data", data: snapshot.val() });
       })
-      .catch(err => dispatch({ type: "error", error: err }));
+      .catch((err) => dispatch({ type: "error", error: err }));
   }, [dispatch, path]);
 
   const resArr = {

@@ -1,12 +1,4 @@
-import React, {
-  FC,
-  forwardRef,
-  ReactElement,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { FC, forwardRef, ReactElement, useCallback, useEffect, useRef, useState } from "react";
 
 import { LightBulbIcon } from "@heroicons/react/24/solid";
 import { Box, Slider } from "../";
@@ -23,52 +15,50 @@ type IPanelRange = {
 
 type ISwitch = {
   initialValue: boolean;
-  valueState: React.SetStateAction<boolean>;
+  valueState: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Switch: FC<ISwitch> = forwardRef(
-  ({ initialValue, valueState }, ref): ReactElement => {
-    const [value, setValue] = useState(initialValue);
+const Switch = forwardRef<HTMLInputElement, ISwitch>(({ initialValue, valueState }, ref): ReactElement => {
+  const [value, setValue] = useState<any>(initialValue);
 
-    useEffect(() => {
-      valueState(value);
-    }, [value]);
+  useEffect(() => {
+    //valueState(value);
+  }, [value]);
 
-    return (
+  return (
+    <div
+      className='switch'
+      attr-checked={`${value}`}
+      onClick={() => setValue(!value)}>
+      <div className='switch-thumb'></div>
+      <input
+        ref={ref}
+        type='checkbox'
+        className='switch-checkbox'
+        checked={value}
+        onChange={() => setValue(!value)}
+      />
+    </div>
+  );
+});
+
+const PanelRange = forwardRef<HTMLDivElement, IPanelRange>(({ rangeValue, handleChange }, ref): ReactElement => {
+  return (
+    <div className='panel--range'>
+      <div className='panel--range-bg'></div>
       <div
-        className='switch'
-        attr-checked={`${value}`}
-        onClick={() => setValue(!value)}>
-        <div className='switch-thumb'></div>
-        <input
-          ref={ref}
-          type='checkbox'
-          className='switch-checkbox'
-          checked={value}
-          onChange={() => setValue(!value)}
-        />
-      </div>
-    );
-  }
-);
-
-const PanelRange: FC<IPanelRange> = forwardRef(
-  ({ rangeValue, handleChange }, ref): ReactElement => {
-    return (
-      <div className='panel--range'>
-        <div className='panel--range-bg'></div>
-        <div ref={ref} className='panel--range-progress'></div>
-        <input
-          type='range'
-          className='panel--range-input'
-          value={rangeValue}
-          onClick={handleChange}
-          onChange={handleChange}
-        />
-      </div>
-    );
-  }
-);
+        ref={ref}
+        className='panel--range-progress'></div>
+      <input
+        type='range'
+        className='panel--range-input'
+        value={rangeValue}
+        onClick={handleChange}
+        onChange={handleChange}
+      />
+    </div>
+  );
+});
 
 const Panel: FC<IPanel> = ({ color, initialRange }): ReactElement => {
   const progressRef = useRef<HTMLDivElement>(null);
@@ -82,14 +72,14 @@ const Panel: FC<IPanel> = ({ color, initialRange }): ReactElement => {
     progressRef.current.style.width = `${rangeValue}%`;
   }, [rangeValue]);
 
-  const handleRangeChange = (e: React.ChangeEvent<HTMLDialogElement>) => {
-    const el = e.target;
-    if (!el || progressRef.current == null) return;
+  // const handleRangeChange = (e: React.ChangeEvent<HTMLDialogElement>) => {
+  //   const el = e.target;
+  //   if (!el || progressRef.current == null) return;
 
-    setRangeValue(el.value);
+  //   setRangeValue(el.value);
 
-    progressRef.current.style.width = `${rangeValue}%`;
-  };
+  //   progressRef.current.style.width = `${rangeValue}%`;
+  // };
 
   return (
     <Box bgGradient={color}>
@@ -112,7 +102,7 @@ const Panel: FC<IPanel> = ({ color, initialRange }): ReactElement => {
         </div>
         <div className='w-full'>
           <Slider
-            onChange={e => setRangeValue(e.target.value)}
+            onChange={(e) => setRangeValue(parseInt(e.target.value, 10))}
             value={rangeValue}
             size='lg'
             thumb={false}

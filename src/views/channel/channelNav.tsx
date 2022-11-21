@@ -14,7 +14,7 @@ type TNavItem = {
   isActive: boolean;
 };
 
-const getChannelType = (channelID) => {
+const getChannelType = (channelID: any) => {
   return [6, 7].indexOf(channelID) >= 0 ? "mono" : "rgb";
 };
 

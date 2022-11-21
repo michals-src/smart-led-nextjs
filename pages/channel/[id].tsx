@@ -5,7 +5,7 @@ import { get, child, ref } from "firebase/database";
 import Image from "next/image";
 import { ClockIcon, PaintBrushIcon, PlusIcon, SunIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
-import { Box, ColorsPalette, Intensity, Layout, Palette, Panel, Scenery, Slider, Modal } from "@components";
+import { Box, Intensity, Layout, Palette, Panel, Scenery, Slider, Modal } from "@components";
 
 import { LightenColor } from "@utils";
 import { colors } from "@utils";

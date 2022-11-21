@@ -20,13 +20,13 @@ type TSceneryItem = {
   };
   brightness?: number;
   value?: string;
-  onCreate?: (index: number, value: string, time: string, brightness: number) => void;
-  onUpdate?: (index: number, value: string, time: string, brightness: number) => void;
-  onRemove?: (index: number) => void;
+  onCreate: (index: number, value: string, time: string, brightness: number) => void;
+  onUpdate: (index: number, value: string, time: string, brightness: number) => void;
+  onRemove: (index: number) => void;
 };
 
 const SceneryItem = (props: TSceneryItem) => {
-  const { index, time = {}, brightness = 100, value = "", variety = "normal", onCreate, onUpdate, onRemove } = props;
+  const { index, time, brightness = 100, value = "", variety = "normal", onCreate, onUpdate, onRemove } = props;
   const { viewModal } = useContext(modalContext);
 
   const SceneryCreate = () => {

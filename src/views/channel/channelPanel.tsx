@@ -28,7 +28,7 @@ const ChannelPanel: FC = (props: Props): ReactElement => {
   };
 
   const brightness_handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setBrightnessValue(e.target.value);
+    setBrightnessValue(parseInt(e.target.value, 10));
   };
 
   const brightness_handleClick = (e: React.MouseEvent<HTMLInputElement>) => {

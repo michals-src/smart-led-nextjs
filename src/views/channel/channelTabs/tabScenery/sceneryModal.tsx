@@ -6,13 +6,14 @@ import React, { FC, useCallback, useEffect, useState } from "react";
 interface ISceneryModal {
   index: number;
   time: {
-    previous: string;
-    current: string;
-    next: string;
+    previous: string | null;
+    current: string | null;
+    next: string | null;
   };
   brightness: number;
   value: string;
-  onSave: (value: string, time: string, brightness: number) => void;
+  onSave: (index: number, value: string, time: string, brightness: number) => void;
+  // onSave: (value: string, time: string, brightness: number) => void;
 }
 
 const SceneryModal: FC<ISceneryModal> = (props) => {
@@ -59,10 +60,11 @@ const SceneryModal: FC<ISceneryModal> = (props) => {
   }, []);
 
   const sliderHandleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = Math.floor(startTime + diff * (e.target.value / 100));
+    const v = parseInt(e.target.value, 10);
+    const newTime = Math.floor(startTime + diff * (v / 100));
 
     setNewTime(time2hhmm(newTime));
-    setSliderValue(e.target.value);
+    setSliderValue(v);
   }, []);
 
   const clockHandleClick = (action: string) => {
@@ -80,20 +82,22 @@ const SceneryModal: FC<ISceneryModal> = (props) => {
   };
 
   const brightnessHandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setBrightnessValue(e.target.value);
+    setBrightnessValue(parseInt(e.target.value, 10));
   };
 
-  const handlelColorClick = (e: React.MouseEvent) => {
+  const handlelColorClick = (e: any) => {
     setPaletteValue(e.target.value);
   };
 
   useEffect(() => {
     if (null !== time.next) {
-      const accTime = time.current.split(":");
-      setNewTime({
-        hour: accTime[0],
-        min: accTime[1],
-      });
+      if (time.current !== null) {
+        const accTime = time.current.split(":");
+        setNewTime({
+          hour: accTime[0],
+          min: accTime[1],
+        });
+      }
       setSliderValue(((hhmm2time(currentTime) - startTime) * 100) / diff);
     }
   }, []);
@@ -225,9 +229,7 @@ const SceneryModal: FC<ISceneryModal> = (props) => {
       <div className='p-3 pb-8 mt-6 w-full'>
         <button
           className='py-3 px-4 bg-zinc-400 text-black rounded-lg mx-auto table shadow-lg'
-          onClick={() =>
-            onSave(index, paletteValue, `${newTime.hour}:${`${newTime.min}`.length < 2 ? "0" + newTime.min : newTime.min}`, parseInt(brightnessValue, 10))
-          }>
+          onClick={() => onSave(index, paletteValue, `${newTime.hour}:${`${newTime.min}`.length < 2 ? "0" + newTime.min : newTime.min}`, brightnessValue)}>
           <div className='flex flex-row flex-nowrap items-center'>
             <span className='mr-4'>
               <CheckCircleIcon className='w-6 h-6 text-inherit' />

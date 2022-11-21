@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useCallback,
-  useEffect,
-  forwardRef,
-  Ref,
-} from "react";
+import React, { useState, useCallback, useEffect, forwardRef, Ref } from "react";
 
 import { Box } from "../";
 import { colors } from "../customizer/colors/palette";
@@ -13,7 +7,7 @@ import PaletteColorant from "./paletteColorant";
 
 type TPalette = {
   value: string;
-  onClick?: React.MouseEventHandler;
+  onClick?: React.MouseEventHandler<HTMLInputElement>;
 };
 
 const radius = 80;
@@ -56,7 +50,10 @@ const Palette = forwardRef((props: TPalette, ref: Ref<HTMLInputElement>) => {
                 />
               );
             })}
-            <PaletteColor ref={ref} value={value} />
+            <PaletteColor
+              ref={ref}
+              value={value}
+            />
           </div>
         </>
       </div>

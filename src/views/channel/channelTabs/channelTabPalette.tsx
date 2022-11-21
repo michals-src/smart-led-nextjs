@@ -11,10 +11,10 @@ const ChannelTabPalette = (props: Props) => {
   const colorRef = useRef<HTMLInputElement>(null);
   const [color, setColor] = useState<string>(channelCtx.color);
 
-  const handleClick = (e: React.MouseEvent) => {
-    channelCtx.events.color.update(e?.target.value);
+  const handleClick = (e: any) => {
+    channelCtx.events.color.update(e.target.value);
     update(ref(db), {
-      [`/channels/${channelCtx.channelID}/value`]: e?.target.value,
+      [`/channels/${channelCtx.channelID}/value`]: e.target.value,
     });
     setColor(channelCtx.color);
   };
@@ -22,7 +22,11 @@ const ChannelTabPalette = (props: Props) => {
   return (
     <div className='pb-16'>
       <Box className='p-4'>
-        <Palette ref={colorRef} onClick={handleClick} value={color} />
+        <Palette
+          ref={colorRef}
+          onClick={handleClick}
+          value={color}
+        />
       </Box>
     </div>
   );

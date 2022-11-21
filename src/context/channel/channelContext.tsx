@@ -8,7 +8,7 @@ const context = {
   brightness: 0,
   events: {
     color: {
-      update: (e: String) => {},
+      update: (e: string) => {},
     },
     channelID: {
       update: (e: number) => {},

@@ -8,11 +8,11 @@ import { colors, LightenColor } from "@utils";
 type TWrapperModal = {
   title?: string;
   footer?: string;
-  children?: ReactNode;
+  children?: JSX.Element;
 };
 
 type TInnerModal = TWrapperModal & {
-  viewModal: (node?: ReactNode | undefined) => void;
+  viewModal: (node?: JSX.Element | undefined) => void;
 };
 
 const InnerModal = (props: TInnerModal): ReactElement => {

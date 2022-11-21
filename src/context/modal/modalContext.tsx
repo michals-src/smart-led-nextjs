@@ -1,10 +1,16 @@
-import { createContext, ReactNode } from "react";
+import { createContext, ReactElement, ReactNode } from "react";
 
-const context = {
-  component: (): JSX.Element => {
+type TContext = {
+  component: any;
+  viewModal: any;
+  visible: Boolean;
+};
+
+const context: TContext = {
+  component: () => {
     return <></>;
   },
-  viewModal: (node?: ReactNode | undefined) => {},
+  viewModal: (node?: JSX.Element | undefined) => {},
   visible: false,
 };
 

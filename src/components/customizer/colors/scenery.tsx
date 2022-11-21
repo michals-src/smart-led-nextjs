@@ -1,22 +1,6 @@
-import React, {
-  Children,
-  forwardRef,
-  ReactElement,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { Children, forwardRef, ReactElement, useCallback, useContext, useEffect, useRef, useState } from "react";
 
-import {
-  ClockIcon,
-  Cog6ToothIcon,
-  FlagIcon,
-  PaintBrushIcon,
-  PlusIcon,
-  SunIcon,
-} from "@heroicons/react/24/solid";
+import { ClockIcon, Cog6ToothIcon, FlagIcon, PaintBrushIcon, PlusIcon, SunIcon } from "@heroicons/react/24/solid";
 
 import { default as modalCtx } from "../../../context/modal/modalContext";
 import { Box, Palette, Slider } from "../..";
@@ -75,7 +59,7 @@ const SceneryCreate = () => {
   const [paletteValue, setPaletteValue] = useState<string>(colors[0]);
   const [brightnessValue, setBrightnessValue] = useState<number>(100);
   const [sliderValue, setSliderValue] = useState<number>(50);
-  const [newTime, setNewTime] = useState<object>({ hour: 0, min: 0 });
+  const [newTime, setNewTime] = useState<any>({ hour: 0, min: 0 });
 
   const time2hhmm = (time: number) => {
     const hour = Math.floor(time / 60);
@@ -99,18 +83,17 @@ const SceneryCreate = () => {
   const endTime = hhmm2time("22:55");
   const diff = endTime - startTime;
 
-  const sliderHandleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newTime = Math.floor(startTime + diff * (e.target.value / 100));
+  const sliderHandleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = parseInt(e.target.value, 10);
+    const newTime = Math.floor(startTime + diff * (v / 100));
 
-      setNewTime(time2hhmm(newTime));
-      setSliderValue(e.target.value);
-    },
-    []
-  );
+    setNewTime(time2hhmm(newTime));
+    setSliderValue(v);
+  }, []);
 
   const brightnessHandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setBrightnessValue(e.target.value);
+    const v = parseInt(e.target.value, 10);
+    setBrightnessValue(v);
   };
 
   return (
@@ -122,9 +105,7 @@ const SceneryCreate = () => {
               <div className='py-2 px-4'>
                 <p className='text-zinc-100 mx-auto'>
                   {newTime.hour} <span className='mx-3'>:</span>
-                  {`${newTime.min}`.length < 2
-                    ? "0" + newTime.min
-                    : newTime.min}
+                  {`${newTime.min}`.length < 2 ? "0" + newTime.min : newTime.min}
                 </p>
               </div>
               <Slider
@@ -139,15 +120,15 @@ const SceneryCreate = () => {
             <div
               className='w-full h-1/2 absolute left-0'
               style={{
-                background: `linear-gradient(to right, ${LightenColor(
-                  colors[0]
-                )} 0%,${LightenColor(colors[3])}  150%)`,
+                background: `linear-gradient(to right, ${LightenColor(colors[0])} 0%,${LightenColor(colors[3])}  150%)`,
                 top: "50%",
                 transform: "translateY(-50%)",
                 filter: "blur(30px)",
               }}></div>
             <div className='w-3/12 relative z-10'>
-              <Box bgGradient={colors[0]} className='py-2 px-4'>
+              <Box
+                bgGradient={colors[0]}
+                className='py-2 px-4'>
                 <p className='text-xs text-zinc-100'> 20:30</p>
               </Box>
             </div>
@@ -159,7 +140,9 @@ const SceneryCreate = () => {
               </div>
             </div>
             <div className='w-3/12 relative z-10'>
-              <Box bgGradient={colors[3]} className='py-2 px-4'>
+              <Box
+                bgGradient={colors[3]}
+                className='py-2 px-4'>
                 <p className='text-xs text-zinc-100'> 23:00</p>
               </Box>
             </div>
@@ -167,9 +150,7 @@ const SceneryCreate = () => {
         </div>
       </Box>
       <div className='py-4'>
-        <Box className='p-4'>
-          <Palette state={setPaletteValue} />
-        </Box>
+        <Box className='p-4'>{/* <Palette state={setPaletteValue} /> */}</Box>
       </div>
       <Box className='p-4'>
         <div className='w-full'>
@@ -282,7 +263,9 @@ export default function Scenery({}: IScenery) {
               color1='rgba(0,0,0,0)'
               color2={`${LightenColor(colors[0])}FF`}
             />
-            <Box className='px-4 py-3 relative z-10' bgGradient={colors[0]}>
+            <Box
+              className='px-4 py-3 relative z-10'
+              bgGradient={colors[0]}>
               <div className='flex flex-row flex-nowrap items-center justify-center'>
                 <p className='ml-4 text-xs text-white'>21:00</p>
                 <div className='w-1/12 ml-auto '>
@@ -298,7 +281,9 @@ export default function Scenery({}: IScenery) {
               color1={`${LightenColor(colors[0])}FF`}
               color2={`${LightenColor(colors[3])}FF`}
             />
-            <Box className='px-4 py-3 relative z-10' bgGradient={colors[3]}>
+            <Box
+              className='px-4 py-3 relative z-10'
+              bgGradient={colors[3]}>
               <div className='flex flex-row flex-nowrap items-center justify-center'>
                 <p className='ml-4 text-xs text-white'>22:00</p>
                 <div className='w-1/12 ml-auto '>
@@ -314,7 +299,9 @@ export default function Scenery({}: IScenery) {
               color1={`${LightenColor(colors[3])}FF`}
               color2={`${LightenColor(colors[6])}FF`}
             />
-            <Box className='px-4 py-3 relative z-10' bgGradient={colors[6]}>
+            <Box
+              className='px-4 py-3 relative z-10'
+              bgGradient={colors[6]}>
               <div className='flex flex-row flex-nowrap items-center justify-center'>
                 <div className='w-1/12'>
                   <ClockIcon className='w-5 h-5 text-white' />
@@ -395,10 +382,11 @@ export default function Scenery({}: IScenery) {
                   className='w-2 h-2 ml-1 inline-block rounded-md'
                   style={{ background: `${colors[5]}` }}></span>
               </p>
-              <p className='text-sm mb-4 px-1 text-zinc-100'>
-                Intensywność {sliderValue} %
-              </p>
-              <Slider value={0} size='sm' />
+              <p className='text-sm mb-4 px-1 text-zinc-100'>Intensywność {sliderValue} %</p>
+              <Slider
+                value={0}
+                size='sm'
+              />
             </div>
           </div>
         </div>

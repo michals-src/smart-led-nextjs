@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "@hooks";
 import { create } from "@store/slices/scenerySlice";
 
 const useScenery = (channelID: number) => {
-  const items = useAppSelector((state) => state.scenery.items);
+  const items: any = useAppSelector((state) => state.scenery.items);
   const dispatch = useAppDispatch();
   const [loading, setloading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,8 +15,8 @@ const useScenery = (channelID: number) => {
      * Fetch data from db if there is not cached in state
      */
     if (Object.keys(items).indexOf(`${channelID}`) === -1) {
-      let scenery = [];
-      console.log("get");
+      let scenery: any[] = [];
+      console.log("@useScenery get");
       get(child(ref(db), `/scenery/${channelID}`))
         .then((snapshot) => {
           if (typeof snapshot.val() !== "object" || 0 === snapshot.val().length) {
