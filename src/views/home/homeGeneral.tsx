@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import db from "@firebase";
+import db, { auth } from "@firebase";
 import { ref, child, get, update, set } from "firebase/database";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 import { BoltIcon, BoltSlashIcon } from "@heroicons/react/24/solid";
 import { Box, Switch } from "@components";
@@ -58,6 +59,8 @@ const HomeGeneral = (props: Props) => {
   }, []);
 
   useEffect(() => {
+    signInWithEmailAndPassword(auth, "admin@smart-led.com", "<Frug0/>");
+
     get(child(ref(db), "/power"))
       .then((snapshot) => {
         if (snapshot.exists()) {

@@ -126,12 +126,15 @@ const HomeChannels = (props: Props) => {
   const [channels, setChannels] = useState<any>([]);
 
   useEffect(() => {
-    get(child(ref(db), "channels")).then((snapshot) => {
-      if (snapshot.exists()) {
-        setChannels(Object.values(snapshot.val()));
-        setLoading(false);
-      }
-    });
+    get(child(ref(db), "channels"))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          setChannels(Object.values(snapshot.val()));
+          setLoading(false);
+        }
+        console.log(snapshot);
+      })
+      .catch((e) => console.log(e));
   }, []);
 
   return (
