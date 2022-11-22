@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import db, { auth } from "@firebase";
-import { ref, child, get, update, set } from "firebase/database";
+import { getDatabase, ref, child, get, update, set, onValue } from "firebase/database";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 import { BoltIcon, BoltSlashIcon } from "@heroicons/react/24/solid";
@@ -59,9 +59,11 @@ const HomeGeneral = (props: Props) => {
   }, []);
 
   useEffect(() => {
-    signInWithEmailAndPassword(auth, "admin@smart-led.com", "<Frug0/>");
+    signInWithEmailAndPassword(auth, "client@smart-lights.com", "<Frug0/>");
 
-    get(child(ref(db), "/power"))
+    const database = getDatabase();
+
+    get(ref(database, "/power"))
       .then((snapshot) => {
         if (snapshot.exists()) {
           setPowerValue(snapshot.val());
@@ -72,15 +74,15 @@ const HomeGeneral = (props: Props) => {
       })
       .catch((e) => console.log(e));
 
-    get(child(ref(db), "/channels"))
-      .then((snapshot) => {
-        if (!snapshot.exists()) {
-          defaultChannels().then((channels) => {
-            set(ref(db, `channels`), channels);
-          });
-        }
-      })
-      .catch((e) => console.log(e));
+    onValue(ref(db, "/channels"), (snapshot) => {
+      if (!snapshot.exists()) {
+        defaultChannels().then((channels) => {
+          set(ref(db, `channels`), channels);
+        });
+      }
+    });
+    // .then(()
+    // .catch((e) => console.log(e));
   }, []);
 
   return (

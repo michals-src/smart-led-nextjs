@@ -1,12 +1,11 @@
-import React, { FC, ReactElement, ReactNode, useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
+import Link from "next/link";
 import db from "@firebase";
 import { ref, child, get, update } from "firebase/database";
 import { v4 as uuidv4 } from "uuid";
 import { Cog6ToothIcon } from "@heroicons/react/24/solid";
 
 import { Box, LoaderCircle, Switch } from "@components";
-import { colors } from "src/components/customizer/colors/palette";
-import Link from "next/link";
 
 type Props = {};
 type TChannel = {
@@ -122,7 +121,7 @@ const Channel = (props: TChannel): ReactElement => {
 };
 
 const HomeChannels = (props: Props) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [channels, setChannels] = useState<any>([]);
 
   useEffect(() => {
@@ -132,9 +131,10 @@ const HomeChannels = (props: Props) => {
           setChannels(Object.values(snapshot.val()));
           setLoading(false);
         }
-        console.log(snapshot);
       })
       .catch((e) => console.log(e));
+
+    console.log(channels);
   }, []);
 
   return (
@@ -158,10 +158,10 @@ const HomeChannels = (props: Props) => {
           {channels.map((channel: any, idx: number) => {
             return (
               <div
-                key={uuidv4()}
+                key={idx}
                 className='w-full p-1'>
                 <Channel
-                  key={uuidv4()}
+                  key={idx}
                   id={idx}
                   {...channel}
                 />
