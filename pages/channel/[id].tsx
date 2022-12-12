@@ -72,7 +72,10 @@ const channelRGBPage = (props: TChannelRGBPage) => {
           <div className='relative z-30 p-4'>
             <ChannelHeader />
             <ChannelPanel />
-            <ChannelNav />
+
+            <div className='mt-20'>
+              <ChannelNav />
+            </div>
           </div>
         </div>
       </ChannelLayout>

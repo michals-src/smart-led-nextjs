@@ -1,11 +1,13 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import db from "@firebase";
 import { ref, child, get, update } from "firebase/database";
 import { v4 as uuidv4 } from "uuid";
-import { Cog6ToothIcon } from "@heroicons/react/24/solid";
 
-import { Box, LoaderCircle, Switch } from "@components";
+import { ArrowLongRightIcon, ArrowRightIcon, BoltIcon, ClockIcon, Cog6ToothIcon, HandRaisedIcon, LightBulbIcon, SunIcon } from "@heroicons/react/24/solid";
+
+import { default as popupContext } from "../../context/popup/popupContext";
+import { Box, Palette, Slider, LoaderCircle, Switch } from "@components";
 
 type Props = {};
 type TChannel = {
@@ -28,6 +30,110 @@ type TChannel = {
 //   { id: uuidv4(), status: true, color: "#ffdf60A0", type: "mono", order: 7 },
 // ];
 
+const Popup_content = () => {
+  return (
+    <>
+      <div className='mb-8'>
+        <div className='flex flex-row flex-nowrap items-center'>
+          <div className='w-1/12'>
+            <BoltIcon className='w-6 h-6 text-white' />
+          </div>
+          <div className='w-7/12'>
+            <div className='px-3'>
+              <p className='text-sm'>Zasilanie</p>
+              {/* <p className='text-xs text-zinc-500'>Indywidualne kanału</p> */}
+            </div>
+          </div>
+          <div className='w-4/12'>
+            <div className='ml-auto table'>
+              <Switch size='lg' />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className='my-8'>
+        <button className='w-full h-auto text-left'>
+          <div className='flex flex-row flex-nowrap items-center'>
+            <div className='w-1/12'>
+              <Cog6ToothIcon className='w-6 h-6 text-white' />
+            </div>
+            <div className='w-9/12'>
+              <div className='px-3'>
+                <p className='text-sm'>Zmiana kolor</p>
+                <p className='text-xs text-zinc-500'>Konfigurowanie pracy ręcznej</p>
+              </div>
+            </div>
+            <div className='w-2/12'>
+              <div className='ml-auto table'>
+                <ArrowLongRightIcon className='w-4 h-4' />
+              </div>
+            </div>
+          </div>
+        </button>
+      </div>
+      <Box>
+        <>
+          <div className='p-4 flex flex-row nowrap items-center'>
+            <div className='w-2/12'>
+              <SunIcon className='w-6 h-6 text-white mx-auto' />
+            </div>
+            <div className='w-8/12 pl-4 pr-8'>
+              <p className='text-sm'>Jasność</p>
+            </div>
+            <div className='w-2/12'>
+              <p className='text-xs'>100 %</p>
+            </div>
+          </div>
+          <div className='w-full'>
+            <Slider
+              size='lg'
+              thumb={false}
+            />
+          </div>
+        </>
+      </Box>
+      <div className='mt-8'>
+        <div className='flex flex-col md:flex-row flex-nowrap items-center space-y-3 md:space-x-3'>
+          <div className='w-full md:w-6/12'>
+            <button className='w-full h-full border border-zinc-700 bg-zinc-800 rounded-lg py-4 px-5 shadow-lg'>
+              <div className='flex flex-row items-center'>
+                <div className='w-2/12'>
+                  <HandRaisedIcon className='w-8 h-8' />
+                </div>
+                <div className='w-10/12 md:pl-6'>
+                  <div className='text-left'>
+                    <p className='text-sm text-white'>Tryb ręczny</p>
+                    <p className='text-xs text-zinc-500 mt-1'>Manualne sterowanie kolorem</p>
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+          <div className='w-full md:w-6/12'>
+            <button className='w-full h-full border border-transparent rounded-lg py-4 px-5'>
+              <div className='flex flex-row items-center'>
+                <div className='w-2/12'>
+                  <ClockIcon className='w-8 h-8 text-zinc-600' />
+                </div>
+                <div className='w-10/12 md:pl-6'>
+                  <div className='text-left'>
+                    <p className='text-sm text-zinc-400'>Scena</p>
+                    <p className='text-xs text-zinc-600 mt-1'>Działanie według określonego scenariusza</p>
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className='mt-8'>
+        <Palette value='#000000' />
+      </div>
+    </>
+  );
+};
+
 const HourGlassSplit = () => {
   return (
     <svg
@@ -44,6 +150,7 @@ const HourGlassSplit = () => {
 
 const Channel = (props: TChannel): ReactElement => {
   const { id, value, power, color, type, order } = props;
+  const popupCtx = useContext(popupContext);
 
   const [boxProps, setBoxProps] = useState<object>({
     bgGradient: "#FFFFFF20",
@@ -68,9 +175,18 @@ const Channel = (props: TChannel): ReactElement => {
     });
   };
 
+  const channelPopup = () => {
+    popupCtx.onUpdatePopupIcon(LightBulbIcon);
+    popupCtx.onUpdatePopupScreenList([Popup_content]);
+    popupCtx.onUpdatePopupScreenIndex(0);
+    popupCtx.onUpdatePopupTitle("Ustawienia", `Kanał ${id + 1}`);
+    popupCtx.onUpdatePopupVisible(true);
+  };
+
   return (
     <Box
       className='relative py-3 px-4 h-full'
+      onClick={() => channelPopup()}
       {...boxProps}>
       <div className='flex flex-col flex-nowrap w-full h-full relative z-20'>
         <div className='my-1'>
