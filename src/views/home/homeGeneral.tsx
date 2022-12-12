@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import db, { auth } from "@firebase";
+import db from "@firebase";
 import { getDatabase, ref, child, get, update, set, onValue } from "firebase/database";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
@@ -59,7 +59,7 @@ const HomeGeneral = (props: Props) => {
   }, []);
 
   useEffect(() => {
-    signInWithEmailAndPassword(auth, "client@smart-lights.com", "<Frug0/>");
+    //signInWithEmailAndPassword(auth, "client@smart-lights.com", "<Frug0/>");
 
     const database = getDatabase();
 
