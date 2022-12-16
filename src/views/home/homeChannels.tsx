@@ -4,10 +4,23 @@ import db from "@firebase";
 import { ref, child, get, update } from "firebase/database";
 import { v4 as uuidv4 } from "uuid";
 
-import { ArrowLongRightIcon, ArrowRightIcon, BoltIcon, ClockIcon, Cog6ToothIcon, HandRaisedIcon, LightBulbIcon, SunIcon } from "@heroicons/react/24/solid";
+import {
+  ArrowLongLeftIcon,
+  ArrowLongRightIcon,
+  ArrowRightIcon,
+  BoltIcon,
+  ClockIcon,
+  Cog6ToothIcon,
+  HandRaisedIcon,
+  LightBulbIcon,
+  SunIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/solid";
 
 import { default as popupContext } from "../../context/popup/popupContext";
 import { Box, Palette, Slider, LoaderCircle, Switch } from "@components";
+import Coolors from "src/components/Colors/coolors";
+import { colors } from "@utils";
 
 type Props = {};
 type TChannel = {
@@ -30,7 +43,12 @@ type TChannel = {
 //   { id: uuidv4(), status: true, color: "#ffdf60A0", type: "mono", order: 7 },
 // ];
 
-const Popup_content = () => {
+const Popup_screen_0 = () => {
+  const [openColor, setOpenColor] = useState(false);
+  const [color, setColor] = useState(colors[0]);
+
+  const popupCtx = useContext(popupContext);
+
   return (
     <>
       <div className='mb-8'>
@@ -51,26 +69,79 @@ const Popup_content = () => {
           </div>
         </div>
       </div>
-      <div className='my-8'>
-        <button className='w-full h-auto text-left'>
-          <div className='flex flex-row flex-nowrap items-center'>
-            <div className='w-1/12'>
-              <Cog6ToothIcon className='w-6 h-6 text-white' />
+
+      {/* <div className='mt-12 mb-4'>
+        <div className='flex flex-row flex-nowrap items-top'>
+          <div className='w-8/12'>
+            <div className='mb-1'>
+              <p className='text-4xl font-bold'>Konfiguracja</p>
             </div>
-            <div className='w-9/12'>
-              <div className='px-3'>
-                <p className='text-sm'>Zmiana kolor</p>
-                <p className='text-xs text-zinc-500'>Konfigurowanie pracy ręcznej</p>
-              </div>
-            </div>
-            <div className='w-2/12'>
-              <div className='ml-auto table'>
-                <ArrowLongRightIcon className='w-4 h-4' />
+          </div>
+          <div className='w-4/12 pl-8'>
+            <div className='w-auto table ml-auto rounded-full'>
+              <div>
+                <Cog6ToothIcon className='text-zinc-100 ml-auto w-8 h-8' />
               </div>
             </div>
           </div>
-        </button>
+        </div>
+        <p className='text-xs text-zinc-500'>Konfigurowanie pracy ręcznej</p>
+      </div> */}
+
+      <div className='my-8'>
+        {!openColor && (
+          <div
+            className='w-full h-auto text-left'
+            onClick={() => setOpenColor(true)}>
+            <div className='flex flex-row flex-nowrap items-center'>
+              <div className='w-1/12'>
+                <Cog6ToothIcon className='w-6 h-6 text-white' />
+              </div>
+              <div className='w-11/12'>
+                <div className='px-3'>
+                  <p className='text-sm'>Zmiana kolor</p>
+                  <p className='text-xs text-zinc-500'>Konfigurowanie pracy ręcznej</p>
+                </div>
+              </div>
+              <div className='w-2/12'>
+                <div className='ml-auto table'>
+                  <ArrowLongRightIcon className='w-4 h-4' />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {openColor && (
+          <Box>
+            <>
+              <div className='p-4 flex flex-row nowrap items-center'>
+                <div className='w-2/12'>
+                  <Cog6ToothIcon className='w-6 h-6 text-white mx-auto' />
+                </div>
+                <div className='w-8/12 pl-4 pr-8'>
+                  <p className='text-sm'>Kolor</p>
+                  <p className='text-xs text-zinc-500'>Działanie tylko w trybie manualnym</p>
+                </div>
+                <div className='w-2/12'>
+                  <button
+                    className='table ml-auto p-2 bg-zinc-900 rounded-full'
+                    onClick={() => setOpenColor(false)}>
+                    <XMarkIcon className='w-3 h-3 text-white mx-auto' />
+                  </button>
+                </div>
+              </div>
+              <div className='p-3'>
+                <Coolors
+                  value={color}
+                  onClick={(e) => setColor(e.target.value)}
+                />
+              </div>
+            </>
+          </Box>
+        )}
       </div>
+
       <Box>
         <>
           <div className='p-4 flex flex-row nowrap items-center'>
@@ -126,9 +197,41 @@ const Popup_content = () => {
           </div>
         </div>
       </div>
+    </>
+  );
+};
 
-      <div className='mt-8'>
+const Popup_screen_1 = () => {
+  const popupCtx = useContext(popupContext);
+
+  return (
+    <>
+      <div>
         <Palette value='#000000' />
+      </div>
+
+      <div>
+        <button
+          className='w-full h-auto text-left border bg-[#ffffff10] border-zinc-700 rounded-lg py-3 px-6'
+          onClick={() => popupCtx.onUpdatePopupScreenIndex(0)}>
+          <div className='flex flex-row flex-nowrap items-center'>
+            <div className='w-2/12'>
+              <div className='mr-auto table'>
+                <ArrowLongLeftIcon className='w-4 h-4 text-zinc-500' />
+              </div>
+            </div>
+
+            <div className='w-9/12'>
+              <div className='px-3'>
+                <p className='text-sm text-zinc-400'>Powrót</p>
+                <p className='text-xs text-zinc-600'>Ustawienia ogólne</p>
+              </div>
+            </div>
+            <div className='w-1/12'>
+              <Cog6ToothIcon className='w-6 h-6 text-zinc-400' />
+            </div>
+          </div>
+        </button>
       </div>
     </>
   );
@@ -158,10 +261,10 @@ const Channel = (props: TChannel): ReactElement => {
   const [powerValue, setPowerValue] = useState<boolean>(power);
 
   useEffect(() => {
-    if (powerValue) {
-      setBoxProps({ ...boxProps, bgGradient: `${value}` });
-      return;
-    }
+    // if (powerValue) {
+    //   setBoxProps({ ...boxProps, bgGradient: `${value}` });
+    //   return;
+    // }
     setBoxProps({ ...boxProps, bgGradient: `${value.substring(0, 7)}35` });
   }, [powerValue]);
 
@@ -177,7 +280,7 @@ const Channel = (props: TChannel): ReactElement => {
 
   const channelPopup = () => {
     popupCtx.onUpdatePopupIcon(LightBulbIcon);
-    popupCtx.onUpdatePopupScreenList([Popup_content]);
+    popupCtx.onUpdatePopupScreenList([() => <Popup_screen_0 />, Popup_screen_1]);
     popupCtx.onUpdatePopupScreenIndex(0);
     popupCtx.onUpdatePopupTitle("Ustawienia", `Kanał ${id + 1}`);
     popupCtx.onUpdatePopupVisible(true);
@@ -185,43 +288,80 @@ const Channel = (props: TChannel): ReactElement => {
 
   return (
     <Box
-      className='relative py-3 px-4 h-full'
+      className='relative h-full rounded-2xl'
       onClick={() => channelPopup()}
+      // style={{ boxShadow: `0 0 15px ${value}15` }}
+      // style={{ border: `1px solid #ffffff00` }}
       {...boxProps}>
       <div className='flex flex-col flex-nowrap w-full h-full relative z-20'>
-        <div className='my-1'>
-          <div className='flex flex-row flex-nowrap justify-between items-center'>
-            <div className='w-8/12'>
-              <p
-                className='text-xs'
-                style={{ color: "#FFFFFF80" }}>
-                {type.toUpperCase()}
-              </p>
-              <p className='text-sm pointer-events-none'>Kanał {id + 1}</p>
-            </div>
-            <div className='w-4/12'>
+        <div className='py-3 px-4 my-1'>
+          <div className='flex flex-col flex-nowrap'>
+            {/* <div className='w-1/12'>
+              <div className='flex flex-col items-center'>
+                <div
+                  className='w-3 h-3 p-1 rounded-full'
+                  style={{ background: `${value}` }}></div>
+              </div>
+            </div> */}
+
+            <div>
               <div className='flex flex-row flex-nowrap items-center'>
-                <div className='w-6/12'>
+                <div className='mr-3'>
+                  <p className='text-sm pointer-events-none'>Kanał {id + 1}</p>
+                </div>
+                <div
+                  className='w-2 h-2 p-1 rounded-full ml-auto'
+                  style={{ background: `${powerValue ? "#0ee10e" : "#ffffff30"}`, boxShadow: `0 0 6px ${powerValue ? "#02ff02" : "transparent"}` }}></div>
+              </div>
+            </div>
+
+            <div className='mb-4'>
+              <div className='table'>
+                <div className='flex flex-row flex-nowrap items-center'>
+                  {/* <div
+                    className='w-2 h-2 p-1 rounded-sm mr-4'
+                    style={{ background: `${value}` }}></div> */}
+                  <p className='text-xs text-[#ffffff35]'>{type.toLowerCase()}</p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div className='flex flex-row flex-nowrap items-center justify-between'>
+                <div>
                   <Link href={`/channel/${id}`}>
-                    <div className='table p-1 bg-[#FFFFFF60] rounded-full ml-auto shadow-lg cursor-pointer'>
+                    <div className='table p-1 bg-zinc-700 rounded-full ml-auto shadow-lg cursor-pointer'>
                       <Cog6ToothIcon className='w-4 h-4 text-white' />
                     </div>
                   </Link>
                 </div>
-                <div className='w-6/12'>
+                <div>
+                  <div className='table rounded-full ml-auto shadow-lg cursor-pointer'>
+                    {/* <ClockIcon className='w-4 h-4 text-[#ffffff30]' /> */}
+                    <HandRaisedIcon className='w-4 h-4 text-[#ffffff30]' />
+                  </div>
+                </div>
+                {/* <div className='w-6/12'>
                   <div className='table ml-auto'>
                     <Switch
                       value={powerValue}
                       onChange={power_handleChange}
                     />
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
         </div>
+        <div>
+          <Slider
+            value={50}
+            size='sm'
+            thumb={false}
+          />
+        </div>
       </div>
-      <div className='absolute z-10 left-0 bottom-0'>
+      {/* <div className='absolute z-10 left-0 bottom-0'>
         <p
           className='text-6xl font-bold'
           style={{
@@ -231,7 +371,7 @@ const Channel = (props: TChannel): ReactElement => {
           }}>
           {id + 1}
         </p>
-      </div>
+      </div> */}
     </Box>
   );
 };
@@ -249,14 +389,13 @@ const HomeChannels = (props: Props) => {
         }
       })
       .catch((e) => console.log(e));
-
-    console.log(channels);
   }, []);
 
   return (
     <div>
-      <div className='mt-8 mb-1 px-3'>
-        <p>Zarządzaj kanałami</p>
+      <div className='mt-12 mb-3 px-3'>
+        <p className='text-4xl font-bold leading-tight'>Zarządzaj kanałami</p>
+        <p className='text-xs text-zinc-500'>Lista dostępnych kanałów</p>
       </div>
       {loading && (
         <Box className='p-4'>
@@ -275,7 +414,7 @@ const HomeChannels = (props: Props) => {
             return (
               <div
                 key={idx}
-                className='w-full p-1'>
+                className='w-6/12 p-1'>
                 <Channel
                   key={idx}
                   id={idx}

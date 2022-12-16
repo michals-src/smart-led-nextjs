@@ -38,3 +38,5 @@ export const LightenColor = (color: string) => {
 
   return rgb2hex(diff);
 };
+
+export const toUpperFirst = (chars: string) => chars.charAt(0).toUpperCase() + chars.substring(1);

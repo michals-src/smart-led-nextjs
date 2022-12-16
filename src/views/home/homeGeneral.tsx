@@ -88,8 +88,8 @@ const HomeGeneral = (props: Props) => {
   return (
     <>
       <Box
-        bgGradient={`${powerValue ? "#10F0FF4A" : "#10F0FF30"}`}
-        className='mb-4 overflow-visible text-white'>
+        // bgGradient={`${powerValue ? "#10F0FF4A" : "#10F0FF30"}`}
+        className='mb-4 px-4 overflow-visible text-white rounded-2xl'>
         <div>
           <div className='flex flex-row flex-nowrap justify-between relative'>
             {loading && (
@@ -100,37 +100,41 @@ const HomeGeneral = (props: Props) => {
               </div>
             )}
             {!loading && (
-              <div className='w-8/12'>
-                <div className='py-4 pl-6 h-full'>
-                  <div className='flex flex-col flex-nowrap h-full w-full justify-between'>
-                    <div>
+              <div className='w-full'>
+                <div className='py-4 px-2 h-full'>
+                  <div className='flex flex-row flex-nowrap h-full w-full items-center'>
+                    <div className='w-1/12'>
                       <div className='mb-3'>
                         {!powerValue && <BoltSlashIcon className={`w-6 h-6 ${powerValue ? "text-yellow-100" : "text-white"}`} />}
 
-                        {powerValue && <BoltIcon className={`w-6 h-6 text-white`} />}
-                      </div>
-                      <div className='mb-6'>
-                        <p className='text-lg'>Zasilanie</p>
-                        <p className='text-xs'>8 kanałów</p>
+                        {powerValue && <BoltIcon className={`w-6 h-6 text-[#d4c82d]`} />}
                       </div>
                     </div>
-                    <div>
-                      <Switch
-                        value={powerValue}
-                        onChange={powerHandleChange}
-                      />
+                    <div className='w-8/12'>
+                      <div className='px-6'>
+                        <p className='text-lg'>Zasilanie</p>
+                        <p className='text-xs text-zinc-500'>8 kanałów</p>
+                      </div>
+                    </div>
+                    <div className='w-3/12'>
+                      <div className='table ml-auto'>
+                        <Switch
+                          value={powerValue}
+                          onChange={powerHandleChange}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             )}
-            <div className='w-4/12 relative ml-auto'>
+            {/* <div className='w-4/12 relative ml-auto'>
               <Image
                 alt='Obraz ozdobnej lampy'
                 src={Lamp}
                 className='w-full'
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </Box>

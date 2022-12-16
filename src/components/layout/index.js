@@ -2,7 +2,7 @@ import React from "react";
 import Head from "next/head";
 import Link from "next/link";
 
-import { HomeIcon } from "@heroicons/react/24/solid";
+import { ClockIcon, HomeIcon } from "@heroicons/react/24/solid";
 
 import ModalProvider from "@context/modal/modalProvider";
 import PopupProvider from "@context/popup/popupProvider";
@@ -23,30 +23,70 @@ export default function Layout({ children, ...props }) {
           rel='icon'
           href='/favicon.ico'
         />
+        {/* <meta
+          name='viewport'
+          content='width = device-width, initial-scale = 1.0, minimum-scale = 1, maximum-scale = 1, user-scalable = no'
+        /> */}
+
+        <meta
+          name='apple-mobile-web-app-title'
+          content='App name'
+        />
+        <meta
+          name='apple-mobile-web-app-capable'
+          content='yes'
+        />
+        <meta
+          name='apple-mobile-web-app-status-bar-style'
+          content='black'
+        />
+        <meta
+          name='viewport'
+          content='viewport-fit=cover, user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1'
+        />
       </Head>
 
-      <div className='max-w-sm min-h-screen mx-auto bg-zinc-900 text-white pb-16'>
+      <div className='max-w-sm min-h-screen mx-auto bg-zinc-900 text-white pb-16 relative'>
         <ModalProvider>
           <PopupProvider>
             <main>{children}</main>
             <div
-              className='fixed w-full h-16 bottom-0 left-0 z-50 text-white'
+              className='fixed max-w-lg w-full bottom-0 left-0 z-50 text-white p-2'
               style={{
-                background: "linear-gradient(to bottom, rgb(42 42 45) 0%, rgb(39 39 42)  100%)",
-                borderRadius: "8px 8px 0 0",
+                // background: "linear-gradient(to bottom, rgb(42 42 45) 0%, rgb(39 39 42)  100%)",
+                left: "50%",
+                transform: "translateX(-50%)",
               }}>
-              <div className='flex flex-row flex-nowrap flex-auto items-center justify-between mx-auto h-full'>
-                <div className='mx-auto'>
-                  <Link href='/'>
-                    <div className='mx-auto cursor-pointer'>
-                      <div className='flex flex-row flex-nowrap'>
-                        <div className='mr-6'>
-                          <HomeIcon className='w-6 h-4 text-inherit' />
+              <div
+                className='w-full h-full bg-orange-900 shadow-lg py-2 px-3'
+                style={{ borderRadius: "100px" }}>
+                <div className='w-full flex flex-row flex-nowrap flex-auto items-center justify-between mx-auto h-full'>
+                  <div className='w-full'>
+                    <Link href='/'>
+                      <div className='px-4 py-3 bg-orange-700 rounded-3xl shadow-lg'>
+                        <div className='mx-auto cursor-pointer table mx-auto'>
+                          <div className='flex flex-row flex-nowrap w-auto'>
+                            <div>
+                              <HomeIcon className='w-6 h-4 text-inherit' />
+                            </div>
+                            <p className='text-sm ml-6'>Dom</p>
+                          </div>
                         </div>
-                        <p className='text-sm'>Dom</p>
                       </div>
-                    </div>
-                  </Link>
+                    </Link>
+                  </div>
+                  <div className='w-full'>
+                    <Link href='/scenes'>
+                      <div className='mx-auto cursor-pointer table mx-auto'>
+                        <div className='flex flex-row flex-nowrap text-orange-400'>
+                          <div className='mr-6'>
+                            <ClockIcon className='w-6 h-4 text-inherit' />
+                          </div>
+                          <p className='text-xs text-inherit'>Sceny</p>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>

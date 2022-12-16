@@ -21,6 +21,7 @@ const PopupProvider = ({ children }: Props) => {
   const [popupIsVisible, setPopupIsVisible] = useState<boolean>(false);
   const [popupScreenList, setPopupScreenList] = useState<any[]>([]);
   const [popupScreenIndex, setPopupScreenIndex] = useState<number>(0);
+  const [popupScreenData, setPopupScreenData] = useState<any[]>([]);
 
   const onUpdatePopupVisible = (visible: boolean) => setPopupIsVisible(visible);
 
@@ -33,7 +34,7 @@ const PopupProvider = ({ children }: Props) => {
     setPopupTitle(() => {
       return (
         <>
-          <h3 className='text-xl'>{title}</h3>
+          <h3 className='text-xl font-bold'>{title}</h3>
           <p className='text-sm text-zinc-500'>{subtitle}</p>
         </>
       );
@@ -41,6 +42,7 @@ const PopupProvider = ({ children }: Props) => {
   };
   const onUpdatePopupScreenIndex = (index: number) => setPopupScreenIndex(index);
   const onUpdatePopupScreenList = (list: any[]) => setPopupScreenList(list);
+  const onUpdatePopupScreenData = (list: any[]) => setPopupScreenData(list);
 
   useEffect(() => {
     if (popupIsVisible) {
@@ -67,11 +69,13 @@ const PopupProvider = ({ children }: Props) => {
         popupIsVisible,
         popupScreenList,
         popupScreenIndex,
+        popupScreenData,
         onUpdatePopupVisible,
         onUpdatePopupIcon,
         onUpdatePopupTitle,
         onUpdatePopupScreenIndex,
         onUpdatePopupScreenList,
+        onUpdatePopupScreenData,
       }}>
       {children}
     </popupCtx.Provider>

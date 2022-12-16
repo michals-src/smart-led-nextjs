@@ -51,6 +51,9 @@ function Popup(props) {
 
   const windowRef = useRef(null);
   const ref = useRef(null);
+  const refContent = useRef(null);
+  const refContentWrapper = useRef(null);
+
   let changed1 = useRef(false);
   let changed2 = useRef(false);
 
@@ -74,6 +77,9 @@ function Popup(props) {
       changed1.current = false;
       changed2.current = true;
     }
+
+    const elRect = refContent.current.getBoundingClientRect();
+    refContentWrapper.current.style.height = elRect.height + "px";
   }, []);
 
   useEffect(() => {
@@ -94,12 +100,21 @@ function Popup(props) {
       "is-hidden": windowIn && !popupIsVisible,
     });
 
-    console.log(windowIn, cn_wrapper);
+    //console.log(windowIn, cn_wrapper);
 
     setCn((state) => {
       return { ...state, wrapper: cn_wrapper };
     });
   }, [popupIsVisible, windowIn]);
+
+  useEffect(() => {
+    if (refContent.current === null) return;
+
+    const elRect = refContent.current.getBoundingClientRect();
+    refContentWrapper.current.style.height = elRect.height + "px";
+
+    //console.log();
+  }, [refContent, popupScreenIndex]);
 
   if (!popupIsVisible && !windowIn) return <></>;
 
@@ -126,7 +141,15 @@ function Popup(props) {
                 <div
                   ref={ref}
                   className='overflow-auto max-h-[calc(70vh)] p-4 md:px-8'>
-                  <Content />
+                  <div
+                    ref={refContentWrapper}
+                    style={{ height: "auto", transition: "height .3s cubic-bezier(0.16, 0.27, 0, 1.04)" }}>
+                    <div
+                      ref={refContent}
+                      style={{ maxHeight: "1000000px" }}>
+                      <Content />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
