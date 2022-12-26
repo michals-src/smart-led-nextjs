@@ -1,12 +1,69 @@
 import React from "react";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import { ClockIcon, HomeIcon } from "@heroicons/react/24/solid";
 
 import ModalProvider from "@context/modal/modalProvider";
 import PopupProvider from "@context/popup/popupProvider";
 import Popup from "../popup/Popup";
+
+const globalNavigation = {
+  Dom: {
+    icon: HomeIcon,
+    href: "/",
+  },
+  Sceny: {
+    icon: ClockIcon,
+    href: "/scenes",
+  },
+};
+
+const Navigation = () => {
+  const router = useRouter();
+
+  return (
+    <div
+      className='fixed max-w-lg w-full bottom-0 left-0 z-50 text-white p-2'
+      style={{
+        // background: "linear-gradient(to bottom, rgb(42 42 45) 0%, rgb(39 39 42)  100%)",
+        left: "50%",
+        transform: "translateX(-50%)",
+      }}>
+      <div
+        className='w-full h-full bg-orange-900 shadow-lg py-2 px-3'
+        style={{ borderRadius: "100px" }}>
+        <div className='w-full flex flex-row flex-nowrap flex-auto items-center justify-between mx-auto h-full'>
+          {Object.keys(globalNavigation).map((key, id) => {
+            const LinkIcon = globalNavigation[key].icon;
+
+            return (
+              <>
+                <div
+                  className='w-full'
+                  key={id}>
+                  <Link href={globalNavigation[key].href}>
+                    <div className={`px-4 py-3 rounded-3xl ${router.asPath === globalNavigation[key].href ? "bg-orange-700 shadow-md" : ""}`}>
+                      <div className='cursor-pointer table mx-auto'>
+                        <div className='flex flex-row flex-nowrap w-auto'>
+                          <div>
+                            <LinkIcon className='w-6 h-4 text-inherit' />
+                          </div>
+                          <p className='text-sm ml-6'>{key}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              </>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function Layout({ children, ...props }) {
   const { title } = props;
@@ -50,46 +107,7 @@ export default function Layout({ children, ...props }) {
         <ModalProvider>
           <PopupProvider>
             <main>{children}</main>
-            <div
-              className='fixed max-w-lg w-full bottom-0 left-0 z-50 text-white p-2'
-              style={{
-                // background: "linear-gradient(to bottom, rgb(42 42 45) 0%, rgb(39 39 42)  100%)",
-                left: "50%",
-                transform: "translateX(-50%)",
-              }}>
-              <div
-                className='w-full h-full bg-orange-900 shadow-lg py-2 px-3'
-                style={{ borderRadius: "100px" }}>
-                <div className='w-full flex flex-row flex-nowrap flex-auto items-center justify-between mx-auto h-full'>
-                  <div className='w-full'>
-                    <Link href='/'>
-                      <div className='px-4 py-3 bg-orange-700 rounded-3xl shadow-lg'>
-                        <div className='mx-auto cursor-pointer table mx-auto'>
-                          <div className='flex flex-row flex-nowrap w-auto'>
-                            <div>
-                              <HomeIcon className='w-6 h-4 text-inherit' />
-                            </div>
-                            <p className='text-sm ml-6'>Dom</p>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                  <div className='w-full'>
-                    <Link href='/scenes'>
-                      <div className='mx-auto cursor-pointer table mx-auto'>
-                        <div className='flex flex-row flex-nowrap text-orange-400'>
-                          <div className='mr-6'>
-                            <ClockIcon className='w-6 h-4 text-inherit' />
-                          </div>
-                          <p className='text-xs text-inherit'>Sceny</p>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Navigation />
             <Popup />
           </PopupProvider>
         </ModalProvider>

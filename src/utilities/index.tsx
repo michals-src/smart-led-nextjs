@@ -40,3 +40,18 @@ export const LightenColor = (color: string) => {
 };
 
 export const toUpperFirst = (chars: string) => chars.charAt(0).toUpperCase() + chars.substring(1);
+
+export const timeAstimestamp = (time: String) => {
+  const splitted = time.split(":");
+  return +splitted[0] * 60 + +splitted[1];
+};
+export const timestampAstime = (time: number) => {
+  const hours = Math.floor(time / 60);
+  const minutes = time % 60;
+  return [hours, minutes];
+};
+export const timeAsText = (time: number[]) => {
+  const h = `${time[0]}`;
+  const min = `${time[1]}`.length > 1 ? `${time[1]}` : `0${time[1]}`;
+  return `${h}:${min}`;
+};

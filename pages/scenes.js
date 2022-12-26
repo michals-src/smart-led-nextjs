@@ -1,12 +1,66 @@
+import { useState, useEffect, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { child, get, ref } from "firebase/database";
+
+import db from "@firebase";
+import { SCENE_APPEND } from "../src/store/slices/scenesSlice";
+
 import { ArrowLongRightIcon, Cog6ToothIcon, MegaphoneIcon, PlayIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { PlusIcon, CheckCircleIcon } from "@heroicons/react/24/solid";
-import { Layout } from "../src/components";
+import { Layout, LoaderCircle } from "../src/components";
 import { ScenesEmpty, ScenesList } from "../src/views/scenes";
+import { PropagateLoader } from "react-spinners";
+
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
+
+const LoadingView = () => {
+  return (
+    <div className='w-full h-screen flex flex-col items-center justify-center'>
+      <div>
+        <div className='table mx-auto'>
+          <LoaderCircle size='lg' />
+        </div>
+        <div className='mt-4'>
+          <p className='text-xl'>Ładowanie</p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Scenes = () => {
+  const disptach = useDispatch();
+  const scenes = useSelector((state) => state.scenes.items);
+
+  const [loading, setLoading] = useState(true);
+
+  const scenesFetch = useCallback(() => {
+    get(child(ref(db), "scenes"))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          // setScenes(snapshot.val());
+          disptach(SCENE_APPEND(snapshot.val()));
+        }
+      })
+      .then(() => {
+        setLoading(false);
+      })
+      .catch((e) => console.log(e));
+  }, []);
+
+  useEffect(() => {
+    scenesFetch();
+  }, []);
+
   return (
     <Layout>
-      <ScenesList />
+      {loading && <LoadingView />}
+      {!!(!loading & (Object.keys(scenes).length <= 0)) && <ScenesEmpty />}
+      {!!(!loading && Object.keys(scenes).length > 0) && <ScenesList />}
     </Layout>
   );
 

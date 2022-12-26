@@ -14,6 +14,7 @@ export const scenerySlice = createSlice({
   reducers: {
     create: (state: any, action: PayloadAction<any>) => {
       state.items[action.payload.channelID] = action.payload.scenery;
+      console.log(state.items);
     },
     /**
      *
@@ -29,6 +30,7 @@ export const scenerySlice = createSlice({
       const start = [...arr].slice(0, index);
       const end = [...arr].slice(index, arr.length);
       state.items[channelID] = [...start, rest, ...end];
+      console.log(state);
     },
     updateScenery: (state: any, action: PayloadAction<any>) => {
       const { channelID = 0, index = 0, ...rest } = { ...action.payload };

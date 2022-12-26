@@ -15,6 +15,8 @@ import { resolve } from "node:path/win32";
 
 type Props = {};
 
+const channelsNum = 4;
+
 const HourGlassSplit = () => {
   return (
     <svg
@@ -45,16 +47,17 @@ const HomeGeneral = (props: Props) => {
   const defaultChannels = useCallback(async () => {
     return new Promise((resolve) => {
       const channels: any = {};
-      for (let i = 0; i < 8; i++) {
-        channels[i] = {
-          type: i < 6 ? "rgb" : "mono",
-          value: i < 6 ? colors[0] : "#ffdf60A0",
+      for (let i = 0; i < channelsNum; i++) {
+        channels[`c${i}`] = {
+          name: i < channelsNum - 1 ? "Kolorowy " + i + 1 : "Jednolity " + i + 1,
+          type: i < channelsNum - 1 ? "rgb" : "mono",
+          value: i < channelsNum - 1 ? colors[0] : "#ffdf60A0",
           brightness: 100,
           power: false,
         };
       }
 
-      if (Object.keys(channels).length === 8) resolve(channels);
+      if (Object.keys(channels).length === channelsNum) resolve(channels);
     });
   }, []);
 

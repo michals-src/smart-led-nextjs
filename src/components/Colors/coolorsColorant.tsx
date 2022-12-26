@@ -1,4 +1,5 @@
 import { CheckCircleIcon, CheckIcon } from "@heroicons/react/24/solid";
+import classNames from "classnames";
 import React from "react";
 
 type TColorsColorant = {
@@ -6,6 +7,7 @@ type TColorsColorant = {
   isActive: boolean;
   value: string;
   onClick?: React.MouseEventHandler<HTMLInputElement>;
+  size: "sm" | "md" | "lg";
 };
 
 const ActiveSymbol = () => {
@@ -18,18 +20,24 @@ const ActiveSymbol = () => {
   );
 };
 
-const ColorsColorant = ({ index, isActive, value, onClick }: TColorsColorant) => {
+const ColorsColorant = ({ index, isActive, value, onClick, size }: TColorsColorant) => {
   // const handleClick = (hex: string) => {
   //   state(hex);
   // };
+
+  const cnColorant = classNames("rounded-full text-transparent", {
+    "w-3 h-3 ": size === "sm",
+    "w-5 h-5 ": size === "md",
+    "w-8 h-8 ": size === "lg",
+  });
 
   return (
     <>
       <div
         key={index}
-        className='w-auto h-auto cursor-pointer relative my-2 mx-2'>
+        className='w-auto h-auto cursor-pointer relative mb-2 mr-2'>
         <div
-          className={`w-8 h-8 rounded-full text-transparent`}
+          className={cnColorant}
           style={{ backgroundColor: value }}>
           <span className='absolute -top-[99999]'>{value}</span>
         </div>

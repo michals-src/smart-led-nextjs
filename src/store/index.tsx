@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import sceneryReducer from "./slices/scenerySlice";
+import scenesReduced from "./slices/scenesSlice";
 
 export const store = configureStore({
   reducer: {
     scenery: sceneryReducer,
+    scenes: scenesReduced,
   },
 });
 
