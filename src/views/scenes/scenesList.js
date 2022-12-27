@@ -143,6 +143,7 @@ const ScenesList = (props) => {
     popupCtx.onUpdatePopupScreenIndex(0);
     popupCtx.onUpdatePopupTitle(`${toUpperFirst(sceneName)}`, `Scena`);
     popupCtx.onUpdatePopupVisible(true);
+    // popupCtx.withScreen().withProps();
     // dispatch(SCENE_REMOVE({ ID: sceneID }));
   };
 
