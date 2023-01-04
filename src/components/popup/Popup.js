@@ -3,7 +3,7 @@ import { useRef, useEffect, useState, useCallback, useContext } from "react";
 import classNames from "classnames";
 import { ArrowLeftIcon, ChevronLeftIcon, LightBulbIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
-import { default as popupCtx } from "../../context/popup/popupContext";
+import { default as popupContext } from "../../context/popup/popupContext";
 
 // popupIcon: any;
 // popupTitle: any;
@@ -12,13 +12,43 @@ import { default as popupCtx } from "../../context/popup/popupContext";
 // popupScreenIndex: number;
 
 const PopupHeader = (props) => {
-  const { icon, title, separate, onClose } = props;
+  const { Icon, title, caption, separate, onBack, onSave, onClose } = props;
 
   const cn_header = classNames("p-4 md:px-8 pb-6 border-b", {
     "bg-zinc-800": separate,
     "border-[#FFFFFF11]": separate,
     "border-b-transparent": !separate,
   });
+
+  return (
+    <div
+      className={`popup-header ` + cn_header}
+      style={{ borderRadius: "15px 15px 0 0" }}>
+      <div className='flex flex-row flex-nowrap items-center'>
+        <div className='w-1/12'>
+          <Icon className='w-8 h-8 text-zinc-600' />
+        </div>
+        <div className='w-9/12'>
+          <div className='px-5'>
+            {/* {title}
+             */}
+
+            <h3 className='text-xl'>{title}</h3>
+            <p className='text-sm text-zinc-500'>{caption}</p>
+          </div>
+        </div>
+        <div className='w-2/12'>
+          <button
+            className='w-full p-0 m-0'
+            onClick={() => onClose()}>
+            <div className='w-auto ml-auto table p-1 bg-zinc-700 rounded-full'>
+              <XMarkIcon className='w-5 h-5 text-zinc-400' />
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div
@@ -63,24 +93,72 @@ const PopupHeader = (props) => {
       </div>
     </div>
   );
+};
+
+const PopupHeaderActions = (props) => {
+  const { Icon, title, caption, separate, save, onBack, onSave, onClose } = props;
+
+  const cn_header = classNames("p-4 md:px-8 pb-6 border-b", {
+    "bg-zinc-800": separate,
+    "border-[#FFFFFF11]": separate,
+    "border-b-transparent": !separate,
+  });
 
   return (
     <div
       className={`popup-header ` + cn_header}
       style={{ borderRadius: "15px 15px 0 0" }}>
       <div className='flex flex-row flex-nowrap items-center'>
-        <div className='w-1/12'>{icon}</div>
-        <div className='w-9/12'>
-          <div className='px-5'>{title}</div>
+        <div className='w-2/12'>
+          <div className='px-3'>
+            <button
+              className='text-zinc-400 table mx-auto'
+              onClick={onBack}>
+              <div className='flex flex-row flex-nowrap items-center justify-center'>
+                <div className='w-3/12'>
+                  <ChevronLeftIcon className='w-3 h-3 text-inherit' />
+                </div>
+                <div className='w-9/12'>
+                  <div className='px-1'>
+                    <p className='text-xs text-inherit'>Powrót</p>
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+        <div className='w-8/12'>
+          <div className='px-8 text-center'>
+            <p className='text-xs font-bold'>{title}</p>
+          </div>
         </div>
         <div className='w-2/12'>
-          <button
-            className='w-full p-0 m-0'
-            onClick={() => onClose()}>
-            <div className='w-auto ml-auto table p-1 bg-zinc-700 rounded-full'>
-              <XMarkIcon className='w-5 h-5 text-zinc-400' />
-            </div>
-          </button>
+          {!save && (
+            <button
+              className='w-full p-0 m-0'
+              onClick={() => onClose()}>
+              <div className='w-auto ml-auto table p-1 bg-zinc-700 rounded-full'>
+                <XMarkIcon className='w-5 h-5 text-zinc-400' />
+              </div>
+            </button>
+          )}
+
+          {save && (
+            <button
+              className='text-zinc-400 table mx-auto'
+              onClick={() => onSave()}>
+              <div className='flex flex-row flex-nowrap items-center justify-center'>
+                <div className='w-full'>
+                  <div className='px-1'>
+                    <p className='text-xs text-inherit'>Zapisz</p>
+                  </div>
+                </div>
+                {/* <div className='w-3/12'>
+                    <ChevronLeftIcon className='w-3 h-3 text-inherit' />
+                  </div> */}
+              </div>
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -89,9 +167,10 @@ const PopupHeader = (props) => {
 
 function Popup(props) {
   const { children, title } = props;
-  const { popupScreenList, popupScreenIndex, popupIcon, popupTitle, popupIsVisible, onUpdatePopupVisible } = useContext(popupCtx);
+  //const { popupScreenList, popupScreenIndex, popupIcon, popupTitle, popupIsVisible, onUpdatePopupVisible } = useContext(popupCtx);
+  const popupCtx = useContext(popupContext);
 
-  const Content = popupScreenList[popupScreenIndex];
+  const Component = popupCtx.get.Component;
 
   const windowRef = useRef(null);
   const ref = useRef(null);
@@ -140,8 +219,8 @@ function Popup(props) {
 
   useEffect(() => {
     const cn_wrapper = classNames("fixed top-0 left-0 right-0 w-full h-full z-[100]", {
-      "is-visible": popupIsVisible,
-      "is-hidden": windowIn && !popupIsVisible,
+      "is-visible": popupCtx.popupIsVisible,
+      "is-hidden": windowIn && !popupCtx.popupIsVisible,
     });
 
     //console.log(windowIn, cn_wrapper);
@@ -149,7 +228,7 @@ function Popup(props) {
     setCn((state) => {
       return { ...state, wrapper: cn_wrapper };
     });
-  }, [popupIsVisible, windowIn]);
+  }, [popupCtx.popupIsVisible, windowIn]);
 
   useEffect(() => {
     if (refContent.current === null) return;
@@ -158,9 +237,9 @@ function Popup(props) {
     refContentWrapper.current.style.height = elRect.height + "px";
 
     //console.log();
-  }, [refContent, popupScreenIndex]);
+  }, [Component]);
 
-  if (!popupIsVisible && !windowIn) return <></>;
+  if (!popupCtx.popupIsVisible && !windowIn) return <></>;
 
   return (
     <div className={`popup ` + cn.wrapper}>
@@ -173,12 +252,29 @@ function Popup(props) {
             className='max-w-lg mx-auto bg-zinc-900 relative overflow-hidden'
             style={{ borderRadius: "15px 15px 0 0", boxShadow: "-8px 0 30px #00000010" }}>
             <div className='w-full h-auto z-30'>
-              <PopupHeader
-                icon={popupIcon}
-                title={popupTitle}
-                separate={separateHeader}
-                onClose={() => onUpdatePopupVisible(false)}
-              />
+              {popupCtx.get.isMain && (
+                <PopupHeader
+                  Icon={popupCtx.get.Icon}
+                  title={popupCtx.get.header}
+                  caption={popupCtx.get.caption}
+                  separate={separateHeader}
+                  onBack={popupCtx.actions.back}
+                  onSave={popupCtx.actions.save}
+                  onClose={popupCtx.actions.close}
+                />
+              )}
+              {!popupCtx.get.isMain && (
+                <PopupHeaderActions
+                  Icon={popupCtx.get.Icon}
+                  title={popupCtx.get.header}
+                  caption={popupCtx.get.caption}
+                  separate={separateHeader}
+                  save={popupCtx.get.isSave}
+                  onBack={popupCtx.actions.back}
+                  onSave={popupCtx.actions.save}
+                  onClose={popupCtx.actions.close}
+                />
+              )}
             </div>
             <div className='relative z-10'>
               <div>
@@ -187,11 +283,11 @@ function Popup(props) {
                   className='overflow-auto max-h-[calc(70vh)] p-4 md:px-8'>
                   <div
                     ref={refContentWrapper}
-                    style={{ height: "auto", transition: "height .3s cubic-bezier(0.16, 0.27, 0, 1.04)" }}>
+                    style={{ height: "auto", transition: "height .6s cubic-bezier(0.16, 0.27, 0, 1.04)" }}>
                     <div
                       ref={refContent}
                       style={{ maxHeight: "1000000px" }}>
-                      <Content />
+                      {Component}
                     </div>
                   </div>
                 </div>

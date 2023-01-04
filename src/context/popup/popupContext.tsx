@@ -16,19 +16,68 @@ type TContext = {
   onUpdatePopupScreenData: any;
 };
 
-const context: TContext = {
-  popupIcon: InformationCircleIcon,
-  popupTitle: "",
-  popupIsVisible: false,
-  popupScreenList: [],
-  popupScreenIndex: 0,
-  popupScreenData: [],
-  onUpdatePopupVisible: (visible: Boolean) => {},
-  onUpdatePopupIcon: (node: JSX.Element) => {},
-  onUpdatePopupTitle: (title: any, subtitle: any) => {},
-  onUpdatePopupScreenIndex: (index: number) => {},
-  onUpdatePopupScreenList: (list: any[]) => {},
-  onUpdatePopupScreenData: (list: any[]) => {},
+/**
+ *
+ * get
+ *
+ * set
+ *    window( title, node, props = { propsComponent, main = true | false, caption, Icon } )
+ *
+ * back
+ */
+
+interface IGet {
+  Component: any;
+  Icon: any;
+  header: String;
+  caption: String;
+  isMain: Boolean;
+  isSave: Boolean;
+}
+
+interface IWinProps {
+  caption?: string;
+  Icon?: any;
+  save?: false | true;
+}
+
+interface IEvents {
+  onSave: (func: any) => void;
+}
+
+interface IActions {
+  back: () => void;
+  close: () => void;
+  save: () => void;
+}
+
+type TPopupContext = {
+  popupIsVisible: true | false;
+  setWindow: (header: String, winProps: IWinProps, node: ReactNode, nodeProps: any[], main?: true | false) => void;
+  get: IGet;
+  events: IEvents;
+  actions: IActions;
 };
 
-export default createContext(context);
+const popupContext: TPopupContext = {
+  popupIsVisible: false,
+  setWindow: () => {},
+  get: {
+    Component: () => {},
+    Icon: InformationCircleIcon,
+    header: "Popup window",
+    caption: "",
+    isMain: false,
+    isSave: false,
+  },
+  events: {
+    onSave: () => {},
+  },
+  actions: {
+    back: () => {},
+    close: () => {},
+    save: () => {},
+  },
+};
+
+export default createContext(popupContext);

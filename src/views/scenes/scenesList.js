@@ -116,7 +116,7 @@ const ScenesList = (props) => {
   }, []);
 
   useEffect(() => {
-    popupInit();
+    //popupInit();
 
     get(child(ref(db), "/sceneRelated")).then((snapshot) => {
       if (snapshot.exists()) dispatch(SCENE_RELATE(snapshot.val()));
@@ -127,23 +127,38 @@ const ScenesList = (props) => {
     });
 
     return () => {
-      popupCleanup();
+      //popupCleanup();
     };
   }, []);
 
   const handleClick_SceneItem = (sceneID, sceneName) => {
-    const screenData = [];
-    screenData[0] = {
-      ID: sceneID,
-      name: sceneName,
-      related: sceneRelated === sceneID,
-    };
-    popupCtx.onUpdatePopupScreenData(screenData);
-    popupCtx.onUpdatePopupIcon(PlayIcon);
-    popupCtx.onUpdatePopupScreenIndex(0);
-    popupCtx.onUpdatePopupTitle(`${toUpperFirst(sceneName)}`, `Scena`);
-    popupCtx.onUpdatePopupVisible(true);
-    // popupCtx.withScreen().withProps();
+    // const screenData = [];
+    // screenData[0] = {
+    //   ID: sceneID,
+    //   name: sceneName,
+    //   related: sceneRelated === sceneID,
+    // };
+    // popupCtx.onUpdatePopupScreenData(screenData);
+    // popupCtx.onUpdatePopupIcon(PlayIcon);
+    // popupCtx.onUpdatePopupScreenIndex(0);
+    // popupCtx.onUpdatePopupTitle(`${toUpperFirst(sceneName)}`, `Scena`);
+    // popupCtx.onUpdatePopupVisible(true);
+
+    popupCtx.setWindow(
+      "Scena",
+      {
+        Icon: PlayIcon,
+        caption: toUpperFirst(sceneName),
+      },
+      popupSceneView,
+      {
+        ID: sceneID,
+        name: sceneName,
+        related: sceneRelated === sceneID,
+      },
+      true
+    );
+
     // dispatch(SCENE_REMOVE({ ID: sceneID }));
   };
 

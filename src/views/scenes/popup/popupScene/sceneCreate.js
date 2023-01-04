@@ -24,11 +24,11 @@ const SceneCreate = () => {
 
     const timestamp = Date.now();
     const sceneID = `S${timestamp}`;
-    const sceneChildrenID = `SC${timestamp}`;
+    const childrenID = `SC${timestamp}`;
 
     const sceneData = {
-      name: name,
-      childrenID: sceneChildrenID,
+      name,
+      childrenID,
     };
 
     const update_done = () => {
@@ -41,7 +41,7 @@ const SceneCreate = () => {
       [`/scenes/${sceneID}`]: sceneData,
       [`/scenesChildren/${sceneChildrenID}`]: "", // Godziny wyzolenia
     }).then(() => {
-      setTimeout(update_done, 1500);
+      update_done();
     });
 
     // popupCtx.onUpdatePopupScreenData([
@@ -51,9 +51,7 @@ const SceneCreate = () => {
     // ]);
     // popupCtx.onUpdatePopupScreenIndex(1);
 
-    return () => {
-      clearInterval(update_done);
-    };
+    return () => {};
   };
 
   return (

@@ -1,20 +1,25 @@
 import { useContext, useState } from "react";
-import { update, ref } from "firebase/database";
+import { useSelector } from "react-redux";
 
+import { update, ref } from "firebase/database";
 import dv from "@firebase";
+
 import { CheckCircleIcon, MegaphoneIcon } from "@heroicons/react/24/outline";
 import { ArrowLongRightIcon, ClockIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { Type } from "react-bootstrap-icons";
-import { Box, Switch } from "../../../../components";
-import popupContext from "../../../../context/popup/popupContext";
-import { useSelector } from "react-redux";
 
-const SceneView = () => {
+import { Box, Switch } from "@components";
+import popupContext from "@context/popup/popupContext";
+
+import { popupSceneChildView, popupSceneChildCreate } from "../";
+
+const SceneView = (props) => {
+  const { ID, name, related: relatedDefault } = props;
   const popupCtx = useContext(popupContext);
 
-  const [related, setRelated] = useState(popupCtx.popupScreenData[0].related);
+  const [related, setRelated] = useState(relatedDefault);
   const [openChangeTitle, setOpenChangeTitle] = useState(false);
-  const sceneChildren = useSelector((state) => state.scenes.children[state.scenes.items[popupCtx.popupScreenData[0].ID].childrenID]);
+  const sceneChildren = useSelector((state) => state.scenes.children[state.scenes.items[ID].childrenID]);
 
   const handleClick_Item = () => {
     popupCtx.onUpdatePopupScreenIndex(2);
@@ -25,13 +30,17 @@ const SceneView = () => {
   };
 
   const handleClick_newItem = () => {
-    popupCtx.onUpdatePopupScreenData([
-      {
-        time_prev: "18:00",
-        time_next: "20:00",
-      },
-    ]);
-    popupCtx.onUpdatePopupScreenIndex(3);
+    // popupCtx.onUpdatePopupScreenData([
+    //   {
+    //     time_prev: "18:00",
+    //     time_next: "20:00",
+    //   },
+    // ]);
+    // popupCtx.onUpdatePopupScreenIndex(3);
+    popupCtx.setWindow("Nowe przejście", { save: true }, popupSceneChildCreate, {
+      time_prev: "18:00",
+      time_next: "20:00",
+    });
   };
 
   return (

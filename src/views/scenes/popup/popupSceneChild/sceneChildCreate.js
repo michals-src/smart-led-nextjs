@@ -8,6 +8,7 @@ import Coolors from "src/components/Colors/coolors";
 import popupContext from "../../../../context/popup/popupContext";
 import { colors, timeAstimestamp, timestampAstime, timeAsText } from "@utils";
 import classNames from "classnames";
+import { useCallback } from "react";
 
 const SceneChildView = () => {
   const popupCtx = useContext(popupContext);
@@ -33,16 +34,28 @@ const SceneChildView = () => {
 
   const dur = duration(previousTime, currentTime, nextTime);
 
+  const abc = () => {
+    console.log(timeAsText(timestampAstime(timeline[1])));
+  };
+
   useEffect(() => {
     setTimeline([previousTime, currentTime, nextTime]);
     setSliderValue(dur);
 
-    console.log(popupCtx.popupScreenData);
+    popupCtx.events.onSave(() => abc);
 
     // return () => {
     //   cleanup;
     // };
   }, []);
+
+  useEffect(() => {
+    popupCtx.events.onSave(() => abc);
+
+    return () => {
+      popupCtx.events.onSave();
+    };
+  }, [timeline[1]]);
 
   const handleChange_Slider = (e) => {
     //const newTime = Math.floor(timeline[0] + (Math.floor(e.target.value) / 100) * (timeline[2] - timeline[0]));
@@ -55,18 +68,9 @@ const SceneChildView = () => {
     });
   };
 
-  const handleClick_Item = () => {
-    // popupCtx.onUpdatePopupScreenData([
-    //   {
-    //     costam: "okno edycji przejścia",
-    //   },
-    // ]);
-    popupCtx.onUpdatePopupScreenIndex(1);
-  };
-
   return (
     <>
-      <div className='pb-12'>
+      <div className='py-12'>
         <div className='flex flex-col flex-nowrap items-center'>
           <div className='w-full'>
             <div className='px-8'>
@@ -152,18 +156,16 @@ const SceneChildView = () => {
         </div>
 
         <div className='py-4'>
-          <button
+          {/* <button
             className='w-full block mx-auto py-3 px-3 rounded-xl bg-zinc-800 shadow-xl'
             onClick={() => popupCtx.onUpdatePopupScreenIndex(0)}>
             <div className='flex flex-row flex-nowrap items-center'>
-              {/* <div className='w-1/12'>
-              <ArrowLongLeftIcon className='text-zinc-300 ml-auto w-3 h-3' />
-            </div> */}
+
               <div className='w-full'>
                 <p className='ml-3 text-sm text-zinc-400'>Zapisz</p>
               </div>
             </div>
-          </button>
+          </button> */}
         </div>
       </div>
     </>

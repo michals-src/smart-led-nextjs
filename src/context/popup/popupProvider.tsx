@@ -8,41 +8,74 @@ type Props = {
   children: ReactNode;
 };
 
+interface IWinProps {
+  caption?: string;
+  Icon?: any;
+  save?: false | true;
+}
+
 const PopupProvider = ({ children }: Props) => {
-  const [popupIcon, setPopupIcon] = useState<JSX.Element>(() => <InformationCircleIcon className='w-8 h-8 text-zinc-600' />);
-  const [popupTitle, setPopupTitle] = useState<JSX.Element>(() => {
-    return (
-      <>
-        <h3 className='text-xl'>Popup</h3>
-        <p className='text-sm text-zinc-500'>Subtitle</p>
-      </>
-    );
-  });
   const [popupIsVisible, setPopupIsVisible] = useState<boolean>(false);
-  const [popupScreenList, setPopupScreenList] = useState<any[]>([]);
-  const [popupScreenIndex, setPopupScreenIndex] = useState<number>(0);
-  const [popupScreenData, setPopupScreenData] = useState<any[]>([]);
 
-  const onUpdatePopupVisible = (visible: boolean) => setPopupIsVisible(visible);
+  const [Icon, setIcon] = useState<any>(InformationCircleIcon);
+  const [header, setHeader] = useState<any>("Popup window");
+  const [caption, setCaption] = useState<any>("");
+  const [isMain, setIsMain] = useState<boolean>(false);
+  const [isSave, setIsSave] = useState<boolean>(false);
 
-  const onUpdatePopupIcon = (node: any) => {
-    const Icon = node;
+  const [Component, setComponent] = useState<any>(() => {});
+  const [history, setHistory] = useState<any[]>([]);
+  const [saveFunc, setSaveFunc] = useState<any>(() => {});
 
-    setPopupIcon(<Icon className='w-8 h-8 text-zinc-600' />);
-  };
-  const onUpdatePopupTitle = (title: any, subtitle: any) => {
-    setPopupTitle(() => {
-      return (
-        <>
-          <h3 className='text-xl font-bold'>{title}</h3>
-          <p className='text-sm text-zinc-500'>{subtitle}</p>
-        </>
-      );
+  const setWindow = (header: String, winProps: IWinProps, Node: any, nodeProps: any = {}, main: boolean = false) => {
+    const Component = <Node {...nodeProps} />;
+
+    if (typeof winProps.Icon !== undefined) setIcon(winProps.Icon);
+    if (typeof winProps.caption !== undefined) setCaption(winProps.caption);
+
+    setIsMain(main);
+    setHeader(header);
+    setIsSave(typeof winProps.caption !== undefined ? true : false);
+    setHistory((state) => {
+      if (main) state = [];
+
+      const headers = state.map((e) => e.header);
+      if (headers.indexOf(header) < 0) state.push({ header, winProps, Node, nodeProps, main });
+
+      console.log(state);
+
+      return state;
     });
+    setComponent(Component);
+    if (!popupIsVisible) setPopupIsVisible(true);
   };
-  const onUpdatePopupScreenIndex = (index: number) => setPopupScreenIndex(index);
-  const onUpdatePopupScreenList = (list: any[]) => setPopupScreenList(list);
-  const onUpdatePopupScreenData = (list: any[]) => setPopupScreenData(list);
+
+  const back = () => {
+    const previousWindow = history[history.length - 2];
+
+    const Component = <previousWindow.Node {...previousWindow.nodeProps} />;
+
+    if (typeof previousWindow.winProps.Icon !== undefined) setIcon(previousWindow.winProps.Icon);
+    if (typeof previousWindow.winProps.caption !== undefined) setCaption(previousWindow.winProps.caption);
+
+    setIsMain(previousWindow.main);
+    setHeader(previousWindow.header);
+    setHistory((state) => {
+      return [...state].slice(0, state.length - 1);
+    });
+    setComponent(Component);
+    if (!popupIsVisible) setPopupIsVisible(true);
+  };
+  const close = () => {
+    setPopupIsVisible(false);
+  };
+  const onSave = (func: any) => setSaveFunc(func);
+  const save = () =>
+    saveFunc instanceof Function
+      ? saveFunc()
+      : () => {
+          throw new Error("Brak funkcji zapisu");
+        };
 
   useEffect(() => {
     if (popupIsVisible) {
@@ -64,18 +97,24 @@ const PopupProvider = ({ children }: Props) => {
   return (
     <popupCtx.Provider
       value={{
-        popupIcon,
-        popupTitle,
         popupIsVisible,
-        popupScreenList,
-        popupScreenIndex,
-        popupScreenData,
-        onUpdatePopupVisible,
-        onUpdatePopupIcon,
-        onUpdatePopupTitle,
-        onUpdatePopupScreenIndex,
-        onUpdatePopupScreenList,
-        onUpdatePopupScreenData,
+        setWindow,
+        get: {
+          Component,
+          Icon,
+          header,
+          caption,
+          isMain,
+          isSave,
+        },
+        events: {
+          onSave,
+        },
+        actions: {
+          back,
+          close,
+          save,
+        },
       }}>
       {children}
     </popupCtx.Provider>
