@@ -1,16 +1,12 @@
-import { useContext, useState, useRef, useEffect } from "react";
+import { useContext, useState, useRef, useEffect, forwardRef } from "react";
 
-import { ArrowLongLeftIcon, BookmarkIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 import { ArrowLongRightIcon, BackwardIcon, CheckIcon, ClockIcon, ForwardIcon, MinusIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
-import { Type } from "react-bootstrap-icons";
 import { Box, Switch } from "@components";
 import Coolors from "src/components/Colors/coolors";
 import popupContext from "../../../../context/popup/popupContext";
 import { colors, timeAstimestamp, timestampAstime, timeAsText } from "@utils";
-import classNames from "classnames";
-import { useCallback } from "react";
 
-const SceneChildView = () => {
+const SceneChildView = forwardRef((props, ref) => {
   const popupCtx = useContext(popupContext);
 
   const refInput = useRef(null);
@@ -70,62 +66,70 @@ const SceneChildView = () => {
 
   return (
     <>
-      <div className='py-12'>
-        <div className='flex flex-col flex-nowrap items-center'>
-          <div className='w-full'>
-            <div className='px-8'>
-              <div className='flex flex-col flex-nowrap items-center justify-center'>
-                <div>
-                  <div className='flex flex-row flex-nowrap items-center'>
-                    <div className='w-1/12'>
-                      <ForwardIcon
-                        size={32}
-                        className='w-4 h-4 text-zinc-400'
-                      />
-                    </div>
-                    <div className='w-11/12'>
-                      <div className='px-8'>
-                        <p className='text-xs text-zinc-400 select-none'>21:00</p>
+      <div ref={ref}>
+        <div className='py-12'>
+          <div className='flex flex-col flex-nowrap items-center'>
+            <div className='w-full'>
+              <div className='px-8'>
+                <div className='flex flex-col flex-nowrap items-center justify-center'>
+                  <div>
+                    <div className='flex flex-row flex-nowrap items-center'>
+                      <div className='w-1/12'>
+                        <ForwardIcon
+                          size={32}
+                          className='w-4 h-4 text-zinc-400'
+                        />
+                      </div>
+                      <div className='w-11/12'>
+                        <div className='px-8'>
+                          <p className='text-xs text-zinc-400 select-none'>21:00</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div>
-                  <div className='p-4'>
-                    <p className='text-6xl select-none'>{timeAsText(timestampAstime(timeline[1]))}</p>
-                  </div>
-                </div>
-                <div>
-                  <div className='flex flex-row flex-nowrap items-center'>
-                    <div className='w-1/12'>
-                      <BackwardIcon
-                        size={32}
-                        className='w-4 h-4 text-zinc-400'
-                      />
+                  <div>
+                    <div className='p-4'>
+                      <p className='text-6xl select-none'>{timeAsText(timestampAstime(timeline[1]))}</p>
                     </div>
-                    <div className='w-11/12'>
-                      <div className='px-8'>
-                        <p className='text-xs text-zinc-400 select-none'>19:00</p>
+                  </div>
+                  <div>
+                    <div className='flex flex-row flex-nowrap items-center'>
+                      <div className='w-1/12'>
+                        <BackwardIcon
+                          size={32}
+                          className='w-4 h-4 text-zinc-400'
+                        />
+                      </div>
+                      <div className='w-11/12'>
+                        <div className='px-8'>
+                          <p className='text-xs text-zinc-400 select-none'>19:00</p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className='w-full'>
-            <div className='px-3 py-8'>
-              <div
-                className='relative mx-auto'
-                onClick={() => refInput.current.focus()}
-                onTouchStart={() => refInput.current.focus()}
-                onTouchMove={() => refInput.current.focus()}>
-                <div className='w-full h-10 mx-auto bg-zinc-800 rounded-lg relative'>
+            <div className='w-full'>
+              <div className='px-3 pt-20 pb-8'>
+                <div
+                  className='relative mx-auto touch-pan-x select-none'
+                  onClick={() => refInput.current.focus()}
+                  onTouchStart={() => refInput.current.focus()}
+                  onTouchMove={() => refInput.current.focus()}
+                  onTouchMoveCapture={() => refInput.current.focus()}
+                  onSelect={() => refInput.current.focus()}>
                   <div
-                    ref={sliderIndicatorRef}
-                    className={`w-auto h-full absolute top-0 bottom-0 left-0 bg-orange-700 rounded-lg`}
-                    style={{ width: `${sliderValue}%` }}>
-                    {/* <div className='absolute w-3 h-full bg-white rounded-sm top-0 right-0'>
+                    className='w-full h-10 mx-auto bg-zinc-800 rounded-lg relative z-10'
+                    onClick={() => refInput.current.focus()}
+                    onTouchStart={() => refInput.current.focus()}
+                    onTouchMove={() => refInput.current.focus()}
+                    onTouchMoveCapture={() => refInput.current.focus()}>
+                    <div
+                      ref={sliderIndicatorRef}
+                      className={`w-auto h-full absolute top-0 bottom-0 left-0 bg-orange-700 rounded-lg`}
+                      style={{ width: `${sliderValue}%` }}>
+                      {/* <div className='absolute w-3 h-full bg-white rounded-sm top-0 right-0'>
                       <div className='relative -m-1'>
                         <div
                           className='absolute top-0 left-[50%] py-1 px-3 rounded-lg bg-black'
@@ -134,29 +138,31 @@ const SceneChildView = () => {
                         </div>
                       </div>
                     </div> */}
+                    </div>
                   </div>
+                  <input
+                    ref={refInput}
+                    type='range'
+                    className='slider absolute z-20 opacity-0 top-0 bottom-0 left-0 right-0 w-full h-[200%] cursor-pointer appearance-none'
+                    value={sliderValue}
+                    onChange={(e) => handleChange_Slider(e)}
+                    onClick={(e) => e.target.focus()}
+                    onTouchStart={(e) => e.target.focus()}
+                    onTouchMove={(e) => e.target.focus()}
+                    max={nextTime - previousTime}
+                    step='1'
+                    style={{
+                      writingMode: "horizontal-tb",
+                      transform: "translateY(-25%)",
+                    }}
+                  />
                 </div>
-                <input
-                  ref={refInput}
-                  type='range'
-                  className='absolute opacity-0 top-0 bottom-0 left-0 right-0 w-full h-full cursor-pointer'
-                  value={sliderValue}
-                  onChange={(e) => handleChange_Slider(e)}
-                  onClick={(e) => e.target.focus()}
-                  onTouchStart={(e) => e.target.focus()}
-                  max={nextTime - previousTime}
-                  step='1'
-                  style={{
-                    writingMode: "horizontal-tb",
-                  }}
-                />
               </div>
             </div>
           </div>
-        </div>
 
-        <div className='py-4'>
-          {/* <button
+          <div className='py-4'>
+            {/* <button
             className='w-full block mx-auto py-3 px-3 rounded-xl bg-zinc-800 shadow-xl'
             onClick={() => popupCtx.onUpdatePopupScreenIndex(0)}>
             <div className='flex flex-row flex-nowrap items-center'>
@@ -166,10 +172,13 @@ const SceneChildView = () => {
               </div>
             </div>
           </button> */}
+          </div>
         </div>
       </div>
     </>
   );
-};
+});
+
+SceneChildView.displayName = "SceneChildView";
 
 export default SceneChildView;
