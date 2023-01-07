@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useEffect, useState } from "react";
+import React, { createRef, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
 
@@ -16,6 +16,7 @@ interface IWinProps {
 
 const PopupProvider = ({ children }: Props) => {
   const [popupIsVisible, setPopupIsVisible] = useState<boolean>(false);
+  const refNode = useRef(null);
 
   const [Icon, setIcon] = useState<any>(InformationCircleIcon);
   const [header, setHeader] = useState<any>("Popup window");
@@ -28,14 +29,19 @@ const PopupProvider = ({ children }: Props) => {
   const [saveFunc, setSaveFunc] = useState<any>(() => {});
 
   const setWindow = (header: String, winProps: IWinProps, Node: any, nodeProps: any = {}, main: boolean = false) => {
-    const Component = <Node {...nodeProps} />;
+    const Component = (
+      <Node
+        ref={refNode}
+        {...nodeProps}
+      />
+    );
 
     if (typeof winProps.Icon !== undefined) setIcon(winProps.Icon);
     if (typeof winProps.caption !== undefined) setCaption(winProps.caption);
+    setIsSave(typeof winProps.save !== undefined && winProps.save === true ? true : false);
 
     setIsMain(main);
     setHeader(header);
-    setIsSave(typeof winProps.caption !== undefined ? true : false);
     setHistory((state) => {
       if (main) state = [];
 
@@ -53,10 +59,17 @@ const PopupProvider = ({ children }: Props) => {
   const back = () => {
     const previousWindow = history[history.length - 2];
 
-    const Component = <previousWindow.Node {...previousWindow.nodeProps} />;
+    const Component = (
+      <previousWindow.Node
+        ref={refNode}
+        {...previousWindow.nodeProps}
+      />
+    );
 
     if (typeof previousWindow.winProps.Icon !== undefined) setIcon(previousWindow.winProps.Icon);
     if (typeof previousWindow.winProps.caption !== undefined) setCaption(previousWindow.winProps.caption);
+
+    setIsSave(typeof previousWindow.winProps.save !== undefined && previousWindow.winProps.save === true ? true : false);
 
     setIsMain(previousWindow.main);
     setHeader(previousWindow.header);
@@ -106,6 +119,7 @@ const PopupProvider = ({ children }: Props) => {
           caption,
           isMain,
           isSave,
+          refNode,
         },
         events: {
           onSave,

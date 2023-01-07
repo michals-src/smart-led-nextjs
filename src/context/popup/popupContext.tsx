@@ -33,6 +33,7 @@ interface IGet {
   caption: String;
   isMain: Boolean;
   isSave: Boolean;
+  refNode: any;
 }
 
 interface IWinProps {
@@ -69,6 +70,7 @@ const popupContext: TPopupContext = {
     caption: "",
     isMain: false,
     isSave: false,
+    refNode: null,
   },
   events: {
     onSave: () => {},

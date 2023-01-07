@@ -1,169 +1,16 @@
 import { useRef, useEffect, useState, useCallback, useContext } from "react";
-
 import classNames from "classnames";
-import { ArrowLeftIcon, ChevronLeftIcon, LightBulbIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
 import { default as popupContext } from "../../context/popup/popupContext";
+
+import PopupHeader from "./popupHeader";
+import PopupHeaderAction from "./popupHeaderAction";
 
 // popupIcon: any;
 // popupTitle: any;
 // popupIsVisible: Boolean;
 // popupScreenList: any[];
 // popupScreenIndex: number;
-
-const PopupHeader = (props) => {
-  const { Icon, title, caption, separate, onBack, onSave, onClose } = props;
-
-  const cn_header = classNames("p-4 md:px-8 pb-6 border-b", {
-    "bg-zinc-800": separate,
-    "border-[#FFFFFF11]": separate,
-    "border-b-transparent": !separate,
-  });
-
-  return (
-    <div
-      className={`popup-header ` + cn_header}
-      style={{ borderRadius: "15px 15px 0 0" }}>
-      <div className='flex flex-row flex-nowrap items-center'>
-        <div className='w-1/12'>
-          <Icon className='w-8 h-8 text-zinc-600' />
-        </div>
-        <div className='w-9/12'>
-          <div className='px-5'>
-            {/* {title}
-             */}
-
-            <h3 className='text-xl'>{title}</h3>
-            <p className='text-sm text-zinc-500'>{caption}</p>
-          </div>
-        </div>
-        <div className='w-2/12'>
-          <button
-            className='w-full p-0 m-0'
-            onClick={() => onClose()}>
-            <div className='w-auto ml-auto table p-1 bg-zinc-700 rounded-full'>
-              <XMarkIcon className='w-5 h-5 text-zinc-400' />
-            </div>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-  return (
-    <div
-      className={`popup-header ` + cn_header}
-      style={{ borderRadius: "15px 15px 0 0" }}>
-      <div className='flex flex-row flex-nowrap items-center'>
-        <div className='w-2/12'>
-          <div className='px-3'>
-            <button className='text-zinc-400 table mx-auto'>
-              <div className='flex flex-row flex-nowrap items-center justify-center'>
-                <div className='w-3/12'>
-                  <ChevronLeftIcon className='w-3 h-3 text-inherit' />
-                </div>
-                <div className='w-9/12'>
-                  <div className='px-1'>
-                    <p className='text-xs text-inherit'>Powrót</p>
-                  </div>
-                </div>
-              </div>
-            </button>
-          </div>
-        </div>
-        <div className='w-8/12'>
-          <div className='px-8 text-center'>
-            <p className='text-xs font-bold'>Przegląd sceny</p>
-          </div>
-        </div>
-        <div className='w-2/12'>
-          <button className='text-zinc-400 table mx-auto'>
-            <div className='flex flex-row flex-nowrap items-center justify-center'>
-              <div className='w-full'>
-                <div className='px-1'>
-                  <p className='text-xs text-inherit'>Zapisz</p>
-                </div>
-              </div>
-              {/* <div className='w-3/12'>
-                  <ChevronLeftIcon className='w-3 h-3 text-inherit' />
-                </div> */}
-            </div>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const PopupHeaderActions = (props) => {
-  const { Icon, title, caption, separate, save, onBack, onSave, onClose } = props;
-
-  const cn_header = classNames("p-4 md:px-8 pb-6 border-b", {
-    "bg-zinc-800": separate,
-    "border-[#FFFFFF11]": separate,
-    "border-b-transparent": !separate,
-  });
-
-  return (
-    <div
-      className={`popup-header ` + cn_header}
-      style={{ borderRadius: "15px 15px 0 0" }}>
-      <div className='flex flex-row flex-nowrap items-center'>
-        <div className='w-2/12'>
-          <div className='px-3'>
-            <button
-              className='text-zinc-400 table mx-auto'
-              onClick={onBack}>
-              <div className='flex flex-row flex-nowrap items-center justify-center'>
-                <div className='w-3/12'>
-                  <ChevronLeftIcon className='w-3 h-3 text-inherit' />
-                </div>
-                <div className='w-9/12'>
-                  <div className='px-1'>
-                    <p className='text-xs text-inherit'>Powrót</p>
-                  </div>
-                </div>
-              </div>
-            </button>
-          </div>
-        </div>
-        <div className='w-8/12'>
-          <div className='px-8 text-center'>
-            <p className='text-xs font-bold'>{title}</p>
-          </div>
-        </div>
-        <div className='w-2/12'>
-          {!save && (
-            <button
-              className='w-full p-0 m-0'
-              onClick={() => onClose()}>
-              <div className='w-auto ml-auto table p-1 bg-zinc-700 rounded-full'>
-                <XMarkIcon className='w-5 h-5 text-zinc-400' />
-              </div>
-            </button>
-          )}
-
-          {save && (
-            <button
-              className='text-zinc-400 table mx-auto'
-              onClick={() => onSave()}>
-              <div className='flex flex-row flex-nowrap items-center justify-center'>
-                <div className='w-full'>
-                  <div className='px-1'>
-                    <p className='text-xs text-inherit'>Zapisz</p>
-                  </div>
-                </div>
-                {/* <div className='w-3/12'>
-                    <ChevronLeftIcon className='w-3 h-3 text-inherit' />
-                  </div> */}
-              </div>
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
 
 function Popup(props) {
   const { children, title } = props;
@@ -205,15 +52,20 @@ function Popup(props) {
     refContentWrapper.current.style.height = elRect.height + "px";
   }, []);
 
+  const handle_transitionEnd = useCallback(() => {
+    setWindowIn((state) => !state);
+    ref.current.style.overflow = "auto";
+  }, []);
+
   useEffect(() => {
     if (ref.current === null || ref.current === null) return;
 
-    windowRef.current.addEventListener("transitionend", () => setWindowIn((state) => !state));
+    windowRef.current.addEventListener("transitionend", handle_transitionEnd);
     ref.current.addEventListener("scroll", contentScrollHandle);
 
     return () => {
       ref?.current?.removeEventListener("scroll", contentScrollHandle);
-      windowRef?.current?.removeEventListener("transitionend", () => setWindowIn((state) => !state));
+      windowRef?.current?.removeEventListener("transitionend", handle_transitionEnd);
     };
   }, [ref.current, windowRef.current]);
 
@@ -233,10 +85,17 @@ function Popup(props) {
   useEffect(() => {
     if (refContent.current === null) return;
 
-    const elRect = refContent.current.getBoundingClientRect();
-    refContentWrapper.current.style.height = elRect.height + "px";
+    ref.current.style.overflow = "hidden";
 
-    //console.log();
+    if (popupCtx.get.refNode === null) {
+      const elRect = refContent.current.getBoundingClientRect();
+      refContentWrapper.current.style.height = elRect.height + "px";
+
+      return;
+    }
+
+    const elRect = popupCtx.get.refNode.current.getBoundingClientRect();
+    refContentWrapper.current.style.height = elRect.height + "px";
   }, [Component]);
 
   if (!popupCtx.popupIsVisible && !windowIn) return <></>;
@@ -264,7 +123,7 @@ function Popup(props) {
                 />
               )}
               {!popupCtx.get.isMain && (
-                <PopupHeaderActions
+                <PopupHeaderAction
                   Icon={popupCtx.get.Icon}
                   title={popupCtx.get.header}
                   caption={popupCtx.get.caption}

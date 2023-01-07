@@ -9,5 +9,5 @@ export { default as Slider } from "./Slider/slider";
 export { default as Switch } from "./switch/switch";
 export { default as Modal } from "./Modal/modal";
 export { default as LoaderCircle } from "./loader/loaderCircle";
-export { default as Popup } from "./popup/Popup";
+export { default as Popup } from "./popup/popup";
 export { default as Coolors } from "./Colors/coolors";

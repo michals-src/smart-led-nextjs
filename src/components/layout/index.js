@@ -7,7 +7,7 @@ import { ClockIcon, HomeIcon } from "@heroicons/react/24/solid";
 
 import ModalProvider from "@context/modal/modalProvider";
 import PopupProvider from "@context/popup/popupProvider";
-import Popup from "../popup/Popup";
+import Popup from "../popup/popup";
 
 const globalNavigation = {
   Dom: {
