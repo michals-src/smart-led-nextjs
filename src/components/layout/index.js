@@ -87,7 +87,7 @@ export default function Layout({ children, ...props }) {
 
         <meta
           name='apple-mobile-web-app-title'
-          content='App name'
+          content={title ? title : "App name"}
         />
         <meta
           name='apple-mobile-web-app-capable'
@@ -108,7 +108,9 @@ export default function Layout({ children, ...props }) {
           <PopupProvider>
             <main>{children}</main>
             <Navigation />
-            <Popup />
+            <div className='relative z-[999999]'>
+              <Popup />
+            </div>
           </PopupProvider>
         </ModalProvider>
 

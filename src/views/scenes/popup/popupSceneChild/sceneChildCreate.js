@@ -3,11 +3,15 @@ import { useContext, useState, useRef, useEffect, forwardRef } from "react";
 import { ArrowLongRightIcon, BackwardIcon, CheckIcon, ClockIcon, ForwardIcon, MinusIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { Box, Switch } from "@components";
 import Coolors from "src/components/Colors/coolors";
-import popupContext from "../../../../context/popup/popupContext";
+import popupContext from "@context/popup/popupContext";
 import { colors, timeAstimestamp, timestampAstime, timeAsText } from "@utils";
+import { useDispatch } from "react-redux";
+import { SCENE_CHILDREN_UPDATE } from "@store/slices/scenesSlice";
 
 const SceneChildView = forwardRef((props, ref) => {
+  const { time_prev, time_next, ID } = props;
   const popupCtx = useContext(popupContext);
+  const dispatch = useDispatch();
 
   const refInput = useRef(null);
 
@@ -24,44 +28,57 @@ const SceneChildView = forwardRef((props, ref) => {
     return ((ct - pt) / (nt - pt)) * 100;
   };
 
-  const previousTime = timeAstimestamp("19:00");
-  const currentTime = timeAstimestamp("20:00");
-  const nextTime = timeAstimestamp("21:00");
+  const previousTime = Number.isInteger(time_prev) ? time_prev : timeAstimestamp(`${time_prev}`);
+  const nextTime = Number.isInteger(time_next) ? time_next : timeAstimestamp(`${time_next}`);
+
+  const currentTime = previousTime + (nextTime - previousTime) / 2;
 
   const dur = duration(previousTime, currentTime, nextTime);
 
-  const abc = () => {
-    console.log(timeAsText(timestampAstime(timeline[1])));
+  const abc = (time) => {
+    dispatch(
+      SCENE_CHILDREN_UPDATE({
+        childrenID: `SC${ID.slice(1, ID.length)}`,
+        timestamp: time,
+      })
+    );
+
+    console.log(timeAsText(timestampAstime(time)));
+    popupCtx.actions.back();
   };
 
   useEffect(() => {
     setTimeline([previousTime, currentTime, nextTime]);
-    setSliderValue(dur);
+    setSliderValue(currentTime);
 
-    popupCtx.events.onSave(() => abc);
+    popupCtx.events.onSave(() => abc.bind(null, currentTime));
 
     // return () => {
     //   cleanup;
     // };
   }, []);
 
-  useEffect(() => {
-    popupCtx.events.onSave(() => abc);
+  // useEffect(() => {
+  //   popupCtx.events.onSave(() => abc);
 
-    return () => {
-      popupCtx.events.onSave();
-    };
-  }, [timeline[1]]);
+  //   return () => {
+  //     popupCtx.events.onSave();
+  //   };
+  // }, [timeline[1]]);
 
   const handleChange_Slider = (e) => {
     //const newTime = Math.floor(timeline[0] + (Math.floor(e.target.value) / 100) * (timeline[2] - timeline[0]));
-    const newTime = timeline[0] + +e.target.value;
-    const sliderValuePercent = Math.floor((+e.target.value * 100) / (timeline[2] - timeline[0]));
-    setSliderValue(sliderValuePercent);
+
+    //const newTime = timeline[0] + +e.target.value;
+    const newTime = +e.target.value;
+
+    setSliderValue(newTime);
     setTimeline((state) => {
       state[1] = newTime;
       return state;
     });
+
+    popupCtx.events.onSave(() => abc.bind(null, newTime));
   };
 
   return (
@@ -82,7 +99,7 @@ const SceneChildView = forwardRef((props, ref) => {
                       </div>
                       <div className='w-11/12'>
                         <div className='px-8'>
-                          <p className='text-xs text-zinc-400 select-none'>21:00</p>
+                          <p className='text-xs text-zinc-400 select-none'>{`${time_next}`}</p>
                         </div>
                       </div>
                     </div>
@@ -102,7 +119,7 @@ const SceneChildView = forwardRef((props, ref) => {
                       </div>
                       <div className='w-11/12'>
                         <div className='px-8'>
-                          <p className='text-xs text-zinc-400 select-none'>19:00</p>
+                          <p className='text-xs text-zinc-400 select-none'>{`${time_prev}`}</p>
                         </div>
                       </div>
                     </div>
@@ -128,7 +145,7 @@ const SceneChildView = forwardRef((props, ref) => {
                     <div
                       ref={sliderIndicatorRef}
                       className={`w-auto h-full absolute top-0 bottom-0 left-0 bg-orange-700 rounded-lg`}
-                      style={{ width: `${sliderValue}%` }}>
+                      style={{ width: `${Math.floor(duration(timeline[0], timeline[1], timeline[2]))}%` }}>
                       {/* <div className='absolute w-3 h-full bg-white rounded-sm top-0 right-0'>
                       <div className='relative -m-1'>
                         <div

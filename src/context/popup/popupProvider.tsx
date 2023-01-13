@@ -94,16 +94,37 @@ const PopupProvider = ({ children }: Props) => {
     if (popupIsVisible) {
       document.body.style.overflow = "hidden";
       document.body.style.height = "100vh";
+      document.body.style.touchAction = "none";
+      document.body.style.userSelect = "none";
+
+      // document.addEventListener(
+      //   "touchmove",
+      //   function (e) {
+      //     e.preventDefault();
+      //   },
+      //   { passive: false }
+      // );
+      // document.body.addEventListener(
+      //   "touchmove",
+      //   function (e) {
+      //     e.preventDefault();
+      //   },
+      //   { passive: false }
+      // );
 
       return;
     }
 
     document.body.style.overflow = "auto";
     document.body.style.height = "auto";
+    document.body.style.touchAction = "auto";
+    document.body.style.userSelect = "auto";
 
     return () => {
       document.body.style.overflow = "auto";
       document.body.style.height = "auto";
+      document.body.style.touchAction = "auto";
+      document.body.style.userSelect = "auto";
     };
   }, [popupIsVisible]);
 

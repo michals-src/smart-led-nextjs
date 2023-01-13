@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useCallback } from "react";
+import { useContext, useState, useEffect, useCallback, forwardRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { get, child, ref } from "firebase/database";
 import classNames from "classnames";
@@ -6,12 +6,167 @@ import classNames from "classnames";
 import { ArrowLongRightIcon, ClockIcon, MegaphoneIcon, PaintBrushIcon } from "@heroicons/react/24/outline";
 import { PlusIcon, CheckCircleIcon, PlayIcon, XMarkIcon, PencilIcon } from "@heroicons/react/24/solid";
 
-import { SCENE_RELATE, SCENE_REMOVE, SCENE_CHILDREN_APPEND } from "../../store/slices/scenesSlice";
+import { SCENE_RELATE, SCENE_REMOVE, SCENE_CHILDREN_APPEND } from "@store/slices/scenesSlice";
 import db from "@firebase";
-import { Layout } from "../../components";
+import { Picker, PickerSelect, PickerOption } from "@components";
 import popupContext from "../../context/popup/popupContext";
 import { toUpperFirst } from "../../utilities";
 import { popupSceneView, popupSceneCreate, popupSceneChildView, popupSceneChildCreate } from "./popup";
+import { useRef } from "react";
+
+const PopupSchedule_Development = forwardRef((props, ref) => {
+  // false => down
+  // true => up
+  const [dirY, setDirY] = useState(false);
+
+  const [move, setMove] = useState([0, 0]);
+  const [moving, setMoving] = useState([0, 0]);
+  const [translate, setTranslate] = useState(0);
+
+  const numbersBackground = useRef(null);
+  const numbersMain = useRef(null);
+
+  const handle_mouseEnter = (e) => {
+    numbersMain.current.focus();
+
+    setMove(true);
+
+    if (numbersBackground.current !== null) {
+      numbersBackground.current.style.transitionDuration = "0s";
+    }
+  };
+
+  const handle_mouseMove = (e) => {
+    if (e.type !== "touchmove" && e.buttons !== 1) {
+      setMove(false);
+      setMoving([0, 0]);
+      if (translate >= 6) setTranslate(6);
+      return;
+    }
+
+    const consumer = e.type === "touchmove" ? e.touches[0] : e;
+
+    setMoving((state) => {
+      const currScreenY = consumer.screenY;
+      if (state[1] === 0) return [0, currScreenY];
+
+      let calculateMove = state[1] - currScreenY;
+      let currMovingY = state[0] + calculateMove;
+
+      if (currMovingY < 0) setDirY(true);
+      if (currMovingY >= 0) setDirY(false);
+
+      return [currMovingY, currScreenY];
+    });
+  };
+
+  const handle_mouseLeave = (e) => {
+    if (moving[0] >= 10 || moving[0] <= -10) {
+      //let multiplicatorY = Math.abs(Math.floor(moving[0] / 32));
+      let multiplicatorY = Math.floor(moving[0] / 32);
+
+      //if (moving[0] < 6 && moving[0] > 0)
+      setTranslate((state) => {
+        let value = state + multiplicatorY;
+
+        // if (!dirY) value = state + multiplicatorY;
+        // if (dirY) value = state - multiplicatorY;
+
+        console.log(value);
+
+        if (value <= 0) value = 0;
+        if (value >= 6) value = 6;
+
+        return value;
+      });
+    } //
+
+    setMove(false);
+    setMoving([0, 0]);
+
+    if (numbersBackground.current !== null) {
+      numbersBackground.current.style.transitionDuration = "1.5s";
+    }
+  };
+
+  useEffect(() => {
+    //console.log(move, moving);
+    //numbersBackground.current.style.transform = `translateY(-${moving[0]}px)`;
+
+    if (move) {
+      numbersBackground.current.style.transform = `translateY(-${32 * translate + moving[0]}px)`;
+
+      return;
+    }
+
+    // console.log(translate);
+    numbersBackground.current.style.transform = `translateY(-${32 * translate}px)`;
+  }, [moving[0], translate]);
+
+  const Item = ({ children, ...props }) => {
+    return <div className='text-sm text-zinc-600 height-[32px] leading-[32px]'>{children}</div>;
+  };
+
+  return (
+    <div ref={ref}>
+      <div className='my-12'>
+        <p className='text-3xl'>absfdgbvsed</p>
+      </div>
+      <div className='pb-32'>
+        <div
+          ref={numbersMain}
+          className='relative py-12 mb-32'>
+          <div className='relative z-10 h-full'>
+            <div className='w-full h-auto absolute left-0 top-[50%]'>
+              <div
+                className='w-full py-4 px-3 rounded-lg bg-zinc-800 h-[32px]'
+                style={{
+                  transform: "translateY(-50%)",
+                }}></div>
+            </div>
+            <div className={`overflow-hidden h-[160px] px-3`}>
+              <div
+                className='pt-[64px]'
+                ref={numbersBackground}
+                style={{
+                  transitionProperty: "transform 0.3s ease",
+                  transitionDuration: "0.3s",
+                  transitionTimingFunction: "ease",
+                }}>
+                <Item>0</Item>
+                <Item>1</Item>
+                <Item>2</Item>
+                <Item>3</Item>
+                <Item>4</Item>
+                <Item>5</Item>
+                <Item>6</Item>
+                {/* <Item>7</Item>
+                <Item>8</Item>
+                <Item>9</Item>
+                <Item>10</Item> */}
+              </div>
+            </div>
+            <div
+              className='w-full h-full absolute left-0 top-0 touch-pan-x'
+              ///
+              onMouseDown={(e) => handle_mouseEnter(e)}
+              onMouseMove={(e) => handle_mouseMove(e)}
+              onMouseUp={(e) => handle_mouseLeave(e)}
+              onMouseLeave={(e) => handle_mouseLeave(e)}
+              ////
+              onTouchStartCapture={(e) => handle_mouseEnter(e)}
+              onTouchStart={(e) => handle_mouseEnter(e)}
+              onTouchMove={(e) => handle_mouseMove(e)}
+              onTouchCancel={(e) => handle_mouseLeave(e)}
+              onTouchEnd={(e) => handle_mouseLeave(e)}></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+PopupSchedule_Development.displayName = "PopupSchedule_Development";
 
 const ScenesListItemWrapper = (props) => {
   const { id, name, active, count } = props;
@@ -117,6 +272,15 @@ const ScenesList = (props) => {
 
   useEffect(() => {
     //popupInit();
+    // popupCtx.setWindow(
+    //   "schedule development",
+    //   {
+    //     Icon: PlayIcon,
+    //   },
+    //   PopupSchedule_Development,
+    //   {},
+    //   true
+    // );
 
     get(child(ref(db), "/sceneRelated")).then((snapshot) => {
       if (snapshot.exists()) dispatch(SCENE_RELATE(snapshot.val()));
@@ -131,7 +295,7 @@ const ScenesList = (props) => {
     };
   }, []);
 
-  const handleClick_SceneItem = (sceneID, sceneName) => {
+  const handleClick_SceneItem = (sceneID, childrenID, sceneName) => {
     // const screenData = [];
     // screenData[0] = {
     //   ID: sceneID,
@@ -153,6 +317,7 @@ const ScenesList = (props) => {
       popupSceneView,
       {
         ID: sceneID,
+        childrenID: childrenID,
         name: sceneName,
         related: sceneRelated === sceneID,
       },
@@ -163,10 +328,21 @@ const ScenesList = (props) => {
   };
 
   const handleClick_SceneCreate = (sceneID, sceneName) => {
-    popupCtx.onUpdatePopupIcon(PencilIcon);
-    popupCtx.onUpdatePopupScreenIndex(1);
-    popupCtx.onUpdatePopupTitle(`Nowa scena`, `Konfigurator`);
-    popupCtx.onUpdatePopupVisible(true);
+    popupCtx.setWindow(
+      "Nowa scena",
+      {
+        Icon: PencilIcon,
+        caption: toUpperFirst("konfigurator"),
+      },
+      popupSceneCreate,
+      {},
+      true
+    );
+
+    // popupCtx.onUpdatePopupIcon(PencilIcon);
+    // popupCtx.onUpdatePopupScreenIndex(1);
+    // popupCtx.onUpdatePopupTitle(`Nowa scena`, `Konfigurator`);
+    // popupCtx.onUpdatePopupVisible(true);
   };
 
   return (
@@ -196,6 +372,29 @@ const ScenesList = (props) => {
         <p className='text-xs text-zinc-500'>Lista utworzonych scenariuszy pracy oświetlenia</p>
       </div>
 
+      <div className='my-16'>
+        <Picker>
+          <PickerSelect onChange={(e) => console.log(e.current.value)}>
+            <PickerOption value='0'>00</PickerOption>
+            <PickerOption value='1'>01</PickerOption>
+            <PickerOption value='2'>02</PickerOption>
+            <PickerOption value='3'>03</PickerOption>
+            <PickerOption value='4'>04</PickerOption>
+            <PickerOption value='5'>05</PickerOption>
+            <PickerOption value='6'>06</PickerOption>
+          </PickerSelect>
+          <PickerSelect>
+            <PickerOption value='0'>00</PickerOption>
+            <PickerOption value='1'>01</PickerOption>
+            <PickerOption value='2'>02</PickerOption>
+            <PickerOption value='3'>03</PickerOption>
+            <PickerOption value='4'>04</PickerOption>
+            <PickerOption value='5'>05</PickerOption>
+            <PickerOption value='6'>06</PickerOption>
+          </PickerSelect>
+        </Picker>
+      </div>
+
       <div className='p-3 bg-zinc-800 rounded-3xl'>
         {Object.keys(data).map((sceneID, itemKey) => {
           return (
@@ -207,7 +406,7 @@ const ScenesList = (props) => {
               )}
               <ScenesListItemWrapper
                 ID={sceneID}
-                onClick={() => handleClick_SceneItem(sceneID, data[sceneID].name)}
+                onClick={() => handleClick_SceneItem(sceneID, data[sceneID].childrenID, data[sceneID].name)}
                 key={itemKey}
                 name={data[sceneID].name}
                 active={sceneRelated === sceneID}

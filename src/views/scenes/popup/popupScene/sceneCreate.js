@@ -9,8 +9,9 @@ import { child, ref, update } from "firebase/database";
 import db from "@firebase";
 import { useDispatch } from "react-redux";
 import { SCENE_APPEND } from "../../../../store/slices/scenesSlice";
+import { forwardRef } from "react";
 
-const SceneCreate = () => {
+const SceneCreate = forwardRef((props, ref) => {
   const popupCtx = useContext(popupContext);
   const disptach = useDispatch();
 
@@ -56,66 +57,70 @@ const SceneCreate = () => {
 
   return (
     <>
-      <div className='mb-8'>
-        <div className='flex flex-row flex-nowrap items-center cursor-pointer'>
-          <div className='w-1/12'>
-            <Type
-              size={32}
-              className='w-6 h-6 text-white'
-            />
-          </div>
-          <div className='w-11/12'>
-            <div className='px-3'>
-              <p className='text-sm'>Nadaj scenie nazwę</p>
-            </div>
-          </div>
-        </div>
-
-        <div className='mt-3'>
-          <input
-            type='name'
-            id='sceneName'
-            className='w-full h-auto py-2 px-4 bg-zinc-900 border border-orange-600 rounded-lg text-xs text-orange-600 shadow-lg'
-            placeholder='Nazwa sceny'
-            autocomplete='off'
-            autofill='off'
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-
-        <div className='my-8'>
-          <div className='flex flex-row flex-nowrap w-full'>
+      <div ref={ref}>
+        <div className='mb-8'>
+          <div className='flex flex-row flex-nowrap items-center cursor-pointer'>
             <div className='w-1/12'>
-              <InformationCircleIcon className='w-6 h-6' />
+              <Type
+                size={32}
+                className='w-6 h-6 text-white'
+              />
             </div>
             <div className='w-11/12'>
-              <p className='text-xs text-zinc-400'>Dodanie przejść będzie możliwe w trybie edycji sceny po jej utworzeniu</p>
+              <div className='px-3'>
+                <p className='text-sm'>Nadaj scenie nazwę</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className='mt-3 w-full'>
-          <button
-            className='w-full h-auto block py-3 rounded-lg bg-zinc-800 text-xs shadow-xl'
-            onClick={(e) => handleClick_Submit(e)}>
-            <div className='relative'>
-              <div className='flex flex-row flex-nowrap px-25 items-center justify-center'>
-                <p className='text-sm'>Zapisz</p>
+          <div className='mt-3'>
+            <input
+              type='name'
+              id='sceneName'
+              className='w-full h-auto py-2 px-4 bg-zinc-900 border border-orange-600 rounded-lg text-xs text-orange-600 shadow-lg'
+              placeholder='Nazwa sceny'
+              autocomplete='off'
+              autofill='off'
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+
+          <div className='my-8'>
+            <div className='flex flex-row flex-nowrap w-full'>
+              <div className='w-1/12'>
+                <InformationCircleIcon className='w-6 h-6' />
               </div>
-              {!!proceding && (
-                <div className='w-12 h-full absolute top-0 right-0'>
-                  <div className='flex flex-col items-center justify-center'>
-                    <LoaderCircle size='sm' />
-                  </div>
-                </div>
-              )}
+              <div className='w-11/12'>
+                <p className='text-xs text-zinc-400'>Dodanie przejść będzie możliwe w trybie edycji sceny po jej utworzeniu</p>
+              </div>
             </div>
-          </button>
+          </div>
+
+          <div className='mt-3 w-full'>
+            <button
+              className='w-full h-auto block py-3 rounded-lg bg-zinc-800 text-xs shadow-xl'
+              onClick={(e) => handleClick_Submit(e)}>
+              <div className='relative'>
+                <div className='flex flex-row flex-nowrap px-25 items-center justify-center'>
+                  <p className='text-sm'>Zapisz</p>
+                </div>
+                {!!proceding && (
+                  <div className='w-12 h-full absolute top-0 right-0'>
+                    <div className='flex flex-col items-center justify-center'>
+                      <LoaderCircle size='sm' />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </button>
+          </div>
         </div>
       </div>
     </>
   );
-};
+});
+
+SceneCreate.displayName = "SceneCreate";
 
 export default SceneCreate;

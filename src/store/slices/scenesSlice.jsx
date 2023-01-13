@@ -71,14 +71,40 @@ export const scenesSlice = createSlice({
       return {...state, children: {...state.children, ...action.payload}};
     },
     SCENE_CHILDREN_UPDATE: (state, action) => {
-      const ID = action.payload.ID;
-      const key = action.payload.key;
-      const value = action.payload.value;
 
-      if(Object.keys(state.children).indexOf(ID) < 0) return state;
-      if(Object.keys(state.children[ID]).indexOf(key) < 0) return state;
+      // const { childrenID, timestamp } = action.payload;
+      // const child = {
+      //   [childrenID]: [...state.children[childrenID], {
+      //     timestamp,
+      //     channels: ''
+      //   }]
+      // };
 
-      return {...state, [children[ID][key]]: value};      
+      // const ID = action.payload.ID;
+      // const key = action.payload.key;
+      // const value = action.payload.value;
+
+      // if(Object.keys(state.children).indexOf(ID) < 0) return state;
+      // if(Object.keys(state.children[ID]).indexOf(key) < 0) return state;
+
+      // return {...state, [children[ID][key]]: value};      
+
+
+      const { childrenID, timestamp } = action.payload;
+      const child = [...state.children[childrenID], {
+          timestamp,
+          channels: ''
+        }]
+
+      // const ID = action.payload.ID;
+      // const key = action.payload.key;
+      // const value = action.payload.value;
+
+      // if(Object.keys(state.children).indexOf(ID) < 0) return state;
+      // if(Object.keys(state.children[ID]).indexOf(key) < 0) return state;
+
+      return {...state, children: {...state.children, [childrenID]: child}};      
+
     },
     SCENE_CHILDREN_REMOVE: (state, action) => {
 

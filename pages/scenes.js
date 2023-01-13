@@ -57,7 +57,7 @@ const Scenes = () => {
   }, []);
 
   return (
-    <Layout>
+    <Layout title='App name - sceny'>
       {loading && <LoadingView />}
       {!!(!loading & (Object.keys(scenes).length <= 0)) && <ScenesEmpty />}
       {!!(!loading && Object.keys(scenes).length > 0) && <ScenesList />}

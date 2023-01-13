@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, forwardRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 
 import { update, ref } from "firebase/database";
@@ -12,25 +12,33 @@ import { Box, Switch } from "@components";
 import popupContext from "@context/popup/popupContext";
 
 import { popupSceneChildView, popupSceneChildCreate } from "../";
-import { forwardRef } from "react";
+
+import { colors, timeAstimestamp, timestampAstime, timeAsText } from "@utils";
 
 const SceneView = forwardRef((props, ref) => {
-  const { ID, name, related: relatedDefault } = props;
+  const { ID, childrenID, name, related: relatedDefault } = props;
   const popupCtx = useContext(popupContext);
 
   const [related, setRelated] = useState(relatedDefault);
   const [openChangeTitle, setOpenChangeTitle] = useState(false);
   const sceneChildren = useSelector((state) => state.scenes.children[state.scenes.items[ID].childrenID]);
 
-  const handleClick_Item = () => {
-    popupCtx.onUpdatePopupScreenIndex(2);
+  const handleClick_Item = (index) => {
+    // popupCtx.onUpdatePopupScreenIndex(2);
+
+    popupCtx.setWindow("Edytuj przejście", { save: true }, popupSceneChildView, {
+      // time_prev: "18:00",
+      // time_next: "20:00",
+      childIndex: index,
+      sceneChildren,
+    });
   };
 
   const handleClick_Switch = () => {
     setRelated(!related);
   };
 
-  const handleClick_newItem = () => {
+  const handleClick_newItem = (time_previous = "0:00", time_next = "24:00") => {
     // popupCtx.onUpdatePopupScreenData([
     //   {
     //     time_prev: "18:00",
@@ -39,10 +47,16 @@ const SceneView = forwardRef((props, ref) => {
     // ]);
     // popupCtx.onUpdatePopupScreenIndex(3);
     popupCtx.setWindow("Nowe przejście", { save: true }, popupSceneChildCreate, {
-      time_prev: "18:00",
-      time_next: "20:00",
+      time_prev: time_previous,
+      time_next,
+      ID,
     });
   };
+
+  useEffect(() => {
+    console.log(sceneChildren);
+    return () => {};
+  }, [sceneChildren]);
 
   return (
     <>
@@ -131,7 +145,7 @@ const SceneView = forwardRef((props, ref) => {
         <div className='mt-12 mb-3'>
           <div className='flex flex-row flex-nowrap items-top'>
             <div className='w-8/12'>
-              <div className='mb-1'>
+              <div className='mb-1 pl-3'>
                 <p className='text-4xl font-bold'>Przejścia</p>
               </div>
             </div>
@@ -145,21 +159,109 @@ const SceneView = forwardRef((props, ref) => {
           </div>
         </div>
 
-        <div className='my-8'>
-          <div className='relative z-10 flex flex-row flex-nowrap items-center justify-center mb-4'>
-            <button className='relativ z-30 w-auto p-1 rounded-full bg-zinc-800'>
-              <div className='flex flex-row flex-nowrap items-center'>
-                <div className='px-3'>
-                  <PlusIcon className='text-white mx-auto w-3 h-3' />
-                </div>
-                <div className='pr-3'>
-                  <p className='text-xs'>Dodaj</p>
-                </div>
+        {!!(
+          sceneChildren !== null &&
+          sceneChildren !== "undefined" &&
+          typeof sceneChildren !== "string" &&
+          typeof sceneChildren === "object" &&
+          sceneChildren.length > 0
+        ) && (
+          <>
+            <div className='mt-8 pb-12'>
+              <div className='relative z-10 flex flex-row flex-nowrap items-center justify-center mb-4 px-4'>
+                <button
+                  className='relative z-30 w-full p-3 rounded-full bg-zinc-800'
+                  onClick={() => handleClick_newItem("00:00", sceneChildren[0].timestamp)}>
+                  <div className='flex flex-row flex-nowrap items-center justify-center'>
+                    <div className='px-3'>
+                      <PlusIcon className='text-white mx-auto w-3 h-3' />
+                    </div>
+                    <div className='pr-3'>
+                      <p className='text-xs text-zinc-400'>Dodaj</p>
+                    </div>
+                  </div>
+                </button>
               </div>
-            </button>
-          </div>
+              {/* <div className='relative z-10 flex flex-row flex-nowrap items-center justify-center mb-4'>
+                <button className='relativ z-30 w-auto p-1 rounded-full bg-zinc-800'>
+                  <div className='flex flex-row flex-nowrap items-center'>
+                    <div className='px-3'>
+                      <PlusIcon className='text-white mx-auto w-3 h-3' />
+                    </div>
+                    <div className='pr-3'>
+                      <p className='text-xs'>Dodaj</p>
+                    </div>
+                  </div>
+                </button>
+              </div> */}
+              <div className='flex flex-col w-full space-y-3 bg-[#FFFFFF10] py-3 px-6 rounded-3xl'>
+                {sceneChildren.map((item, index) => {
+                  console.log(index);
+                  return (
+                    <>
+                      <div
+                        className='cursor-pointer py-3 '
+                        onClick={() => handleClick_Item(index)}>
+                        <div className='w-full flex flex-row flex-nowrap items-center'>
+                          <div className='w-1/12'>
+                            <ClockIcon className='w-6 h-' />
+                          </div>
+                          <div className='w-10/12'>
+                            <div className='px-3'>
+                              <div className='text-sm'>{timeAsText(timestampAstime(item.timestamp))}</div>
+                              {/* <div className='text-xs text-zinc-500'>30 minut</div> */}
+                            </div>
+                          </div>
+                          <div className='w-1/12'>
+                            <div>
+                              <ArrowLongRightIcon className='w-4 h-4 text-zinc-400' />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
 
-          <div className='flex flex-col w-full space-y-3 bg-[#FFFFFF10] py-3 px-6 rounded-3xl'>
+                      {index !== sceneChildren.length - 1 && (
+                        <div className='relative z-10 flex flex-row flex-nowrap items-center justify-center'>
+                          <div
+                            className='absolute z-20 w-full h-auto top-[50%]'
+                            style={{ transform: "translateY(-50%)" }}>
+                            <div className='w-full h-[1px] bg-zinc-900'></div>
+                          </div>
+                          <button className='relativ z-30 w-auto p-1 rounded-full bg-zinc-900'>
+                            <div className='flex flex-row flex-nowrap items-center'>
+                              <div className='px-3'>
+                                <PlusIcon className='text-white mx-auto w-3 h-3' />
+                              </div>
+                              <div className='pr-3'>
+                                <p className='text-xs'>Dodaj</p>
+                              </div>
+                            </div>
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  );
+                })}
+              </div>
+              <div className='relative z-10 flex flex-row flex-nowrap items-center justify-center mt-4 px-4'>
+                <button
+                  className='relative z-30 w-full p-3 rounded-full bg-zinc-800'
+                  onClick={() => handleClick_newItem(sceneChildren[sceneChildren.length - 1].timestamp)}>
+                  <div className='flex flex-row flex-nowrap items-center justify-center'>
+                    <div className='px-3'>
+                      <PlusIcon className='text-white mx-auto w-3 h-3' />
+                    </div>
+                    <div className='pr-3'>
+                      <p className='text-xs text-zinc-400'>Dodaj</p>
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* <div className='flex flex-col w-full space-y-3 bg-[#FFFFFF10] py-3 px-6 rounded-3xl'>
             <div
               className='cursor-pointer py-3 '
               onClick={() => handleClick_Item()}>
@@ -217,23 +319,7 @@ const SceneView = forwardRef((props, ref) => {
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className='relative z-10 flex flex-row flex-nowrap items-center justify-center mt-4 px-4'>
-            <button
-              className='relative z-30 w-full p-3 rounded-full bg-zinc-800'
-              onClick={() => handleClick_newItem()}>
-              <div className='flex flex-row flex-nowrap items-center justify-center'>
-                <div className='px-3'>
-                  <PlusIcon className='text-white mx-auto w-3 h-3' />
-                </div>
-                <div className='pr-3'>
-                  <p className='text-xs text-zinc-400'>Dodaj</p>
-                </div>
-              </div>
-            </button>
-          </div>
-        </div>
+          </div> */}
 
         {!!(
           sceneChildren === null ||
@@ -242,14 +328,16 @@ const SceneView = forwardRef((props, ref) => {
           (typeof sceneChildren === "object" && sceneChildren.length <= 0)
         ) && (
           <>
-            <div className='my-10 text-zinc-400'>
+            <div className='mt-10 pt-12 text-zinc-400'>
               <MegaphoneIcon className='text-inherit mx-auto w-10 h-10' />
               <div className='mt-4 mb-2 text-center'>
                 <p className='text-xs text-inherit'>Brak przejść</p>
               </div>
             </div>
             <div className='my-8'>
-              <button className='w-8/12 block mx-auto py-3 px-3 rounded-full bg-zinc-800 shadow-xl'>
+              <button
+                className='w-6/12 block mx-auto py-2 px-3 rounded-full bg-zinc-800 '
+                onClick={() => handleClick_newItem()}>
                 <div className='flex flex-row flex-nowrap items-center'>
                   <div className='w-1/12'>
                     <PlusIcon className='text-zinc-300 ml-auto w-3 h-3' />
@@ -262,26 +350,6 @@ const SceneView = forwardRef((props, ref) => {
             </div>
           </>
         )}
-
-        {/* <div className='my-10 text-zinc-400'>
-          <MegaphoneIcon className='text-inherit mx-auto w-10 h-10' />
-          <div className='mt-4 mb-2 text-center'>
-            <p className='text-xs text-inherit'>Brak przejść</p>
-          </div>
-        </div> */}
-
-        {/* <div className='my-8'>
-          <button className='w-8/12 block mx-auto py-3 px-3 rounded-full bg-zinc-800 shadow-xl'>
-            <div className='flex flex-row flex-nowrap items-center'>
-              <div className='w-1/12'>
-                <PlusIcon className='text-zinc-300 ml-auto w-3 h-3' />
-              </div>
-              <div className='w-11/12'>
-                <p className='ml-3 text-sm text-zinc-400'>Dodaj</p>
-              </div>
-            </div>
-          </button>
-        </div> */}
       </div>
     </>
   );
