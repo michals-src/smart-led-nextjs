@@ -372,28 +372,9 @@ const ScenesList = (props) => {
         <p className='text-xs text-zinc-500'>Lista utworzonych scenariuszy pracy oświetlenia</p>
       </div>
 
-      <div className='my-16'>
-        <Picker>
-          <PickerSelect onChange={(e) => console.log(e.current.value)}>
-            <PickerOption value='0'>00</PickerOption>
-            <PickerOption value='1'>01</PickerOption>
-            <PickerOption value='2'>02</PickerOption>
-            <PickerOption value='3'>03</PickerOption>
-            <PickerOption value='4'>04</PickerOption>
-            <PickerOption value='5'>05</PickerOption>
-            <PickerOption value='6'>06</PickerOption>
-          </PickerSelect>
-          <PickerSelect>
-            <PickerOption value='0'>00</PickerOption>
-            <PickerOption value='1'>01</PickerOption>
-            <PickerOption value='2'>02</PickerOption>
-            <PickerOption value='3'>03</PickerOption>
-            <PickerOption value='4'>04</PickerOption>
-            <PickerOption value='5'>05</PickerOption>
-            <PickerOption value='6'>06</PickerOption>
-          </PickerSelect>
-        </Picker>
-      </div>
+      {/* <div className='my-16'>
+
+      </div> */}
 
       <div className='p-3 bg-zinc-800 rounded-3xl'>
         {Object.keys(data).map((sceneID, itemKey) => {

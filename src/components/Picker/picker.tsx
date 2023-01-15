@@ -10,18 +10,15 @@ import React, { useState, useEffect, useCallback, forwardRef, useRef, Ref } from
  *
  */
 
-const PickerOption = forwardRef(function PickerOption(
-  props: {
-    children: React.ReactNode;
-  },
-  ref: Ref<HTMLDivElement>
-) {
+const PickerOption = forwardRef(function PickerOption(props: any, ref: Ref<HTMLDivElement>) {
   const { children } = props;
 
   return (
     <div
       className='text-sm text-zinc-600 height-[32px] leading-[32px] select-none'
-      ref={ref}>
+      ref={ref}
+      {...props}
+      onClick={(e) => props.onClick(e)}>
       <div className='flex flex-row flex-nowrap justify-center'>{children}</div>
     </div>
   );
@@ -42,6 +39,7 @@ const PickerSelect = forwardRef(function PickerSelect(
   const [translate, setTranslate] = useState<number>(0);
   const [value, setValue] = useState<number>(defaultValue);
 
+  const itemsRef = useRef<HTMLDivElement[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const numbersBackground = useRef<HTMLDivElement>(null);
 
@@ -123,9 +121,13 @@ const PickerSelect = forwardRef(function PickerSelect(
     // console.log(translate);
     numbersBackground.current.style.transform = `translateY(-${32 * translate}px)`;
 
-    if (onChangeCallback) {
-      onChangeCallback(inputRef);
-    }
+    // if (onChangeCallback) {
+    //   itemsRef[value].current.click();
+    //   inputRef.current.focus();
+    //   onChangeCallback(inputRef);
+    // }
+
+    if (itemsRef[value].current !== null) itemsRef[value].current.click();
   }, [moving[0], translate]);
 
   const handleOptionClick = (child: any) => (event: any) => {
@@ -134,11 +136,22 @@ const PickerSelect = forwardRef(function PickerSelect(
     setValue(val);
     console.log("click item");
   };
-  const handleChange = (event: any) => {
-    console.log("abc");
-    // if (onChangeCallback) {
-    //   onChangeCallback(event);
-    // }
+  const handleChange = (event: any, child: any) => {
+    const newValue = child.props.value;
+    if (!onChangeCallback || !event || newValue === value) return;
+
+    console.log("[handleChange] abc");
+    //if (onChangeCallback && event) {
+    const nativeEvent = event.nativeEvent || event;
+    const clonedEvent = new nativeEvent.constructor(nativeEvent.type, nativeEvent);
+
+    Object.defineProperty(clonedEvent, "target", {
+      writable: true,
+      value: { value: child.props.value },
+    });
+
+    onChangeCallback(clonedEvent, child);
+    //}
   };
 
   const items = childrenArr.map((child: React.ReactNode, index: number, arr: any) => {
@@ -152,7 +165,13 @@ const PickerSelect = forwardRef(function PickerSelect(
       "data-value": child.props.value,
       role: "option",
       value: undefined,
-      onClick: handleOptionClick(child),
+      //onClick: handleOptionClick(child),
+      onClick: (e: any) => handleChange(e, child),
+      ref: (e: any) => {
+        itemsRef[index] = {
+          current: e,
+        };
+      },
     });
   });
 
@@ -216,7 +235,7 @@ const Picker = forwardRef(function Picker(
     <div ref={ref}>
       <div
         ref={numbersMain}
-        className='relative py-12 mb-32'>
+        className='relative py-12'>
         <div className='relative z-10 h-full'>
           <div className='w-full h-auto absolute left-0 top-[50%]'>
             <div
@@ -225,7 +244,6 @@ const Picker = forwardRef(function Picker(
                 transform: "translateY(-50%)",
               }}></div>
           </div>
-
           <div className='flex flex-row flex-nowrap items-center'>{children}</div>
         </div>
       </div>

@@ -7,6 +7,7 @@ import popupContext from "@context/popup/popupContext";
 import { colors, timeAstimestamp, timestampAstime, timeAsText } from "@utils";
 import { useDispatch } from "react-redux";
 import { SCENE_CHILDREN_UPDATE } from "@store/slices/scenesSlice";
+import { Picker, PickerSelect, PickerOption } from "@components";
 
 const SceneChildView = forwardRef((props, ref) => {
   const { time_prev, time_next, ID } = props;
@@ -104,10 +105,30 @@ const SceneChildView = forwardRef((props, ref) => {
                       </div>
                     </div>
                   </div>
-                  <div>
-                    <div className='p-4'>
+                  <div className='w-full'>
+                    {/* <div className='p-4'>
                       <p className='text-6xl select-none'>{timeAsText(timestampAstime(timeline[1]))}</p>
-                    </div>
+                    </div> */}
+                    <Picker>
+                      <PickerSelect onChange={(e) => console.log(e.target.value)}>
+                        <PickerOption value='0'>00</PickerOption>
+                        <PickerOption value='1'>01</PickerOption>
+                        <PickerOption value='2'>02</PickerOption>
+                        <PickerOption value='3'>03</PickerOption>
+                        <PickerOption value='4'>04</PickerOption>
+                        <PickerOption value='5'>05</PickerOption>
+                        <PickerOption value='6'>06</PickerOption>
+                      </PickerSelect>
+                      <PickerSelect>
+                        <PickerOption value='0'>00</PickerOption>
+                        <PickerOption value='1'>01</PickerOption>
+                        <PickerOption value='2'>02</PickerOption>
+                        <PickerOption value='3'>03</PickerOption>
+                        <PickerOption value='4'>04</PickerOption>
+                        <PickerOption value='5'>05</PickerOption>
+                        <PickerOption value='6'>06</PickerOption>
+                      </PickerSelect>
+                    </Picker>
                   </div>
                   <div>
                     <div className='flex flex-row flex-nowrap items-center'>
