@@ -8,6 +8,7 @@ import { colors, timeAstimestamp, timestampAstime, timeAsText } from "@utils";
 import { useDispatch } from "react-redux";
 import { SCENE_CHILDREN_UPDATE } from "@store/slices/scenesSlice";
 import { Picker, PickerSelect, PickerOption } from "@components";
+import { useCallback } from "react";
 
 const SceneChildView = forwardRef((props, ref) => {
   const { time_prev, time_next, ID } = props;
@@ -32,7 +33,8 @@ const SceneChildView = forwardRef((props, ref) => {
   const previousTime = Number.isInteger(time_prev) ? time_prev : timeAstimestamp(`${time_prev}`);
   const nextTime = Number.isInteger(time_next) ? time_next : timeAstimestamp(`${time_next}`);
 
-  const currentTime = previousTime + (nextTime - previousTime) / 2;
+  //const currentTime = previousTime + (nextTime - previousTime) / 2;
+  const currentTime = timeAstimestamp("18:30");
 
   const dur = duration(previousTime, currentTime, nextTime);
 
@@ -48,15 +50,21 @@ const SceneChildView = forwardRef((props, ref) => {
     popupCtx.actions.back();
   };
 
+  const asd = useCallback(() => {
+    console.log(timeline[1]);
+  }, [timeline[1]]);
+
   useEffect(() => {
     setTimeline([previousTime, currentTime, nextTime]);
     setSliderValue(currentTime);
 
-    popupCtx.events.onSave(() => abc.bind(null, currentTime));
+    //popupCtx.events.onSave(() => abc.bind(null, currentTime));
 
-    // return () => {
-    //   cleanup;
-    // };
+    ref.current.addEventListener("xdee", asd, false);
+
+    return () => {
+      ref.current.removeEventListener("xdee", asd, false);
+    };
   }, []);
 
   // useEffect(() => {
@@ -79,12 +87,17 @@ const SceneChildView = forwardRef((props, ref) => {
       return state;
     });
 
-    popupCtx.events.onSave(() => abc.bind(null, newTime));
+    //popupCtx.events.onSave(() => abc.bind(null, newTime));
   };
 
   return (
     <>
-      <div ref={ref}>
+      <div
+        data-x='adcas'
+        ref={ref}
+        xdee={() => {
+          console.log(timeline[1]);
+        }}>
         <div className='py-12'>
           <div className='flex flex-col flex-nowrap items-center'>
             <div className='w-full'>
@@ -110,7 +123,14 @@ const SceneChildView = forwardRef((props, ref) => {
                       <p className='text-6xl select-none'>{timeAsText(timestampAstime(timeline[1]))}</p>
                     </div> */}
                     <Picker>
-                      <PickerSelect onChange={(e) => console.log(e.target.value)}>
+                      <PickerSelect
+                        value={`${timestampAstime(timeline[1])[0]}`}
+                        onChange={(e) =>
+                          setTimeline((state) => {
+                            state = { ...state, 1: state[1] + (parseInt(e.target.value) - Math.floor(state[1] / 60)) * 60 };
+                            return state;
+                          })
+                        }>
                         <PickerOption value='0'>00</PickerOption>
                         <PickerOption value='1'>01</PickerOption>
                         <PickerOption value='2'>02</PickerOption>
@@ -118,15 +138,36 @@ const SceneChildView = forwardRef((props, ref) => {
                         <PickerOption value='4'>04</PickerOption>
                         <PickerOption value='5'>05</PickerOption>
                         <PickerOption value='6'>06</PickerOption>
+                        <PickerOption value='7'>07</PickerOption>
+                        <PickerOption value='8'>08</PickerOption>
+                        <PickerOption value='9'>09</PickerOption>
+                        <PickerOption value='10'>10</PickerOption>
+                        <PickerOption value='11'>11</PickerOption>
+                        <PickerOption value='12'>12</PickerOption>
+                        <PickerOption value='13'>13</PickerOption>
+                        <PickerOption value='14'>14</PickerOption>
+                        <PickerOption value='15'>15</PickerOption>
+                        <PickerOption value='16'>16</PickerOption>
+                        <PickerOption value='17'>17</PickerOption>
+                        <PickerOption value='18'>18</PickerOption>
+                        <PickerOption value='19'>19</PickerOption>
+                        <PickerOption value='20'>20</PickerOption>
+                        <PickerOption value='21'>21</PickerOption>
+                        <PickerOption value='22'>22</PickerOption>
+                        <PickerOption value='23'>23</PickerOption>
                       </PickerSelect>
-                      <PickerSelect>
+                      <PickerSelect
+                        value={timestampAstime(timeline[1])[1]}
+                        onChange={(e) =>
+                          setTimeline((state) => {
+                            state = { ...state, 1: state[1] + (parseInt(e.target.value) - (state[1] % 60)) };
+                            return state;
+                          })
+                        }>
                         <PickerOption value='0'>00</PickerOption>
-                        <PickerOption value='1'>01</PickerOption>
-                        <PickerOption value='2'>02</PickerOption>
-                        <PickerOption value='3'>03</PickerOption>
-                        <PickerOption value='4'>04</PickerOption>
-                        <PickerOption value='5'>05</PickerOption>
-                        <PickerOption value='6'>06</PickerOption>
+                        <PickerOption value='15'>15</PickerOption>
+                        <PickerOption value='30'>30</PickerOption>
+                        <PickerOption value='45'>45</PickerOption>
                       </PickerSelect>
                     </Picker>
                   </div>
@@ -148,7 +189,7 @@ const SceneChildView = forwardRef((props, ref) => {
                 </div>
               </div>
             </div>
-            <div className='w-full'>
+            {/* <div className='w-full'>
               <div className='px-3 pt-20 pb-8'>
                 <div
                   className='relative mx-auto touch-pan-x select-none'
@@ -166,8 +207,8 @@ const SceneChildView = forwardRef((props, ref) => {
                     <div
                       ref={sliderIndicatorRef}
                       className={`w-auto h-full absolute top-0 bottom-0 left-0 bg-orange-700 rounded-lg`}
-                      style={{ width: `${Math.floor(duration(timeline[0], timeline[1], timeline[2]))}%` }}>
-                      {/* <div className='absolute w-3 h-full bg-white rounded-sm top-0 right-0'>
+                      style={{ width: `${Math.floor(duration(timeline[0], timeline[1], timeline[2]))}%` }}> */}
+            {/* <div className='absolute w-3 h-full bg-white rounded-sm top-0 right-0'>
                       <div className='relative -m-1'>
                         <div
                           className='absolute top-0 left-[50%] py-1 px-3 rounded-lg bg-black'
@@ -176,7 +217,7 @@ const SceneChildView = forwardRef((props, ref) => {
                         </div>
                       </div>
                     </div> */}
-                    </div>
+            {/* </div>
                   </div>
                   <input
                     ref={refInput}
@@ -196,7 +237,7 @@ const SceneChildView = forwardRef((props, ref) => {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className='py-4'>

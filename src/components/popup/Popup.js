@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState, useCallback, useContext } from "react";
 import classNames from "classnames";
 
-import { default as popupContext } from "../../context/popup/popupContext";
+import { default as popupContext } from "@context/popup/popupContext";
 
 import PopupHeader from "./popupHeader";
 import PopupHeaderAction from "./popupHeaderAction";
@@ -105,15 +105,15 @@ function Popup(props) {
 
     ref.current.style.overflow = "hidden";
 
-    if (popupCtx.get.refNode === null) {
-      const elRect = refContent.current.getBoundingClientRect();
-      refContentWrapper.current.style.height = elRect.height + "px";
-
-      return;
-    }
-
-    const elRect = popupCtx.get.refNode.current.getBoundingClientRect();
+    // if (popupCtx.get.refNode === null) {
+    const elRect = refContent.current.getBoundingClientRect();
     refContentWrapper.current.style.height = elRect.height + "px";
+
+    //   return;
+    //}
+
+    //const elRect = popupCtx.get.refNode.current.getBoundingClientRect();
+    //refContentWrapper.current.style.height = elRect.height + "px";
   }, [Component]);
 
   if (!popupCtx.popupIsVisible && !windowIn) return <></>;

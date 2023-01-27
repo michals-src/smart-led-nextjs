@@ -334,7 +334,7 @@ const SceneView = forwardRef((props, ref) => {
                 <p className='text-xs text-inherit'>Brak przejść</p>
               </div>
             </div>
-            <div className='my-8'>
+            <div className='py-12'>
               <button
                 className='w-6/12 block mx-auto py-2 px-3 rounded-full bg-zinc-800 '
                 onClick={() => handleClick_newItem()}>

@@ -16,7 +16,7 @@ interface IWinProps {
 
 const PopupProvider = ({ children }: Props) => {
   const [popupIsVisible, setPopupIsVisible] = useState<boolean>(false);
-  const refNode = useRef(null);
+  const refNode = useRef<any>();
 
   const [Icon, setIcon] = useState<any>(InformationCircleIcon);
   const [header, setHeader] = useState<any>("Popup window");
@@ -27,14 +27,18 @@ const PopupProvider = ({ children }: Props) => {
   const [Component, setComponent] = useState<any>(() => {});
   const [history, setHistory] = useState<any[]>([]);
   const [saveFunc, setSaveFunc] = useState<any>(() => {});
+  const event = new Event("xdee");
 
   const setWindow = (header: String, winProps: IWinProps, Node: any, nodeProps: any = {}, main: boolean = false) => {
     const Component = (
       <Node
         ref={refNode}
+        event
         {...nodeProps}
       />
     );
+
+    console.log(refNode);
 
     if (typeof winProps.Icon !== undefined) setIcon(winProps.Icon);
     if (typeof winProps.caption !== undefined) setCaption(winProps.caption);
@@ -84,8 +88,8 @@ const PopupProvider = ({ children }: Props) => {
   };
   const onSave = (func: any) => setSaveFunc(func);
   const save = () =>
-    saveFunc instanceof Function
-      ? saveFunc()
+    saveFunc instanceof Function && refNode.current !== null
+      ? console.log(refNode.current.dispatchEvent(event))
       : () => {
           throw new Error("Brak funkcji zapisu");
         };

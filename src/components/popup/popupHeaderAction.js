@@ -52,7 +52,7 @@ export default function PopupHeaderAction(props) {
           {save && (
             <button
               className='text-zinc-400 table mx-auto'
-              onClick={() => onSave()}>
+              onClick={onSave}>
               <div className='flex flex-row flex-nowrap items-center justify-center'>
                 <div className='w-full'>
                   <div className='px-1'>
