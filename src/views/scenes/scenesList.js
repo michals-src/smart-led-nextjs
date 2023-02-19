@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useCallback, forwardRef } from "react";
+import { useContext, useState, useEffect, useCallback, forwardRef, isValidElement, cloneElement } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { get, child, ref } from "firebase/database";
 import classNames from "classnames";
@@ -8,9 +8,10 @@ import { PlusIcon, CheckCircleIcon, PlayIcon, XMarkIcon, PencilIcon } from "@her
 
 import { SCENE_RELATE, SCENE_REMOVE, SCENE_CHILDREN_APPEND } from "@store/slices/scenesSlice";
 import db from "@firebase";
-import { Picker, PickerSelect, PickerOption } from "@components";
-import popupContext from "../../context/popup/popupContext";
-import { toUpperFirst } from "../../utilities";
+import { Picker, PickerSelect, PickerOption, BottomSheet } from "@components";
+import popupContext from "@context/popup/popupContext";
+import { BottomSheetContext } from '@context'
+import { toUpperFirst } from "@utils";
 import { popupSceneView, popupSceneCreate, popupSceneChildView, popupSceneChildCreate } from "./popup";
 import { useRef } from "react";
 
@@ -254,11 +255,71 @@ const itemsDB = [
   { name: "summer vibe", active: true, count: 9, relationID: 4 },
 ];
 
+const DraweScreen = function (props) {
+  const bsCtxApi = useContext(BottomSheetContext);
+  const { children } = props;
+
+  const childrenArr = !Array.isArray(children) || children.length <= 0 ? [] : children;
+  const Component = useCallback(function () {
+    //console.log(children)
+    if (!isValidElement(children)) return;
+
+    return cloneElement(children, Object.assign({}, bsCtxApi))
+  }, [children])
+
+  return (
+    <>
+      <div {...props}><Component /></div>
+    </>
+  )
+}
+
+const BsRootContent = (props) => {
+  return (
+    <BottomSheet.Content>
+      <div>
+        Abc
+        <button onClick={() => props.navigate('screen-2', { foo: 'bar' })}>Screen 2</button>
+        <button onClick={() => props.close()}>Zamknij</button>
+      </div>
+    </BottomSheet.Content>
+  )
+}
+
+const BsScreenTwoContent = (props) => {
+  return (
+    <BottomSheet.Content>
+      <div>
+        {props.foo}
+        <button onClick={() => props.navigate('root')}>Widok Screen 2</button>
+        <button onClick={() => props.back()}>Cofnij</button>
+        <button onClick={() => props.close()}>Zamknij</button>
+      </div>
+    </BottomSheet.Content>
+  )
+}
+
 const ScenesList = (props) => {
   const popupCtx = useContext(popupContext);
   const data = useSelector((state) => state.scenes.items);
   const dispatch = useDispatch();
   const sceneRelated = useSelector((state) => state.scenes.related);
+
+  const [bsOpen, setBsOpen] = useState({
+    'bsSettings': false
+  })
+
+  const handleBsOpen = function (bsWindow) {
+    setBsOpen(state => {
+      return { ...setBsOpen, [`${bsWindow}`]: true }
+    })
+  }
+
+  const handleBsClose = function (bsWindow) {
+    setBsOpen(state => {
+      return { ...setBsOpen, [`${bsWindow}`]: false }
+    })
+  }
 
   const popupInit = useCallback(() => {
     popupCtx.onUpdatePopupScreenList([popupSceneView, popupSceneCreate, popupSceneChildView, popupSceneChildCreate]);
@@ -356,7 +417,10 @@ const ScenesList = (props) => {
         <div className='w-4/12 pl-8'>
           <button
             className='w-full py-1 px-3 rounded-full bg-zinc-800'
-            onClick={() => handleClick_SceneCreate()}>
+            onClick={() => handleBsOpen('bsSettings')}>
+            {/* <button
+            className='w-full py-1 px-3 rounded-full bg-zinc-800'
+            onClick={() => handleClick_SceneCreate()}> */}
             <div className='flex flex-row flex-nowrap items-center'>
               <div className='w-3/12'>
                 <PlusIcon className='text-zinc-300 ml-auto w-3 h-3' />
@@ -397,6 +461,11 @@ const ScenesList = (props) => {
           );
         })}
       </div>
+      <BottomSheet open={bsOpen['bsSettings']} onClose={() => handleBsClose('bsSettings')}>
+        <BottomSheet.View root={true}><BsRootContent abc="def" /></BottomSheet.View>
+        <BottomSheet.View as='screen-1'><p className="p-8">Screen 1</p> </BottomSheet.View>
+        <BottomSheet.View as='screen-2'><BsScreenTwoContent /></BottomSheet.View>
+      </BottomSheet>
     </div>
   );
 };

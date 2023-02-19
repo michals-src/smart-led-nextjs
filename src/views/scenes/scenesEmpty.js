@@ -9,28 +9,28 @@ import { popupSceneCreate } from "./popup";
 const ScenesEmpty = () => {
   const popupCtx = useContext(popupContext);
 
-  const popupInit = useCallback(() => {
+  const popupInit = useCallback(function () {
     popupCtx.onUpdatePopupScreenList([popupSceneCreate]);
     popupCtx.onUpdatePopupIcon(PlayIcon);
     popupCtx.onUpdatePopupVisible(false);
   }, []);
 
-  const popupCleanup = useCallback(() => {
+  const popupCleanup = useCallback(function () {
     popupCtx.onUpdatePopupScreenList([]);
     popupCtx.onUpdatePopupVisible(false);
   }, []);
 
-  const handleClick_SceneCreate = () => {
+  const handleClick_SceneCreate = function () {
     popupCtx.onUpdatePopupScreenIndex(0);
     popupCtx.onUpdatePopupTitle(`Nowa scena`, `Konfigurator`);
     popupCtx.onUpdatePopupVisible(true);
   };
 
   useEffect(() => {
-    popupInit();
+    //popupInit();
 
     return () => {
-      popupCleanup();
+      //popupCleanup();
     };
   }, []);
 

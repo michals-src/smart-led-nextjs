@@ -12,3 +12,4 @@ export { default as LoaderCircle } from "./loader/loaderCircle";
 export { default as Popup } from "./popup/popup";
 export { default as Coolors } from "./Colors/coolors";
 export { Picker, PickerSelect, PickerOption } from "./Picker/picker";
+export { default as BottomSheet } from './BottomSheet/BottomSheet'
