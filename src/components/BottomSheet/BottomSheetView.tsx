@@ -1,21 +1,29 @@
-import React from 'react'
+import React from 'react';
 import { BottomSheetContext } from '@context';
 
 function BottomSheetView(props: any): React.ReactElement {
-    const bsCtxApi = React.useContext(BottomSheetContext);
-    const { children } = props;
+	const bsCtxApi = React.useContext(BottomSheetContext);
+	const { children, transferprops } = props;
 
-    //const childrenArr = !Array.isArray(children) || children.length <= 0 ? [] : children;
-    const Component = React.useCallback(function () {
-        //console.log(children)
-        //if (!React.isValidElement(children)) return;
+	//const childrenArr = !Array.isArray(children) || children.length <= 0 ? [] : children;
+	const Component = React.useCallback(
+		function () {
+			//console.log(children)
+			//if (!React.isValidElement(children)) return;
 
-        return React.cloneElement(children, Object.assign({}, bsCtxApi, props.transferProps))
-    }, [children]);
+			return React.cloneElement(children, Object.assign({}, bsCtxApi, transferprops));
+		},
+		[children]
+	);
 
-    return (
-        <><div {...props}> <Component /></div > </>
-    )
+	return (
+		<>
+			<div {...props}>
+				{' '}
+				<Component />
+			</div>{' '}
+		</>
+	);
 }
 
-export default BottomSheetView
+export default BottomSheetView;

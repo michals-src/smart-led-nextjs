@@ -21,7 +21,7 @@ const Button = function (props: {
 
 	return (
 		<button
-			className='text-zinc-400 table'
+			className={classNames('text-zinc-400 table', 'hover:text-zinc-100')}
 			onClick={(e) => (handleClick ? handleClick() : null)}>
 			<div className='flex flex-row flex-nowrap items-center justify-center'>
 				{leftIcon && <Icon>{leftIcon}</Icon>}
@@ -63,11 +63,18 @@ function BottomSheetHeader(props: {
 				<div className='w-3/12'>
 					<div className='flex flex-row flex-nowrap justify-start'>
 						{/* <div className='px-3'> */}
-						{(onBack || !onBack) && (
+						{onBack && (
 							<Button
 								leftIcon={<ChevronLeftIcon className='w-3 h-3 text-inherit mx-auto block' />}
 								text='Powrót'
 								onClick={onBack}
+							/>
+						)}
+
+						{onClose && onSave && (
+							<Button
+								text='Anuluj'
+								onClick={onClose}
 							/>
 						)}
 
@@ -95,7 +102,7 @@ function BottomSheetHeader(props: {
 				</div>
 				<div className='w-3/12'>
 					<div className='flex flex-row flex-nowrap justify-end'>
-						{(onClose || !onSave) && (
+						{onClose && !onSave && (
 							<Button
 								text='Zamknij'
 								rightIcon={<XMarkIcon className='w-3 h-3 text-inherit mx-auto block' />}
@@ -105,7 +112,7 @@ function BottomSheetHeader(props: {
 						{onSave && (
 							<Button
 								text='Zapisz'
-								onClick={onClose}
+								onClick={onSave}
 							/>
 						)}
 					</div>

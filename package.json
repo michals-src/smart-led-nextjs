@@ -15,6 +15,7 @@
     "bootstrap-icons": "^1.9.1",
     "classnames": "^2.3.2",
     "firebase": "^9.12.1",
+    "framer-motion": "^9.1.4",
     "hashids": "^2.2.10",
     "react-bootstrap-icons": "^1.9.1",
     "react-redux": "^8.0.4",
