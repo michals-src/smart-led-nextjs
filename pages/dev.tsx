@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState, FC } from 'react';
+import React, { useContext, useEffect, useRef, useState, FC, HTMLInputTypeAttribute } from 'react';
 // import Image from "next/image";
 
 import { Layout, Switch } from '@components';
@@ -9,34 +9,44 @@ import classNames from 'classnames';
 // import LampImage from "../images/pietro-piovesan-9UR3Zafm328-unsplash.png";
 
 const List = ({ children }: any) => {
+
+	const Separator: FC<React.HTMLProps<HTMLDivElement> & {
+		visible: boolean
+	}> = function ({ visible = false }) {
+		return visible ? (
+			<div className='px-5'>
+				<div className='w-full h-[1px] bg-white opacity-10'></div>
+			</div>
+		) : null;
+	}
+
 	const items = Array.isArray(children)
 		? children.map((child, index) => {
-				return (
-					<>
-						{index >= 1 && child.props?.children !== undefined && (
-							<div className='px-5'>
-								<div className='w-full h-[1px] bg-white opacity-10'></div>
-							</div>
-						)}
-						{child}
-					</>
-				);
-		  })
+			return (
+				<>
+					<Separator visible={
+						index >= 1 && child.props?.children !== undefined
+					} />
+					{child}
+				</>
+			);
+		})
 		: children;
 	return <div className='w-full h-auto bg-zinc-800 rounded-md'>{items}</div>;
 };
 
-const ListItem = ({ children }: any) => {
+const ListItem: FC<React.HTMLProps<HTMLDivElement>> = ({ children }: any) => {
 	return <div className='py-3 px-6 flex flex-row flex-nowrap items-center'>{children}</div>;
 };
 
 const Input: FC<
 	React.HTMLProps<HTMLInputElement> & {
 		plain?: boolean;
-		size?: 'sm' | 'md' | 'lg';
+		value: HTMLInputTypeAttribute;
+		size?: "sm" | "md" | "lg";
 		onReset?: () => void;
 	}
-> = ({ plain = false, size = 'md', value: valueProps = null, onReset = null, ...other }: any) => {
+> = ({ plain = false, size = 'md', value: valueProps = undefined, onReset = null, ...other }) => {
 	const refInput = useRef<HTMLInputElement>(null);
 
 	return (
@@ -58,14 +68,11 @@ const Input: FC<
 			{valueProps && onReset && (
 				<div className='w-auto h-full absolute top-0 right-0'>
 					<div className='w-full h-full flex flex-col flex-nowrap justify-center'>
-						<button
-							className='table px-3 rounded-full outline-none bg-transparent'
-							onClick={() => {
-								if (refInput.current) refInput?.current.focus();
-								onReset?.();
-							}}>
-							<XCircleIcon className='w-5 h-5 text-zinc-400' />
-						</button>
+						<Button onClick={() => {
+							if (refInput.current) refInput?.current.focus();
+							onReset?.();
+						}}
+							plain={true} leftIcon={<XCircleIcon className='text-zinc-400' />} />
 					</div>
 				</div>
 			)}
@@ -77,11 +84,24 @@ const Button: FC<
 	React.HTMLProps<HTMLButtonElement> & {
 		plain?: boolean;
 		size?: 'sm' | 'md' | 'lg';
-		leftIcon?: JSX.Element;
+		leftIcon?: React.ReactNode;
 		rightIcon?: JSX.Element;
 		rounded?: boolean;
 	}
 > = ({ plain = false, className, children, size = 'md', leftIcon = null, rightIcon = null, rounded = false, ...other }: any) => {
+
+	const icon = (element: React.ReactElement) => {
+		const cn = classNames('text-zinc-400', {
+			'w-5 h-5': size === 'sm' || size === 'md',
+			'w-6 h-6': size === 'lg',
+		}, { ...leftIcon?.props?.className })
+		const el = React.cloneElement(element, {
+			className: cn
+		});
+
+		return el;
+	}
+
 	return (
 		<button
 			className={classNames(
@@ -98,27 +118,23 @@ const Button: FC<
 				className
 			)}
 			{...other}>
-			{/* <button
-className='w-full py-1 px-3 rounded-full bg-zinc-800'
-onClick={() => handleClick_SceneCreate()}> */}
 			<div className='flex flex-row flex-nowrap items-center justify-center relative'>
 				{leftIcon && (
 					<div className='w-auto h-auto flex flex-col flex-nowrap justify-center'>
-						<ChatBubbleBottomCenterIcon
-							className={classNames('text-zinc-400', {
-								'w-5 h-5': size === 'sm' || size === 'md',
-								'w-6 h-6': size === 'lg',
-							})}
-						/>
+						{icon(leftIcon)}
 					</div>
 				)}
-
-				{/* <div className='w-3/12'>
-                <PlusIcon className='text-zinc-300 ml-auto w-3 h-3' />
-            </div> */}
 				{!!children && (
-					<div className='px-4'>
+					<div className={classNames('flex-auto', {
+						'pl-4': leftIcon,
+						'pr-4': rightIcon,
+					})}>
 						<p className='text-xs text-zinc-400'>{children}</p>
+					</div>
+				)}
+				{rightIcon && (
+					<div className='w-auto h-auto flex flex-col flex-nowrap justify-center'>
+						{icon(rightIcon)}
 					</div>
 				)}
 			</div>
@@ -126,7 +142,7 @@ onClick={() => handleClick_SceneCreate()}> */}
 	);
 };
 
-function Dev({}: any) {
+function Dev({ }: any) {
 	const [switchValue, setSwitchValue] = useState<boolean>(false);
 	const [value, setValue] = useState<any>('testg');
 
@@ -136,10 +152,11 @@ function Dev({}: any) {
 				<List>
 					<ListItem>
 						<ChatBubbleBottomCenterIcon className='w-6 h-6' />
-						<div className='flex-1 px-6'>
+						<div className='flex-1 px-6 select-none'>
 							<p className='text-xs'>Przkładowa lista</p>
 						</div>
 						<Switch
+							size='sm'
 							value={switchValue}
 							onChange={(e) => setSwitchValue((s) => !s)}
 						/>
@@ -150,7 +167,7 @@ function Dev({}: any) {
 							<Input
 								plain={true}
 								type='text'
-								size='sm'
+								size="sm"
 								placeholder='Wartość'
 								value={value}
 								onChange={(e: any) => setValue(e.target.value)}
@@ -162,12 +179,17 @@ function Dev({}: any) {
 				<div className='mt-8'>
 					<div className='w-full'>
 						<Button
+							rounded={true}
 							leftIcon={<ChatBubbleBottomCenterIcon />}
 							size='sm'></Button>
 					</div>
+					<div className="w-full mt-6">
+						<Button plain={true} leftIcon={<XCircleIcon className='text-zinc-400' />} />
+					</div>
 					<div className='w-full mt-3'>
 						<Button
-							leftIcon={<ChatBubbleBottomCenterIcon />}
+							plain={true}
+							rightIcon={<ChatBubbleBottomCenterIcon />}
 							size='sm'>
 							Przycisk
 						</Button>
@@ -188,7 +210,7 @@ function Dev({}: any) {
 					</div>
 				</div>
 			</div>
-		</Layout>
+		</Layout >
 	);
 }
 
