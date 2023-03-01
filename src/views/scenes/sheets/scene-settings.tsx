@@ -9,8 +9,8 @@ import { update, ref } from 'firebase/database';
 import dv from '@firebase';
 
 import { CheckCircleIcon, MegaphoneIcon } from '@heroicons/react/24/outline';
-import { ArrowLongRightIcon, ClockIcon, PlusIcon, XMarkIcon } from '@heroicons/react/24/solid';
-import { Type } from 'react-bootstrap-icons';
+import { ArrowDownIcon, ArrowLongRightIcon, ArrowUpIcon, ClockIcon, PlusIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { ArrowDown, ArrowUp, Type } from 'react-bootstrap-icons';
 
 import { BottomSheet, Box, Switch } from '@components';
 import popupContext from '@context/popup/popupContext';
@@ -124,6 +124,35 @@ const SceneSettings = forwardRef((props: any, ref: Ref<any>) => {
 											<PlusIcon className='text-zinc-100 ml-auto w-3 h-3' />
 										</div>
 									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div className='mt-8 mb-3'>
+						<div className='mb-1 pl-3'>
+							<p className='text-sm text-zinc-400'>Przejścia</p>
+						</div>
+						<div className='py-2 px-4 bg-zinc-800 rounded-md'>
+							<div className='flex flex-row flex-nowrap items-center'>
+								<div className='w-4/12'>
+									<div>
+										<p className='text-xs text-zinc-400'>19:00</p>
+									</div>
+								</div>
+								<div className='w-8/12 pl-8'>
+									<div className='flex flex-row flex-nowrap items-center justify-end'>
+										<button className='w-auto table p-1 mx-4 rounded-md bg-zinc-700'>
+											<div className='flex flex-row flex-nowrap items-center justify-center'>
+												<ArrowDownIcon className='text-zinc-100 ml-auto w-3 h-3' />
+											</div>
+										</button>
+										<button className='w-auto table p-1 rounded-md bg-zinc-700'>
+											<div>
+												<ArrowUpIcon className='text-zinc-100 ml-auto w-3 h-3' />
+											</div>
+										</button>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -298,7 +327,7 @@ const SceneSettings = forwardRef((props: any, ref: Ref<any>) => {
 						(typeof sceneChildren === 'object' && sceneChildren.length <= 0)
 					) && (
 						<>
-							<div className='mt-10 pt-12 text-zinc-400'>
+							{/* <div className='mt-10 pt-12 text-zinc-400'>
 								<MegaphoneIcon className='text-inherit mx-auto w-10 h-10' />
 								<div className='mt-4 mb-2 text-center'>
 									<p className='text-xs text-inherit'>Brak przejść</p>
@@ -317,7 +346,7 @@ const SceneSettings = forwardRef((props: any, ref: Ref<any>) => {
 										</div>
 									</div>
 								</button>
-							</div>
+							</div> */}
 						</>
 					)}
 				</div>
