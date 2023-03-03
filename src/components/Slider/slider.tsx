@@ -1,90 +1,135 @@
-import classNames from "classnames";
-import React, { forwardRef, Ref, useEffect, useRef, useState } from "react";
+import classNames from 'classnames';
+import React, { useState, forwardRef } from 'react';
 
-type ISlider = {
-  value?: number;
-  // value?: React.Dispatch<React.SetStateAction<number>>;
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
-  onClick?: React.MouseEventHandler<HTMLInputElement>;
-  step?: number;
-  thumb?: boolean;
-  track?: boolean;
-  size?: "sm" | "md" | "lg";
+export type SliderProps = {
+	value: number;
+	offset: number;
+	offsetInView: number;
+	offsetSize: number;
+	offsetMin: number;
+	offsetMax: number;
+	direction: 'x' | 'y';
+	onDown?: (a: React.MouseEvent & React.TouchEvent) => void;
+	onMove?: (a: React.MouseEvent & React.TouchEvent, translate: number) => void;
+	onLeave?: (a: React.MouseEvent & React.TouchEvent, offset: number) => void;
+	className: string;
+	children?: JSX.Element;
 };
 
-const Slider = forwardRef(
-  (
-    {
-      value = 0,
-      onChange,
-      onClick,
-      step,
-      thumb = true,
-      size = "md",
-      track = true,
-    }: ISlider,
-    ref: Ref<HTMLInputElement>
-  ) => {
-    const progressRef = useRef<HTMLDivElement>(null);
-    const thumbRef = useRef<HTMLDivElement>(null);
-    const [range, setRange] = useState<number>(value ? value : 0);
+const Slider = forwardRef<any, SliderProps & any>(function Slider(props, ref) {
+	const {
+		value,
+		offset: offsetProps,
+		offsetInView,
+		offsetSize,
+		offsetMin,
+		offsetMax,
+		direction,
+		onDown: onDownCallback,
+		onMove: onMoveCallback,
+		onLeave: onLeaveCallback,
+		className: classNameProps,
+		children,
+		...other
+	} = props;
 
-    const cnPlaceholder = classNames("slider--placeholder", {
-      "h-1": size === "sm",
-      "h-3": size === "md",
-      "h-6": size === "lg",
-    });
+	const [reference, setReference] = useState<number>(0);
+	const [swapeDirection, setSwapeDirection] = useState<'left' | 'right' | 'up' | 'down' | null>(null);
+	/**
+	 *
+	 * Determine dimenssions to specify amout of moved childrens
+	 * offset -> width or height of element
+	 *
+	 * onDown
+	 * onMove
+	 * onLeave
+	 *
+	 * onSlide
+	 * onChange
+	 * direction
+	 */
 
-    const cnThumb = classNames("slider--thumb", {
-      "w-2 h-2": size === "sm",
-      "w-4 h-4": size === "md",
-      "w-7 h-7": size === "lg",
-    });
+	/**
+	 *
+	 * offsetCount
+	 * translateX
+	 * translateY
+	 *
+	 */
+	const handleTouchDown = (e: React.MouseEvent & React.TouchEvent) => {
+		onDownCallback?.(e);
+	};
 
-    useEffect(() => {
-      if (progressRef.current == null || thumbRef.current == null) return;
+	const handleTouchMove = (e: React.MouseEvent & React.TouchEvent) => {
+		// Protection against movement without mouse left button
+		if (e.type === 'mousemove' && e.buttons !== 1) {
+			return;
+		}
 
-      progressRef.current.style.width = `${value}%`;
-      thumbRef.current.style.width = `${value}%`;
-    }, [value]);
+		const consumer = e.type === 'touchmove' ? e.touches[0] : e;
+		const screen = direction === 'x' ? consumer.screenX : consumer.screenY;
+		if (reference === 0) setReference(screen);
 
-    const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
-      if (!e.currentTarget) return;
-      if (typeof onClick !== "undefined") onClick(e);
-    };
+		let swipe: 'left' | 'right' | 'up' | 'down' | null = null;
+		if (direction === 'x') {
+			if (reference < screen) swipe = 'left';
+			if (reference > screen) swipe = 'right';
+		}
+		if (direction === 'y') {
+			if (reference < screen) swipe = 'up';
+			if (reference > screen) swipe = 'down';
+		}
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (!e.target) return;
-      e.target.focus();
-      setRange(parseInt(e.target.value, 10));
-      if (typeof onChange !== "undefined") onChange(e);
-    };
+		setSwapeDirection(swipe);
 
-    return (
-      <div className='slider w-full'>
-        <div className={cnPlaceholder}>
-          <div
-            ref={progressRef}
-            className={`slider--progress ${!track ? "opacity-0" : ""}`}></div>
-        </div>
-        <div ref={thumbRef} className='slider--thumb--wrapper'>
-          {thumb && <div ref={thumbRef} className={cnThumb}></div>}
-        </div>
+		let translate = reference === 0 ? 0 : reference - screen;
 
-        <input
-          type='range'
-          className='slider--input w-full'
-          value={value}
-          onClick={handleClick}
-          onChange={handleChange}
-          ref={ref}
-          step={step}
-        />
-      </div>
-    );
-  }
-);
+		onMoveCallback?.(e, translate);
+	};
 
-Slider.displayName = "Slder";
+	const handleTouchLeave = (e: React.MouseEvent & React.TouchEvent) => {
+		setReference(0);
+
+		let offset = offsetProps;
+		let computedOffset = !Number.isNaN(offsetSize) && offsetSize > 0 ? Math.round(value / offsetSize) : 0;
+
+		if (value < -offsetInView || offsetInView < value) {
+			// Jeżeli element został przesunięty o rządaną wartość, a wyliczona wartość wynosi 0
+			computedOffset = computedOffset === 0 ? (swapeDirection === 'right' ? 1 : -1) : computedOffset;
+			offset = offsetProps + computedOffset;
+
+			if (offset > offsetMax) offset = offsetMax;
+			if (offset < offsetMin) offset = offsetMin;
+		}
+
+		onLeaveCallback?.(e, offset);
+	};
+
+	const Events = {
+		// Mouse / Touch Down
+		onMouseDown: handleTouchDown,
+		onTouchStart: handleTouchDown,
+		//Move
+		onTouchMove: handleTouchMove,
+		onMouseMove: handleTouchMove,
+		//Leave
+		onTouchEnd: handleTouchLeave,
+		onTouchCancel: handleTouchLeave,
+		onMouseUp: handleTouchLeave,
+		onMouseLeave: handleTouchLeave,
+	};
+
+	return (
+		<div
+			className={classNames('cursor-pointer', `touch-pan-${direction}`, classNameProps)}
+			ref={ref}
+			{...Events}
+			{...other}>
+			{children}
+		</div>
+	);
+});
+
+Slider.displayName = 'Slider';
 
 export default Slider;
