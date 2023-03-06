@@ -1,160 +1,61 @@
 import React, { useContext, useEffect, useRef, useState, FC, HTMLInputTypeAttribute, createContext, useCallback } from 'react';
 import classNames from 'classnames';
 
-import { ChatBubbleBottomCenterIcon, HashtagIcon, MapPinIcon, PuzzlePieceIcon } from '@heroicons/react/24/outline';
-import { ArrowsUpDownIcon, LightBulbIcon, XCircleIcon } from '@heroicons/react/24/solid';
+import { ChatBubbleBottomCenterIcon, HashtagIcon, MapPinIcon, PuzzlePieceIcon, StarIcon } from '@heroicons/react/24/outline';
+import { ArrowsUpDownIcon, LightBulbIcon, PlusIcon, XCircleIcon } from '@heroicons/react/24/solid';
 
-import { Layout, Picker, PickerOption, PickerSelect, Switch, List, Accordion, Input, Button, Slider } from '@components';
-import { Translate } from 'react-bootstrap-icons';
+import { Carousel, Layout, Picker, PickerOption, PickerSelect, Switch, List, Accordion, Input, Button, Slider } from '@components';
 
-const CarouselItem = function Carousel(props: any) {
-	const { children } = props;
-	return <div className='w-full h-full flex-[1_0_auto]'>{children}</div>;
-};
-
-const CarouselIndicator = function Carousel(props: any) {
-	const { onClick: onClickCallback, isActive, ...other } = props;
-	return (
-		<button
-			role='button'
-			className='p-3 m-0'
-			onClick={(e) => onClickCallback(e)}
-			{...other}>
-			<span
-				className={classNames('block w-3 h-3 rounded-full', {
-					'bg-orange-400': isActive,
-					'bg-zinc-600': !isActive,
-				})}
-				style={{
-					transitionProperty: 'background-color',
-					transitionDuration: '0.4s',
-					transitionTimingFunction: 'ease',
-				}}></span>
-		</button>
-	);
-};
-
-CarouselIndicator.displayName = 'CarouselIndicator';
-
-const CarouselIndicators = function Carousel(props: any) {
-	const { onChange: onChangeCallback, length, value } = props;
-
-	const handleChange = (event: any, child: any, childValue: number) => {
-		//if (child.props === null || child.props === 'undefined' || !childValue) return;
-
-		const newValue = childValue;
-		if (!onChangeCallback || !event || newValue === value) return;
-
-		const nativeEvent = event.nativeEvent || event;
-		const clonedEvent = new nativeEvent.constructor(nativeEvent.type, nativeEvent);
-
-		Object.defineProperty(clonedEvent, 'target', {
-			writable: true,
-			value: { value: newValue },
-		});
-
-		onChangeCallback?.(clonedEvent, child);
-	};
-
-	const items = Array(length)
-		.fill(<CarouselIndicator />)
-		.map((child, b) => {
-			return React.cloneElement(child, {
-				onClick: (e: any) => handleChange(e, child, b),
-				isActive: b === value,
-			});
-		});
-
-	return <div className='mt-4 flex flex-row flex-nowrap justify-center'>{items}</div>;
-};
-
-CarouselIndicators.displayName = 'CarouselIndicators';
-
-const Carousel = function Carousel(props: any) {
-	const { children } = props;
-
-	const [moving, setMoving] = useState<boolean>(false);
-	const [index, setIndex] = useState<number>(0);
-	const [translation, setTranslation] = useState<number>(0);
-	const [offsetLength, setOffsetLength] = useState<number>(0);
-
-	const refWrapper = useRef<any>(null);
-
-	const items = Array.isArray(children) ? children : [children];
-
-	useEffect(() => {
-		if (refWrapper.current === null) return;
-
-		setOffsetLength(refWrapper.current.offsetWidth);
-	}, [refWrapper]);
-
-	return (
-		<div className='touch-pan-x'>
-			<div
-				ref={refWrapper}
-				className='w-full h-auto flex flex-col flex-nowrap flex-1 overflow-hidden'>
-				<Slider
-					value={translation}
-					offset={index}
-					offsetInView={offsetLength / 4}
-					offsetSize={offsetLength}
-					offsetMin={0}
-					offsetMax={items.length - 1}
-					direction='x'
-					onDown={(e: any) => setMoving(true)}
-					onMove={(e: any, translate: number) => {
-						setTranslation(translate);
-					}}
-					onLeave={(e: any, offset: number) => {
-						console.log(offsetLength * index);
-						setMoving(false);
-						setIndex(offset);
-						setTranslation(0);
-					}}>
-					<div
-						className='flex flex-row flex-nowrap border border-zinc-400'
-						style={{
-							transitionProperty: 'transform',
-							transitionDuration: moving ? '0s' : '0.3s',
-							transitionTimingFunction: 'ease',
-							transform: `translateX(-${offsetLength * index + translation}px)`,
-						}}>
-						{children}
-					</div>
-				</Slider>
-				<CarouselIndicators
-					onChange={(e) => setIndex(e.target.value)}
-					value={index}
-					length={items.length}
-				/>
-			</div>
-		</div>
-	);
-};
-
-function Dev({}: any) {
+function Dev({ }: any) {
 	const [switchValue, setSwitchValue] = useState<boolean>(false);
 	const [value, setValue] = useState<any>('testg');
 
 	return (
 		<Layout>
 			<div className='py-16'>
+				<div className="mb-10">
+					<div className="flex flex-row flex-nowrap items-end justify-between w-full">
+						<div>
+							<div className="text-xs text-zinc-400">Widok</div>
+							<div className="text-sm font-bold">Scenariusze</div>
+						</div>
+						<div>
+							<Button
+								plain={true}
+							>
+								<div className="bg-zinc-800 rounded-full p-1">
+									<PlusIcon className='text-zinc-300 h-4' />
+								</div>
+							</Button>
+						</div>
+					</div>
+				</div>
 				<Carousel>
-					<CarouselItem>
-						<div className='flex flex-row flex-wrap items-center justify-center'>
-							<HashtagIcon className='w-32 h-32' />
+					<Carousel.Item onClick={() => alert('a')}>
+						<div className='select-none mr-1 w-auto table py-1 px-4 border border-zinc-600 rounded-3xl'>
+							<div className=" text-xs text-zinc-300">Ciepłe kolory</div>
 						</div>
-					</CarouselItem>
-					<CarouselItem>
-						<div className='flex flex-row flex-wrap items-center justify-center'>
-							<MapPinIcon className='w-32 h-32' />
+					</Carousel.Item>
+					<Carousel.Item onClick={() => alert('b')} >
+						<div className='select-none mr-1 w-auto table py-1 px-4 rounded-3xl'>
+							<div className=" text-xs text-zinc-400">wiosna</div>
 						</div>
-					</CarouselItem>
-					<CarouselItem>
-						<div className='flex flex-row flex-wrap items-center justify-center'>
-							<PuzzlePieceIcon className='w-32 h-32' />
+					</Carousel.Item>
+					<Carousel.Item onClick={() => alert('c')}>
+						<div className='select-none mr-1 w-auto table py-1 px-4 rounded-3xl'>
+							<div className="text-xs text-zinc-400">Lato</div>
 						</div>
-					</CarouselItem>
+					</Carousel.Item>
+					<Carousel.Item onClick={() => alert('d')}>
+						<div className='select-none w-auto table py-1 px-4 rounded-3xl'>
+							<div className="text-xs text-zinc-400">jesień</div>
+						</div>
+					</Carousel.Item>
+					<Carousel.Item onClick={() => alert('e')}>
+						<div className='select-none w-auto table py-1 px-4 rounded-3xl'>
+							<div className="text-xs text-zinc-400">zima</div>
+						</div>
+					</Carousel.Item>
 				</Carousel>
 
 				<div className='my-16'></div>

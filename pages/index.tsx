@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 // import Image from "next/image";
 
 import { Layout } from "@components";
-import { HomeGeneral, HomeChannels } from "@views/home";
+import { HomeGeneral, HomeChannels, HomeScenes } from "@views/home";
 
 // import LampImage from "../images/pietro-piovesan-9UR3Zafm328-unsplash.png";
 
@@ -12,6 +12,7 @@ const Home: NextPage = () => {
     <Layout>
       <div className='p-4'>
         <HomeGeneral />
+        <HomeScenes />
         <HomeChannels />
       </div>
     </Layout>

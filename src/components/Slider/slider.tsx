@@ -11,7 +11,7 @@ export type SliderProps = {
 	direction: 'x' | 'y';
 	onDown?: (a: React.MouseEvent & React.TouchEvent) => void;
 	onMove?: (a: React.MouseEvent & React.TouchEvent, translate: number) => void;
-	onLeave?: (a: React.MouseEvent & React.TouchEvent, offset: number) => void;
+	onLeave?: (a: React.MouseEvent & React.TouchEvent, offset: number, swapeDirection?: string) => void;
 	className: string;
 	children?: JSX.Element;
 };
@@ -102,7 +102,7 @@ const Slider = forwardRef<any, SliderProps & any>(function Slider(props, ref) {
 			if (offset < offsetMin) offset = offsetMin;
 		}
 
-		onLeaveCallback?.(e, offset);
+		onLeaveCallback?.(e, offset, swapeDirection);
 	};
 
 	const Events = {

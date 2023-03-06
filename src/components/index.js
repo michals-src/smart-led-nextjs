@@ -18,3 +18,4 @@ export { default as BottomSheet } from './BottomSheet/BottomSheet';
 export { default as List } from './List';
 export { default as Accordion } from './accordion';
 export { Slider } from './slider';
+export { default as Carousel } from './carousel';

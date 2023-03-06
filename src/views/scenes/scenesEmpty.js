@@ -3,7 +3,7 @@ import { MegaphoneIcon } from "@heroicons/react/24/outline";
 import { PlayIcon, PlusIcon } from "@heroicons/react/24/solid";
 
 import popupContext from "../../context/popup/popupContext";
-import { Layout } from "../../components";
+import { Layout } from "@components";
 import { popupSceneCreate } from "./popup";
 
 const ScenesEmpty = () => {

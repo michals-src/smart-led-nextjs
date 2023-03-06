@@ -4,7 +4,7 @@ import { getDatabase, ref, child, get, update, set, onValue } from "firebase/dat
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 import { BoltIcon, BoltSlashIcon } from "@heroicons/react/24/solid";
-import { Box, Switch } from "@components";
+import { Box, List, Switch } from "@components";
 
 import Image from "next/image";
 import Lamp from "../../../images/pietro-piovesan-9UR3Zafm328-unsplash.png";
@@ -90,6 +90,19 @@ const HomeGeneral = (props: Props) => {
 
   return (
     <>
+      <p className="text-xs pt-3 text-zinc-400">Mikrokontroler</p>
+      <p className="text-xs font-bold pb-3">Ustawienia główne</p>
+      <List>
+        <List.Item>
+          {!powerValue && <BoltSlashIcon className={`h-6 text-zinc-100`} />}
+          {powerValue && <BoltIcon className={`h-6 text-[#d4c82d]`} />}
+          <p className='text-sm flex-1 px-4'>Zasilanie</p>
+          <Switch
+            value={powerValue}
+            onChange={powerHandleChange}
+          />
+        </List.Item>
+      </List>
       <Box
         // bgGradient={`${powerValue ? "#10F0FF4A" : "#10F0FF30"}`}
         className='mb-4 px-4 overflow-visible text-white rounded-2xl'>
@@ -102,7 +115,7 @@ const HomeGeneral = (props: Props) => {
                 </div>
               </div>
             )}
-            {!loading && (
+            {/* {!loading && (
               <div className='w-full'>
                 <div className='py-4 px-2 h-full'>
                   <div className='flex flex-row flex-nowrap h-full w-full items-center'>
@@ -130,7 +143,7 @@ const HomeGeneral = (props: Props) => {
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
             {/* <div className='w-4/12 relative ml-auto'>
               <Image
                 alt='Obraz ozdobnej lampy'

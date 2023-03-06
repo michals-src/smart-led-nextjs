@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { forwardRef, ReactNode, Ref } from 'react';
+import React, { forwardRef, ReactNode, Ref } from 'react';
 
 type SwitchProps = {
 	value?: boolean;
