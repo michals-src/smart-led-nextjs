@@ -97,7 +97,7 @@ const Slider = forwardRef<any, SliderProps & any>(function Slider(props, ref) {
 			// Jeżeli element został przesunięty o rządaną wartość, a wyliczona wartość wynosi 0
 			computedOffset = computedOffset === 0 ? (swapeDirection === 'right' ? 1 : -1) : computedOffset;
 			offset = offsetProps + computedOffset;
-
+			//console.log(offset);
 			if (offset > offsetMax) offset = offsetMax;
 			if (offset < offsetMin) offset = offsetMin;
 		}
