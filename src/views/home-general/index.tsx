@@ -1,4 +1,4 @@
-import React, { MouseEventHandler } from 'react';
+import React, { MouseEventHandler, useEffect } from 'react';
 import db from "@firebase";
 import { getDatabase, ref, get, update, set, onValue } from "firebase/database";
 
@@ -6,6 +6,45 @@ import { BoltIcon, BoltSlashIcon } from "@heroicons/react/24/solid";
 import { List, Switch } from '@components';
 
 type Props = {};
+
+const withLoading = function withLoading(fetchPath){
+
+	const [data, setData] = useState();
+	const [error, setError] = useState();
+
+	useEffect(() => {
+
+		// Search store (caching)
+		// Fetch from DB (else)
+
+	}, [fetchPath])
+
+	return function(Component){
+
+		if(error) return <div>{error}</div>
+		if(!data) return <div>Loading ...</div>
+
+		return React.cloneElement(Component, {
+			data,
+			error
+		})
+	}
+}
+
+const PowerManagment = withLoading('power')(function PowerManagment(props){
+
+	const { data } = props;
+
+	return (
+		{!powerValue && <BoltSlashIcon className={`h-6 text-zinc-100`} />}
+		{powerValue && <BoltIcon className={`h-6 text-[#d4c82d]`} />}
+		<p className='text-sm flex-1 px-4'>Zasilanie</p>
+		<Switch
+			value={powerValue}
+			onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSwitchChange(e)}
+		/>
+	)
+});
 
 export default function HomeGeneral({ }: Props) {
 	const [powerValue, setPowerValue] = React.useState<boolean>(false);
@@ -57,13 +96,7 @@ export default function HomeGeneral({ }: Props) {
 			{loading && <div>Loading ...</div>}
 			<List>
 				<List.Item>
-					{!powerValue && <BoltSlashIcon className={`h-6 text-zinc-100`} />}
-					{powerValue && <BoltIcon className={`h-6 text-[#d4c82d]`} />}
-					<p className='text-sm flex-1 px-4'>Zasilanie</p>
-					<Switch
-						value={powerValue}
-						onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSwitchChange(e)}
-					/>
+					<PowerManagment />
 				</List.Item>
 			</List>
 		</div>

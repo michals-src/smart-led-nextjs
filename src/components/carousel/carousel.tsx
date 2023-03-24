@@ -1,10 +1,6 @@
 import React, { useContext, useEffect, useRef, useState, FC, HTMLInputTypeAttribute, createContext, useCallback } from 'react';
-import classNames from 'classnames';
 
-import { ChatBubbleBottomCenterIcon, HashtagIcon, MapPinIcon, PuzzlePieceIcon, StarIcon } from '@heroicons/react/24/outline';
-import { ArrowsUpDownIcon, LightBulbIcon, PlusIcon, XCircleIcon } from '@heroicons/react/24/solid';
-
-import { Layout, Picker, PickerOption, PickerSelect, Switch, List, Accordion, Input, Button, Slider } from '@components';
+import { Slider } from '@components';
 import CarouselIndicators from './carousel-indicators';
 
 export default function Carousel(props: any) {
@@ -17,7 +13,7 @@ export default function Carousel(props: any) {
 
 	const [transformation, setTransformation] = useState<boolean>(false);
 
-	const refChildren = useRef<any>({ current: [] });
+	const refChildren = useRef<any>({});
 	const refWrapper = useRef<any>(null);
 
 	const items = Array.isArray(children) ? children : [children];
@@ -57,6 +53,14 @@ export default function Carousel(props: any) {
 		return value;
 	}, [index]);
 
+	const offsetSize = React.useCallback(() => {
+		if (Object.keys(refChildren.current).length <= 0) return 0;
+
+		return refChildren.current[index] !== undefined && refChildren.current[index + 1] !== undefined && index < items.length - 1
+			? refChildren.current[index + 1].offsetWidth
+			: refChildren.current[index].offsetWidth;
+	}, [index, items, refChildren]);
+
 	return (
 		<div className='touch-pan-x'>
 			<div
@@ -68,11 +72,7 @@ export default function Carousel(props: any) {
 					//offsetInView={offsetLength / 4}
 					offsetInView={refChildren.current[index] !== undefined ? refChildren.current[index].offsetWidth / 3 : 10}
 					//offsetSize={offsetLength}
-					offsetSize={
-						refChildren.current[index + 1] !== undefined && index < items.length - 1
-							? refChildren.current[index + 1].offsetWidth
-							: refChildren.current[index].offsetWidth
-					}
+					offsetSize={offsetSize()}
 					offsetMin={0}
 					offsetMax={items.length - 1}
 					direction='x'
