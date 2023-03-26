@@ -1,104 +1,52 @@
 import React, { MouseEventHandler, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux'
 import db from "@firebase";
 import { getDatabase, ref, get, update, set, onValue } from "firebase/database";
 
 import { BoltIcon, BoltSlashIcon } from "@heroicons/react/24/solid";
-import { List, Switch } from '@components';
+import { List, Switch, WithLoading } from '@components';
 
-type Props = {};
-
-const withLoading = function withLoading(fetchPath){
-
-	const [data, setData] = useState();
-	const [error, setError] = useState();
-
-	useEffect(() => {
-
-		// Search store (caching)
-		// Fetch from DB (else)
-
-	}, [fetchPath])
-
-	return function(Component){
-
-		if(error) return <div>{error}</div>
-		if(!data) return <div>Loading ...</div>
-
-		return React.cloneElement(Component, {
-			data,
-			error
-		})
-	}
-}
-
-const PowerManagment = withLoading('power')(function PowerManagment(props){
-
-	const { data } = props;
-
-	return (
-		{!powerValue && <BoltSlashIcon className={`h-6 text-zinc-100`} />}
-		{powerValue && <BoltIcon className={`h-6 text-[#d4c82d]`} />}
-		<p className='text-sm flex-1 px-4'>Zasilanie</p>
-		<Switch
-			value={powerValue}
-			onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSwitchChange(e)}
-		/>
-	)
-});
-
-export default function HomeGeneral({ }: Props) {
-	const [powerValue, setPowerValue] = React.useState<boolean>(false);
-	const [loading, setLoading] = React.useState<boolean>(true);
-	const [error, setError] = React.useState<any>(null);
-
-	const fetch = React.useCallback(async function () {
-
-		const database = getDatabase();
-
-		try {
-			const snapshot = await get(ref(database, '/power'));
-			if (snapshot.exists()) {
-				setPowerValue(snapshot.val())
-				setLoading(false);
-			}
-		} catch (err) {
-			setError(err);
-		}
+import { updatePower, update_power } from '@store/slices/globalSlice';
 
 
-	}, []);
+const PowerManagment = function PowerManagment(props: any) {
 
-	React.useEffect(() => {
-		fetch();
-	}, [])
+	const { data: power } = props;
+	const dispatch = useDispatch();
 
 	const handleSwitchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setPowerValue((state) => {
-			update(ref(db), {
-				"/power": !state,
-			});
-			return !state;
-		});
-	}
-
-	if (error) {
-		return (
-			<div>
-				{error}
-			</div>
-		)
+		dispatch(updatePower(e.target.checked === true ? true : false));
 	}
 
 	return (
-		<div>
-			<p className='text-xs pt-3 text-zinc-400'>Mikrokontroler</p>
-			<p className='text-xs font-bold pb-3'>Ustawienia główne</p>
-			{loading && <div>Loading ...</div>}
+		<>
 			<List>
 				<List.Item>
-					<PowerManagment />
+					{!power && <BoltSlashIcon className={`h-6 text-zinc-100`} />
+					}
+					{power && <BoltIcon className={`h-6 text-[#d4c82d]`} />}
+					<p className='text-sm flex-1 px-4'>Zasilanie</p>
+					<Switch
+						value={power}
+						onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSwitchChange(e)}
+					/>
 				</List.Item>
 			</List>
-		</div>
+
+		</>
+	)
+};
+
+export default function HomeGeneral({ }: Props) {
+	const dispatch = useDispatch();
+
+	return (
+		<>
+			<p className='text-xs pt-3 text-zinc-400'>Mikrokontroler</p>
+			<p className='text-xs font-bold pb-3'>Ustawienia główne</p>
+			<WithLoading path="power" onLoad={(value: any) => dispatch(update_power(value))}>
+				<PowerManagment />
+			</WithLoading>
+		</>
 	);
 }

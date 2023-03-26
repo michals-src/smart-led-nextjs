@@ -3,7 +3,9 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 // import Image from "next/image";
 
 import { Layout } from "@components";
-import { HomeGeneral, HomeChannels, HomeScenes } from "@views/home";
+import HomeGeneral from "@views/home-general";
+import HomeScenes from "@views/home-scenes";
+import { HomeChannels } from "@views/home";
 
 // import LampImage from "../images/pietro-piovesan-9UR3Zafm328-unsplash.png";
 

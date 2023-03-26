@@ -19,3 +19,4 @@ export { default as List } from './List';
 export { default as Accordion } from './accordion';
 export { Slider } from './slider';
 export { default as Carousel } from './carousel';
+export { WithLoading } from './with-loading';

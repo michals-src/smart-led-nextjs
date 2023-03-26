@@ -18,6 +18,7 @@
     "framer-motion": "^9.1.4",
     "hashids": "^2.2.10",
     "react-bootstrap-icons": "^1.9.1",
+    "react-loading-skeleton": "^3.2.0",
     "react-redux": "^8.0.4",
     "react-spinners": "^0.13.7",
     "styled-component": "^2.8.0",

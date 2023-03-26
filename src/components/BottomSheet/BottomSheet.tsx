@@ -39,7 +39,7 @@ const BottomSheet = function ({ children, open, onClose }: { children?: any; ope
 			setSheets({});
 			//screens = {};
 		};
-	}, []);
+	}, [childrenArr]);
 
 	const ContentItem = React.useCallback<any>(
 		function () {
