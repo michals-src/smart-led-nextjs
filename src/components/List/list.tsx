@@ -9,7 +9,7 @@ const Kid = (props: any) => {
 };
 
 const List = ({ children }: any) => {
-	const items = Array.isArray(children) ? children : [children];
+	const items = children === undefined ? [] : Array.isArray(children) ? children : [children];
 
 	const Separator: FC<React.HTMLProps<HTMLDivElement>> = function () {
 		return (
@@ -19,7 +19,9 @@ const List = ({ children }: any) => {
 		);
 	};
 
-	const kids = items.map((child, index) => {
+	const kids = items.map((child: React.ReactNode, index: number) => {
+		if (!React.isValidElement(child)) return;
+
 		return (
 			<React.Fragment key={index}>
 				{index >= 1 && child.props?.children !== undefined && <Separator key={`separator-${index}`} />}

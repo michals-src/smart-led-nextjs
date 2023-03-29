@@ -5,13 +5,13 @@ export type ListItemProps = {
 	key?: number | string | null;
 };
 
-const ListItem = forwardRef<HTMLDivElement, ListItemProps>(function ListItem(props, ref) {
+const ListItem = forwardRef<HTMLDivElement, ListItemProps & React.HTMLProps<HTMLDivElement>>(function ListItem(props, ref) {
 	const { children, ...other } = props;
 	return (
 		<div
-			{...other}
 			ref={ref}
-			className='py-3 px-6 flex flex-row flex-nowrap items-center'>
+			className='py-3 px-6 flex flex-row flex-nowrap items-center'
+			{...other}>
 			{children}
 		</div>
 	);

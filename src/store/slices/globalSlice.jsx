@@ -5,7 +5,7 @@ import { getDatabase, ref, get, update, set, onValue } from "firebase/database";
 const initial = {
     power: undefined,
     scenes: {},
-    channels: {}
+    nodes: {}
 }
 
 export const globalSlice = createSlice({
@@ -22,7 +22,7 @@ export const globalSlice = createSlice({
             return { ...state, scenesChildren: { ...state.scenesChildren, [`${action.payload.id}`]: action.payload.data } }
         },
         load_channels: (state, action) => {
-            return { ...state, channels: action.payload }
+            return { ...state, nodes: action.payload }
         },
     }
 })
