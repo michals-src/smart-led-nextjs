@@ -15,7 +15,7 @@ const Home: NextPage = () => {
 		<Layout>
 			<div className='p-4'>
 				<HomeGeneral />
-				<HomeScenes />
+				{/* <HomeScenes /> */}
 				<HomeChannels />
 			</div>
 		</Layout>

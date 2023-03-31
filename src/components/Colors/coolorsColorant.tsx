@@ -1,12 +1,13 @@
+import { MouseEventHandler } from 'react';
 import { CheckCircleIcon, CheckIcon } from '@heroicons/react/24/solid';
 import classNames from 'classnames';
 import React from 'react';
 
-type TColorsColorant = {
+type ColorsColorantProps = {
 	index?: number;
 	isActive: boolean;
 	value: string;
-	onClick?: React.MouseEventHandler<HTMLInputElement>;
+	onClick?: (e: React.MouseEvent<HTMLInputElement>) => void | undefined;
 	size: 'sm' | 'md' | 'lg';
 };
 
@@ -20,7 +21,8 @@ const ActiveSymbol = () => {
 	);
 };
 
-const ColorsColorant = ({ index, isActive, value, onClick, size }: TColorsColorant) => {
+const ColorsColorant = (props: ColorsColorantProps) => {
+	const { index, isActive, value, onClick, size } = props;
 	// const handleClick = (hex: string) => {
 	//   state(hex);
 	// };
@@ -30,6 +32,10 @@ const ColorsColorant = ({ index, isActive, value, onClick, size }: TColorsColora
 		'w-5 h-5 ': size === 'md',
 		'w-8 h-8 ': size === 'lg',
 	});
+
+	const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
+		onClick?.(e);
+	};
 
 	return (
 		<>
@@ -44,7 +50,7 @@ const ColorsColorant = ({ index, isActive, value, onClick, size }: TColorsColora
 				{isActive && <ActiveSymbol />}
 				<input
 					type='radio'
-					onClick={onClick}
+					onClick={handleClick}
 					value={value}
 					className='absolute top-0 left-0 w-full h-full z-10 opacity-0 cursor-pointer'
 				/>

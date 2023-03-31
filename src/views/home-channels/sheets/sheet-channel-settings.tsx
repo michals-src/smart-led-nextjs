@@ -33,7 +33,16 @@ import {
 import Coolors from 'src/components/Colors/coolors';
 import { colors } from '@utils';
 
-const ModuleStatus = function () {
+import { useDispatch, useSelector } from 'react-redux';
+import { channel } from '@store/slices/globalSlice';
+
+const ModuleStatus = function (props) {
+	const { value: valueProps, onClick } = props;
+
+	const handleClick = (e) => {
+		onClick?.(e);
+	};
+
 	return (
 		<>
 			<BoltIcon className='w-4 h-4 text-white' />
@@ -41,8 +50,8 @@ const ModuleStatus = function () {
 				<p className='text-sm'>Status</p>
 			</div>
 			<Switch
-				value={false}
-				onClick={() => alert('xde')}
+				value={valueProps}
+				onClick={(e) => handleClick(e)}
 				size='lg'
 			/>
 		</>
@@ -65,7 +74,7 @@ const ModuleColor = function () {
 						<Coolors
 							align='start'
 							value={color}
-							onClick={(e) => setColor(e.target?.value)}
+							onClick={(e) => setColor((e.target as HTMLInputElement)?.value)}
 						/>
 					</div>
 				</div>
@@ -78,44 +87,52 @@ const ModuleOperationMode = function () {
 	const [tryb, setTryb] = useState('ręczny');
 
 	return (
-		<>
-			<List>
-				<Accordion>
-					<Accordion.Item>
-						<Accordion.ItemHeader>
-							<div className='mb-1'>
-								<List.Item>
-									<HandRaisedIcon className='w-4 h-4' />
-									<div className='flex flex-col flex-nowrap flex-1 px-6'>
-										<p className='text-xs 0'>Tryb pray</p>
-									</div>
-									<p className='text-xs text-zinc-400'>{tryb}</p>
-								</List.Item>
+		<div className='w-full flex-1'>
+			<Accordion>
+				<Accordion.Item>
+					<Accordion.ItemHeader>
+						<div className='mb-1 flex flex-row flex-nowrap'>
+							<HandRaisedIcon className='w-4 h-4' />
+							<div className='flex flex-col flex-nowrap flex-1 px-6'>
+								<p className='text-xs 0'>Tryb pray</p>
 							</div>
-						</Accordion.ItemHeader>
-						<Accordion.ItemCollapse>
-							<div className='flex-1'>
-								<Picker>
-									<PickerSelect
-										value={tryb}
-										onChange={(e) => setTryb(e.target.value)}>
-										<PickerOption value='ręczny'>Ręczny</PickerOption>
-										<PickerOption value='automatyczny'>Według sceny</PickerOption>
-									</PickerSelect>
-								</Picker>
-							</div>
-						</Accordion.ItemCollapse>
-					</Accordion.Item>
-				</Accordion>
-			</List>
-		</>
+							<p className='text-xs text-zinc-400'>{tryb}</p>
+						</div>
+					</Accordion.ItemHeader>
+					<Accordion.ItemCollapse>
+						<div className='flex-1'>
+							<Picker>
+								<PickerSelect
+									value={tryb}
+									onChange={(e) => setTryb((e.target as HTMLInputElement).value)}>
+									<PickerOption value='ręczny'>Ręczny</PickerOption>
+									<PickerOption value='automatyczny'>Według sceny</PickerOption>
+								</PickerSelect>
+							</Picker>
+						</div>
+					</Accordion.ItemCollapse>
+				</Accordion.Item>
+			</Accordion>
+		</div>
 	);
 };
 
 const SheetChannelSettings = (props: any) => {
-	const { status, value, color, brightness } = props;
+	const { status, value, color, brightness, num, onClick: onClickProps } = props;
+	//const { num, onClick: onClickProps } = props;
 
-	const [openColor, setOpenColor] = useState(status);
+	//const channelProps = useSelector((state) => state.global.nodes[num]);
+	//const { status, value, color, brightness } = channelProps;
+
+	const [abc, setAbc] = useState(false);
+
+	const dispatch = useDispatch();
+
+	const updateStatus = (e) => {
+		setAbc(!abc);
+		onClickProps?.(!abc);
+		//dispatch(channel.update_status(num, !status));
+	};
 
 	return (
 		<>
@@ -124,11 +141,17 @@ const SheetChannelSettings = (props: any) => {
 				onClose={props.close}>
 				<List>
 					<List.Item>
-						<ModuleStatus />
+						<ModuleStatus
+							value={abc}
+							onClick={updateStatus}
+						/>
 					</List.Item>
-					<List.Item>
-						<ModuleColor />
-					</List.Item>
+					{!!color && (
+						<List.Item>
+							<ModuleColor />
+						</List.Item>
+					)}
+
 					<List.Item>
 						<ModuleOperationMode />
 					</List.Item>

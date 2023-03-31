@@ -6,6 +6,9 @@ import { PlusIcon } from '@heroicons/react/24/solid';
 
 import { Carousel, Button, Slider, WithLoading, BottomSheet, List, Accordion, Switch } from '@components';
 import { SheetChannelSettings } from './sheets';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { channel } from '@store/slices/globalSlice';
 
 const Item = function Item(props: any) {
 	const {
@@ -23,7 +26,7 @@ const Item = function Item(props: any) {
 function Items(props: any) {
 	const { data } = props;
 
-	const [selectedScene, setSelectedScene] = useState({});
+	const [selectedScene, setSelectedScene] = useState(0);
 	const [open, setOpen] = useState(false);
 
 	const nodes = Object.values(data).map((node: any, idx: number) => {
@@ -32,7 +35,16 @@ function Items(props: any) {
 	const nodesColor = Object.values(nodes).filter((props: any) => props.color === true);
 	const nodesMono = Object.values(nodes).filter((props: any) => props.color === false);
 
-	console.log(nodesColor);
+	const efg = useSelector((state) => state.global.nodes[selectedScene]);
+	const channelProps = React.useMemo(() => efg, [selectedScene]);
+
+	//console.log(nodesColor);
+
+	const dispatch = useDispatch();
+
+	const handler = (value) => {
+		dispatch(channel.update_status(selectedScene, value));
+	};
 
 	return (
 		<>
@@ -44,7 +56,6 @@ function Items(props: any) {
 								<List.Item>
 									<div className='flex flex-col flex-nowrap flex-1'>
 										<p className='text-xs text-zinc-400'>Kolory</p>
-										<p className='text-xs '>Odbiorniki rgb</p>
 									</div>
 								</List.Item>
 							</div>
@@ -58,7 +69,7 @@ function Items(props: any) {
 												<div
 													className='flex-1'
 													onClick={() => {
-														setSelectedScene(node);
+														setSelectedScene(node.num);
 														setOpen(true);
 													}}>
 													<p className='text-sm '>Kanał {node.num}</p>
@@ -81,7 +92,6 @@ function Items(props: any) {
 								<List.Item>
 									<div className='flex flex-col flex-nowrap flex-1'>
 										<p className='text-xs text-zinc-400'>Jednolite</p>
-										<p className='text-xs '>Światło białe</p>
 									</div>
 								</List.Item>
 							</div>
@@ -92,7 +102,15 @@ function Items(props: any) {
 									return (
 										<>
 											<List.Item key={uuidv4()}>
-												<p className='text-sm flex-1'>Kanał {node.num}</p>
+												<div
+													className='flex-1'
+													onClick={() => {
+														setSelectedScene(node.num);
+														setOpen(true);
+													}}>
+													<p className='text-sm '>Kanał {node.num}</p>
+												</div>
+
 												<Switch />
 											</List.Item>
 										</>
@@ -108,7 +126,11 @@ function Items(props: any) {
 				open={open}
 				onClose={() => setOpen(false)}>
 				<BottomSheet.View root='true'>
-					<SheetChannelSettings {...selectedScene} />
+					<SheetChannelSettings
+						{...channelProps}
+						onClick={handler}
+						num={selectedScene}
+					/>
 				</BottomSheet.View>
 			</BottomSheet>
 		</>

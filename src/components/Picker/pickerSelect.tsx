@@ -14,7 +14,7 @@ import { Slider } from '@components';
 
 export type PickerSelectProps = {
 	children: React.ReactNode;
-	onChange: any;
+	onChange: (a: React.MouseEvent<HTMLInputElement>, b?: any) => void;
 	value: any;
 };
 
