@@ -36,7 +36,7 @@ function Items(props: any) {
 	const nodesMono = Object.values(nodes).filter((props: any) => props.color === false);
 
 	const efg = useSelector((state) => state.global.nodes[selectedScene]);
-	const channelProps = React.useMemo(() => efg, [selectedScene]);
+	const channelProps = React.useMemo(() => efg, [selectedScene, efg]);
 
 	//console.log(nodesColor);
 

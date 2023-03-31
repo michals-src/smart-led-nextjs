@@ -71,7 +71,11 @@ export const channel = {
     },
     update_brightness: (id, value) => dispatch => {
         let data = {};
+        data[`nodes/${id}/brightness`] = value
 
+        dispatch(update_node({id, 'props': {
+            'brightness': value
+        }}))
 
         update(ref(db), data);
     }

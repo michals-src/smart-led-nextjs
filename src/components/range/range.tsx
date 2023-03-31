@@ -12,8 +12,8 @@ export type RangeProps = {
 	size?: 'sm' | 'md' | 'lg';
 };
 
-const Range = forwardRef(
-	({ value = 0, onChange, onClick, step, thumb = true, size = 'md', track = true }: RangeProps, ref: Ref<HTMLInputElement>) => {
+const Range = forwardRef<HTMLInputElement, RangeProps & React.HTMLProps<HTMLInputElement>>(
+	({ value = 0, onChange, onClick, step, thumb = true, size = 'md', track = true, ...other }, ref) => {
 		const progressRef = useRef<HTMLDivElement>(null);
 		const thumbRef = useRef<HTMLDivElement>(null);
 		const [range, setRange] = useState<number>(value ? value : 0);
@@ -74,6 +74,7 @@ const Range = forwardRef(
 					onChange={handleChange}
 					ref={ref}
 					step={step}
+					{...other}
 				/>
 			</div>
 		);

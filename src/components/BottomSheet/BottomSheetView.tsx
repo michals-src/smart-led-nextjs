@@ -19,8 +19,8 @@ function BottomSheetView(props: any): React.ReactElement {
 	return (
 		<>
 			<div {...props}>
-				{' '}
-				<Component />
+				{React.cloneElement(children, Object.assign({}, bsCtxApi, transferprops))}
+				{/* <Component /> */}
 			</div>{' '}
 		</>
 	);

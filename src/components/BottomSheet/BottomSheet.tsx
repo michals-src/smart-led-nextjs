@@ -41,13 +41,15 @@ const BottomSheet = function ({ children, open, onClose }: { children?: any; ope
 		};
 	}, [childrenArr]);
 
-	const ContentItem = React.useCallback<any>(
-		function () {
-			//return screens[sheetID];
-			return sheets[sheetID];
-		},
-		[sheetID, sheets]
-	);
+	// const ContentItem = React.useCallback<any>(
+	// 	function () {
+	// 		//return screens[sheetID];
+	// 		return sheets[sheetID];
+	// 	},
+	// 	[sheetID, sheets]
+	// );
+
+	const ContentItem = React.isValidElement(sheets[sheetID]) ? React.cloneElement(sheets[sheetID]) : null;
 
 	const back = function () {
 		navigate(prevSheetID);
@@ -104,7 +106,8 @@ const BottomSheet = function ({ children, open, onClose }: { children?: any; ope
 
 						<div className='w-full h-auto absolute bottom-0 left-0 touch-pan-x'>
 							<div className='max-w-lg mx-auto bg-zinc-900 text-white relative overflow-hidden rounded-t-xl'>
-								<BottomSheetContext.Provider value={ctxValue}>{<ContentItem />}</BottomSheetContext.Provider>
+								{/* <BottomSheetContext.Provider value={ctxValue}>{<ContentItem />}</BottomSheetContext.Provider> */}
+								<BottomSheetContext.Provider value={ctxValue}>{ContentItem}</BottomSheetContext.Provider>
 							</div>
 						</div>
 					</div>

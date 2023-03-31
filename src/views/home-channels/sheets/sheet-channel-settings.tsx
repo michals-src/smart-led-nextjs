@@ -29,8 +29,9 @@ import {
 	Picker,
 	PickerSelect,
 	PickerOption,
+	Range,
+	Coolors,
 } from '@components';
-import Coolors from 'src/components/Colors/coolors';
 import { colors } from '@utils';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -118,20 +119,18 @@ const ModuleOperationMode = function () {
 };
 
 const SheetChannelSettings = (props: any) => {
-	const { status, value, color, brightness, num, onClick: onClickProps } = props;
-	//const { num, onClick: onClickProps } = props;
+	const { status, value, color, brightness: brightnessProps, num, onClick: onClickProps } = props;
 
-	//const channelProps = useSelector((state) => state.global.nodes[num]);
-	//const { status, value, color, brightness } = channelProps;
-
-	const [abc, setAbc] = useState(false);
+	const [brightness, setBrightness] = useState(brightnessProps);
 
 	const dispatch = useDispatch();
 
 	const updateStatus = (e) => {
-		setAbc(!abc);
-		onClickProps?.(!abc);
-		//dispatch(channel.update_status(num, !status));
+		dispatch(channel.update_status(num, !status));
+	};
+
+	const updateBrightness = (e) => {
+		dispatch(channel.update_brightness(num, e.target.value));
 	};
 
 	return (
@@ -142,7 +141,7 @@ const SheetChannelSettings = (props: any) => {
 				<List>
 					<List.Item>
 						<ModuleStatus
-							value={abc}
+							value={status}
 							onClick={updateStatus}
 						/>
 					</List.Item>
@@ -176,27 +175,29 @@ const SheetChannelSettings = (props: any) => {
       </div> */}
 
 				<div className='my-6'>
-					<Box>
-						<>
-							<div className='p-4 flex flex-row nowrap items-center'>
-								<div className='w-2/12'>
-									<SunIcon className='w-6 h-6 text-white mx-auto' />
+					<List>
+						<List.Item>
+							<div className='w-full flex-1'>
+								<div className='py-3 flex flex-row nowrap items-center'>
+									<SunIcon className='w-4 h-4 text-white' />
+									<div className='flex-1 px-6'>
+										<p className='text-sm'>Jasność</p>
+									</div>
+									<p className='text-xs text-zinc-400'>{brightness} %</p>
 								</div>
-								<div className='w-8/12 pl-4 pr-8'>
-									<p className='text-sm'>Jasność</p>
-								</div>
-								<div className='w-2/12'>
-									<p className='text-xs'>100 %</p>
+								<div className='w-full flex-1'>
+									<Range
+										onMouseUp={(e) => updateBrightness(e)}
+										onTouchEnd={(e) => updateBrightness(e)}
+										onChange={(e) => setBrightness(e.target.value)}
+										value={brightness}
+										size='lg'
+										thumb={false}
+									/>
 								</div>
 							</div>
-							<div className='w-full'>
-								<Slider
-									size='lg'
-									thumb={false}
-								/>
-							</div>
-						</>
-					</Box>
+						</List.Item>
+					</List>
 				</div>
 			</BottomSheet.Content>
 		</>
