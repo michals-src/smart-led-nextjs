@@ -27,10 +27,10 @@ export const globalSlice = createSlice({
         },
         update_node: (state, action) => {
             const node = state.nodes[action.payload.id];
-            const nodes = {...state.nodes, [`${action.payload.id}`]: {...node, ...action.payload.props}};
-           
+            const nodes = { ...state.nodes, [`${action.payload.id}`]: { ...node, ...action.payload.props } };
 
-            return {...state, nodes};
+
+            return { ...state, nodes };
         }
     }
 })
@@ -51,15 +51,23 @@ export const channel = {
         let data = {};
         data[`nodes/${id}/status`] = value
 
-        dispatch(update_node({id, 'props': {
-            'status': value
-        }}))
+        dispatch(update_node({
+            id, 'props': {
+                'status': value
+            }
+        }))
 
         update(ref(db), data);
     },
     update_value: (id, value) => dispatch => {
         let data = {};
+        data[`nodes/${id}/value`] = value
 
+        dispatch(update_node({
+            id, 'props': {
+                'value': value
+            }
+        }))
 
         update(ref(db), data);
     },
@@ -73,9 +81,11 @@ export const channel = {
         let data = {};
         data[`nodes/${id}/brightness`] = value
 
-        dispatch(update_node({id, 'props': {
-            'brightness': value
-        }}))
+        dispatch(update_node({
+            id, 'props': {
+                'brightness': value
+            }
+        }))
 
         update(ref(db), data);
     }

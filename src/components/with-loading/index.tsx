@@ -1,1 +1,1 @@
-export { default as WithLoading } from './with-loading'
+export { default } from './with-loading'

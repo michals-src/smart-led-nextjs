@@ -50,7 +50,7 @@ const Range = forwardRef<HTMLInputElement, RangeProps & React.HTMLProps<HTMLInpu
 		};
 
 		return (
-			<div className='slider w-full'>
+			<div className='slider w-full touch-none'>
 				<div className={cnPlaceholder}>
 					<div
 						ref={progressRef}
@@ -68,7 +68,7 @@ const Range = forwardRef<HTMLInputElement, RangeProps & React.HTMLProps<HTMLInpu
 
 				<input
 					type='range'
-					className='slider--input w-full'
+					className='slider--input w-full touch-pan-x'
 					value={value}
 					onClick={handleClick}
 					onChange={handleChange}

@@ -82,7 +82,7 @@ const PickerSelect = forwardRef<HTMLDivElement, PickerSelectProps>(function Pick
 			<div
 				className='w-full h-[64px] absolute top-0 left-0 z-10'
 				style={{
-					background: 'linear-gradient(to bottom, #18181b 0%, rgba(0,0,0,0) 100%)',
+					background: 'linear-gradient(to bottom, rgb(39 39 42) 0%, rgba(24,24,27,0) 100%)',
 				}}></div>
 			<div className={`overflow-hidden h-[160px] px-3`}>
 				<div
@@ -100,7 +100,7 @@ const PickerSelect = forwardRef<HTMLDivElement, PickerSelectProps>(function Pick
 			<div
 				className='w-full h-[64px] absolute bottom-0 left-0 z-10'
 				style={{
-					background: 'linear-gradient(to top, #18181b 0%, rgba(0,0,0,0) 100%)',
+					background: 'linear-gradient(to top, rgb(39 39 42) 0%, rgba(0,0,0,0) 100%)',
 				}}></div>
 			<Slider
 				value={translation}

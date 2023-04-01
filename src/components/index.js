@@ -11,12 +11,15 @@ export { default as Modal } from './Modal/modal';
 export { default as LoaderCircle } from './loader/loaderCircle';
 export { default as Popup } from './popup/popup';
 export { default as Coolors } from './Colors/coolors';
-export { Picker, PickerSelect, PickerOption } from './Picker/picker';
 export { default as Button } from './button/button';
 export { default as Input } from './input/input';
-export { default as BottomSheet } from './BottomSheet/BottomSheet';
+export { default as BottomSheet } from './BottomSheet/bottomsheet';
 export { default as List } from './List';
 export { default as Accordion } from './accordion';
-export { Slider } from './slider';
 export { default as Carousel } from './carousel';
-export { WithLoading } from './with-loading';
+export { default as WithLoading } from './with-loading';
+export { default as Portal } from './portal';
+
+
+export { Slider } from './slider';
+export { Picker, PickerSelect, PickerOption } from './Picker/picker';

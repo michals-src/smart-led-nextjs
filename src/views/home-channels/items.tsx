@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState, FC, HTMLInputTypeAttrib
 import classNames from 'classnames';
 import { v4 as uuidv4 } from 'uuid';
 
-import { PlusIcon } from '@heroicons/react/24/solid';
+import { LightBulbIcon, PaintBrushIcon, PlusIcon } from '@heroicons/react/24/solid';
 
 import { Carousel, Button, Slider, WithLoading, BottomSheet, List, Accordion, Switch } from '@components';
 import { SheetChannelSettings } from './sheets';
@@ -42,8 +42,8 @@ function Items(props: any) {
 
 	const dispatch = useDispatch();
 
-	const handler = (value) => {
-		dispatch(channel.update_status(selectedScene, value));
+	const updateStatus = (num, value) => {
+		dispatch(channel.update_status(num, value));
 	};
 
 	return (
@@ -54,8 +54,11 @@ function Items(props: any) {
 						<Accordion.ItemHeader>
 							<div className='mb-1'>
 								<List.Item>
-									<div className='flex flex-col flex-nowrap flex-1'>
-										<p className='text-xs text-zinc-400'>Kolory</p>
+									<div className='flex flex-row flex-nowrap flex-1'>
+										<PaintBrushIcon className='w-4 h-4' />
+										<div className="flex-1 px-6">
+											<p className='text-xs'>Kolory</p>
+										</div>
 									</div>
 								</List.Item>
 							</div>
@@ -65,17 +68,17 @@ function Items(props: any) {
 								{nodesColor.map((node: any, idx: number) => {
 									return (
 										<>
-											<List.Item key={uuidv4()}>
+											<List.Item key={React.useMemo(() => uuidv4(), [])}>
 												<div
 													className='flex-1'
 													onClick={() => {
 														setSelectedScene(node.num);
 														setOpen(true);
 													}}>
-													<p className='text-sm '>Kanał {node.num}</p>
+													<p className='text-xs text-zinc-400'>Kanał {node.num}</p>
 												</div>
 
-												<Switch />
+												<Switch value={node.status} onClick={e => updateStatus(node.num, !node.status)} />
 											</List.Item>
 										</>
 									);
@@ -90,8 +93,11 @@ function Items(props: any) {
 						<Accordion.ItemHeader>
 							<div className='mb-1'>
 								<List.Item>
-									<div className='flex flex-col flex-nowrap flex-1'>
-										<p className='text-xs text-zinc-400'>Jednolite</p>
+									<div className='flex flex-row flex-nowrap flex-1'>
+										<LightBulbIcon className='w-4 h-4' />
+										<div className="flex-1 px-6">
+											<p className='text-xs'>Jednolite</p>
+										</div>
 									</div>
 								</List.Item>
 							</div>
@@ -101,17 +107,17 @@ function Items(props: any) {
 								{nodesMono.map((node: any, idx: number) => {
 									return (
 										<>
-											<List.Item key={uuidv4()}>
+											<List.Item key={React.useMemo(() => uuidv4(), [])}>
 												<div
 													className='flex-1'
 													onClick={() => {
 														setSelectedScene(node.num);
 														setOpen(true);
 													}}>
-													<p className='text-sm '>Kanał {node.num}</p>
+													<p className='text-xs text-zinc-400 '>Kanał {node.num}</p>
 												</div>
 
-												<Switch />
+												<Switch value={node.status} onClick={e => updateStatus(node.num, !node.status)} />
 											</List.Item>
 										</>
 									);
@@ -128,7 +134,6 @@ function Items(props: any) {
 				<BottomSheet.View root='true'>
 					<SheetChannelSettings
 						{...channelProps}
-						onClick={handler}
 						num={selectedScene}
 					/>
 				</BottomSheet.View>

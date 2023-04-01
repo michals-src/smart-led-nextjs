@@ -59,8 +59,8 @@ const ModuleStatus = function (props) {
 	);
 };
 
-const ModuleColor = function () {
-	const [color, setColor] = useState(colors[0]);
+const ModuleColor = function (props: any) {
+	const { value: valueProps, onClick: handleClick } = props;
 
 	return (
 		<>
@@ -74,8 +74,8 @@ const ModuleColor = function () {
 					<div className='mt-4'>
 						<Coolors
 							align='start'
-							value={color}
-							onClick={(e) => setColor((e.target as HTMLInputElement)?.value)}
+							value={valueProps}
+							onClick={handleClick}
 						/>
 					</div>
 				</div>
@@ -95,7 +95,7 @@ const ModuleOperationMode = function () {
 						<div className='mb-1 flex flex-row flex-nowrap'>
 							<HandRaisedIcon className='w-4 h-4' />
 							<div className='flex flex-col flex-nowrap flex-1 px-6'>
-								<p className='text-xs 0'>Tryb pray</p>
+								<p className='text-xs 0'>Tryb pracy</p>
 							</div>
 							<p className='text-xs text-zinc-400'>{tryb}</p>
 						</div>
@@ -119,7 +119,7 @@ const ModuleOperationMode = function () {
 };
 
 const SheetChannelSettings = (props: any) => {
-	const { status, value, color, brightness: brightnessProps, num, onClick: onClickProps } = props;
+	const { status, value: valueProps, color, brightness: brightnessProps, num, onClick: onClickProps } = props;
 
 	const [brightness, setBrightness] = useState(brightnessProps);
 
@@ -128,6 +128,12 @@ const SheetChannelSettings = (props: any) => {
 	const updateStatus = (e) => {
 		dispatch(channel.update_status(num, !status));
 	};
+
+	const updateColor = (e) => {
+		console.log(e.target.value)
+		dispatch(channel.update_value(num, e.target.value));
+	};
+
 
 	const updateBrightness = (e) => {
 		dispatch(channel.update_brightness(num, e.target.value));
@@ -147,7 +153,7 @@ const SheetChannelSettings = (props: any) => {
 					</List.Item>
 					{!!color && (
 						<List.Item>
-							<ModuleColor />
+							<ModuleColor value={valueProps} onClick={updateColor} />
 						</List.Item>
 					)}
 

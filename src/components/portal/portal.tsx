@@ -1,9 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-const Portal = function ({ children, parent }: {
+const Portal = function ({ children, parent, onCreate }: {
     children?: React.ReactElement | React.ReactFragment,
-    parent?: any
+    parent?: any,
+    onCreate?: any
 }) {
 
     let el = React.useMemo(() => document.createElement('div'), []);
@@ -14,6 +15,7 @@ const Portal = function ({ children, parent }: {
 
         target.classList.add('portal-wrapper');
         target.appendChild(el);
+        onCreate?.();
 
         return function () {
             target.removeChild(el);

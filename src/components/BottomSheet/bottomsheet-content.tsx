@@ -1,6 +1,6 @@
 import React from 'react';
 
-import BottomSheetHeader from './BottomSheetHeader';
+import BottomSheetHeader from './bottomsheet-header';
 
 function BottomSheetContent(props: any) {
 	const {
