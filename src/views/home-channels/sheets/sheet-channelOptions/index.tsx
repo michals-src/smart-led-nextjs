@@ -1,62 +1,44 @@
-import React, { ReactElement, useContext, useEffect, useState } from 'react';
+import React, { Dispatch, ReactElement, useContext, useEffect, useState } from 'react';
 import Link from 'next/link';
 import db from '@firebase';
 import { ref, child, get, update } from 'firebase/database';
 import { v4 as uuidv4 } from 'uuid';
 
-import {
-	ArrowLongLeftIcon,
-	ArrowLongRightIcon,
-	ArrowRightIcon,
-	BoltIcon,
-	ClockIcon,
-	Cog6ToothIcon,
-	HandRaisedIcon,
-	LightBulbIcon,
-	SunIcon,
-	XMarkIcon,
-} from '@heroicons/react/24/solid';
+import { SunIcon } from '@heroicons/react/24/solid';
 
-import {
-	Box,
-	Palette,
-	Slider,
-	LoaderCircle,
-	Switch,
-	BottomSheet,
-	List,
-	Accordion,
-	Picker,
-	PickerSelect,
-	PickerOption,
-	Range,
-	Coolors,
-} from '@components';
-import { colors } from '@utils';
+import { BottomSheet, List, Range } from '@components';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { channel } from '@store/slices/globalSlice';
 
 import { ModuleColor, ModuleOperationMode, ModuleStatus } from './modules';
+import { colors } from '@utils';
 
-const SheetChannelOptions = function (props: any) {
+const SheetChannelOptions = function (props: {
+	status: boolean;
+	value: string;
+	color: boolean;
+	brightness: number;
+	num: number;
+	onClick: React.MouseEventHandler<HTMLInputElement>;
+}) {
 	const { status, value: valueProps, color, brightness: brightnessProps, num, onClick: onClickProps } = props;
 
-	const [brightness, setBrightness] = useState(brightnessProps);
+	const [brightness, setBrightness] = useState<number>(brightnessProps);
 
 	const dispatch = useDispatch();
 
-	const updateStatus = (e) => {
-		dispatch(channel.update_status(num, !status));
+	const updateStatus = (e: React.SyntheticEvent<HTMLInputElement>) => {
+		dispatch<any>(channel.update_status(num, !status));
 	};
 
-	const updateColor = (e) => {
-		console.log(e.target.value);
-		dispatch(channel.update_value(num, e.target.value));
+	const updateColor = (e: React.SyntheticEvent<HTMLInputElement>) => {
+		// console.log(e.target.value);
+		dispatch<any>(channel.update_value(num, e.currentTarget.value));
 	};
 
-	const updateBrightness = (e) => {
-		dispatch(channel.update_brightness(num, e.target.value));
+	const updateBrightness = (e: React.SyntheticEvent<HTMLInputElement>) => {
+		dispatch<any>(channel.update_brightness(num, e.currentTarget.value));
 	};
 
 	return (
@@ -85,24 +67,6 @@ const SheetChannelOptions = function (props: any) {
 					</List.Item>
 				</List>
 
-				{/* <div className='mt-12 mb-4'>
-        <div className='flex flex-row flex-nowrap items-top'>
-          <div className='w-8/12'>
-            <div className='mb-1'>
-              <p className='text-4xl font-bold'>Konfiguracja</p>
-            </div>
-          </div>
-          <div className='w-4/12 pl-8'>
-            <div className='w-auto table ml-auto rounded-full'>
-              <div>
-                <Cog6ToothIcon className='text-zinc-100 ml-auto w-8 h-8' />
-              </div>
-            </div>
-          </div>
-        </div>
-        <p className='text-xs text-zinc-500'>Konfigurowanie pracy ręcznej</p>
-      </div> */}
-
 				<div className='my-6'>
 					<List>
 						<List.Item>
@@ -116,11 +80,11 @@ const SheetChannelOptions = function (props: any) {
 								</div>
 								<div className='w-full flex-1'>
 									<Range
-										onMouseUp={(e) => updateBrightness(e)}
-										onTouchEnd={(e) => updateBrightness(e)}
-										onChange={(e) => setBrightness(e.target.value)}
+										onMouseUp={(e: React.SyntheticEvent<HTMLInputElement>) => updateBrightness(e)}
+										onTouchEnd={(e: React.SyntheticEvent<HTMLInputElement>) => updateBrightness(e)}
+										onChange={(e: React.SyntheticEvent<HTMLInputElement>) => setBrightness(+e.currentTarget.value)}
 										value={brightness}
-										size='lg'
+										variant='lg'
 										thumb={false}
 									/>
 								</div>

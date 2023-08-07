@@ -1,14 +1,15 @@
-import React, { useContext, useEffect, useRef, useState, FC, HTMLInputTypeAttribute, createContext, useCallback } from 'react';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import classNames from 'classnames';
 import { v4 as uuidv4 } from 'uuid';
 
-import { LightBulbIcon, PaintBrushIcon, PlusIcon } from '@heroicons/react/24/solid';
-
-import { Carousel, Button, Slider, WithLoading, BottomSheet, List, Accordion, Switch } from '@components';
-import { SheetChannelSettings } from './sheets';
-import { useDispatch, useSelector } from 'react-redux';
+import { LightBulbIcon, PaintBrushIcon } from '@heroicons/react/24/solid';
 
 import { channel } from '@store/slices/globalSlice';
+
+import { BottomSheet, List, Accordion, Switch } from '@components';
+import { SheetChannelOptions } from './sheets';
 
 const Item = function Item(props: any) {
 	const {
@@ -42,8 +43,8 @@ function Items(props: any) {
 
 	const dispatch = useDispatch();
 
-	const updateStatus = (num, value) => {
-		dispatch(channel.update_status(num, value));
+	const updateStatus = (num: number, value: boolean) => {
+		dispatch<any>(channel.update_status(num, value));
 	};
 
 	return (
@@ -56,7 +57,7 @@ function Items(props: any) {
 								<List.Item>
 									<div className='flex flex-row flex-nowrap flex-1'>
 										<PaintBrushIcon className='w-4 h-4' />
-										<div className="flex-1 px-6">
+										<div className='flex-1 px-6'>
 											<p className='text-xs'>Kolory</p>
 										</div>
 									</div>
@@ -78,7 +79,10 @@ function Items(props: any) {
 													<p className='text-xs text-zinc-400'>Kanał {node.num}</p>
 												</div>
 
-												<Switch value={node.status} onClick={e => updateStatus(node.num, !node.status)} />
+												<Switch
+													value={node.status}
+													onClick={(e) => updateStatus(node.num, !node.status)}
+												/>
 											</List.Item>
 										</>
 									);
@@ -95,7 +99,7 @@ function Items(props: any) {
 								<List.Item>
 									<div className='flex flex-row flex-nowrap flex-1'>
 										<LightBulbIcon className='w-4 h-4' />
-										<div className="flex-1 px-6">
+										<div className='flex-1 px-6'>
 											<p className='text-xs'>Jednolite</p>
 										</div>
 									</div>
@@ -105,9 +109,11 @@ function Items(props: any) {
 						<Accordion.ItemCollapse>
 							<List>
 								{nodesMono.map((node: any, idx: number) => {
+									const index = React.useMemo(() => uuidv4(), []);
+
 									return (
 										<>
-											<List.Item key={React.useMemo(() => uuidv4(), [])}>
+											<List.Item key={index}>
 												<div
 													className='flex-1'
 													onClick={() => {
@@ -117,7 +123,10 @@ function Items(props: any) {
 													<p className='text-xs text-zinc-400 '>Kanał {node.num}</p>
 												</div>
 
-												<Switch value={node.status} onClick={e => updateStatus(node.num, !node.status)} />
+												<Switch
+													value={node.status}
+													onClick={(e) => updateStatus(node.num, !node.status)}
+												/>
 											</List.Item>
 										</>
 									);
@@ -132,7 +141,7 @@ function Items(props: any) {
 				open={open}
 				onClose={() => setOpen(false)}>
 				<BottomSheet.View root='true'>
-					<SheetChannelSettings
+					<SheetChannelOptions
 						{...channelProps}
 						num={selectedScene}
 					/>

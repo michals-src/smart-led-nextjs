@@ -1,43 +1,10 @@
-import React, { ReactElement, useContext, useEffect, useState } from 'react';
-import Link from 'next/link';
-import db from '@firebase';
-import { ref, child, get, update } from 'firebase/database';
-import { v4 as uuidv4 } from 'uuid';
+import React from 'react';
 
-import {
-	ArrowLongLeftIcon,
-	ArrowLongRightIcon,
-	ArrowRightIcon,
-	BoltIcon,
-	ClockIcon,
-	Cog6ToothIcon,
-	HandRaisedIcon,
-	LightBulbIcon,
-	SunIcon,
-	XMarkIcon,
-} from '@heroicons/react/24/solid';
+import { Cog6ToothIcon } from '@heroicons/react/24/solid';
 
-import {
-	Box,
-	Palette,
-	Slider,
-	LoaderCircle,
-	Switch,
-	BottomSheet,
-	List,
-	Accordion,
-	Picker,
-	PickerSelect,
-	PickerOption,
-	Range,
-	Coolors,
-} from '@components';
-import { colors } from '@utils';
+import { Coolors } from '@components';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { channel } from '@store/slices/globalSlice';
-
-export default function ModuleColor(props: { value: typeof colors; onClick: React.MouseEventHandler }) {
+export default function ModuleColor(props: { value: string; onClick: React.MouseEventHandler<HTMLInputElement> }) {
 	const { value: valueProps, onClick: handleClick } = props;
 
 	return (

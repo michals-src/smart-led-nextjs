@@ -1,17 +1,16 @@
+import React, { forwardRef } from 'react';
 import classNames from 'classnames';
-import React, { useState, useCallback, useEffect, forwardRef, Ref } from 'react';
 
 import { colors } from '../customizer/colors/palette';
 import CoolorssColorant from './coolorsColorant';
 
 export type PaletteProps = {
-	value: string;
+	value: (typeof colors)[number];
 	onClick?: React.MouseEventHandler<HTMLInputElement>;
 	align?: 'start' | 'center' | 'end';
 	size?: 'sm' | 'md' | 'lg';
 };
 
-const radius = 80;
 const Coolors = forwardRef<HTMLInputElement, PaletteProps & React.HTMLProps<HTMLInputElement>>((props, ref) => {
 	const { value, onClick, align = 'center', size = 'md' } = props;
 
